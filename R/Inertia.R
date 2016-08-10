@@ -69,6 +69,7 @@ G=apply(x,2,mean)
 
 
 #### Calculation of Between Inertia  (sum ng*d2(ug,u))
+#############################################
 IB=c()
 for (i in 1:length(unique(y))){
   ib = nG[i]*(sum((xmG[[i]]-G)^2))
@@ -78,6 +79,7 @@ for (i in 1:length(unique(y))){
 
 
 #### Calculation of Total Inertia
+#############################################
 xmG=matrix(G,nrow=n,ncol=m,byrow=TRUE)
 it=(x-xmG)^2
 IT=apply(it,1,sum)
@@ -91,6 +93,7 @@ iner.inter100=iner.inter*100
 
 
 #### Calculation of Within Inertia
+#############################################
 iner.intra = 1-iner.inter
 InertiaW=(iner.intra * InertiaT)
 
@@ -99,53 +102,63 @@ InertiaW=(iner.intra * InertiaT)
 iner.intra100=iner.intra*100 # Within-group Inertia (% of tot inertia) :
 
 
+PInertiaT = InertiaT*100/InertiaT
+PInertiaW = InertiaW*100/InertiaT
+PInertiaB = InertiaB*100/InertiaT
+
+
+res1=matrix(data = c(InertiaB, InertiaW, InertiaT, PInertiaB, PInertiaW, PInertiaT), ncol = 3,
+           dimnames = list(c("Value", "Percentage"), c("BI", "WI", "TI")), byrow = TRUE)
+
+
+
+#### Calcul de l'inertie de chaque groupe
+###############################################
+
+Inertia_group=c() # inertie par groupe
+Inertia_moy_group=c() # inertie moyenne par groupe
+
+
+for (i in 1:nGroup){
+  xjmoyen=matrix(xmG[[i]],nrow=nG[i],ncol=m,byrow=TRUE)
+  xij = x[which(y==unique(y)[i]),]
+  # inertie par groupe
+  In_g = sum((xij-xjmoyen)^2) # Somme_i(xij –xjmoyen)2  
+  Inertia_group=c(Inertia_group,In_g)
+  # inertie moyenne par groupe
+  In_m_g = (1/nG[i])*sum((xij-xjmoyen)^2) # (1/taille du groupe nj)*Somme_i(xij –xjmoyen)2
+  Inertia_moy_group=c(Inertia_moy_group,In_m_g)
+}
+
+Inertia_TOT_group = sum(Inertia_group)
+
+## pourcentage d'inertie
+Inertia_group100 = 100*c(Inertia_group,Inertia_TOT_group)/Inertia_TOT_group # Somme_i(xij –xjmoyen)2  /Somme_ij(xij –xjmoyen)2 
+
+
+
+res2=matrix(data = c(Inertia_group, Inertia_TOT_group,Inertia_group100, Inertia_moy_group, NA), ncol = 3,
+           dimnames = list(c(paste0("Group ", unique(y)), "Total"), c("Inertia_group", "Inertia_group100", "Inertia_moy_group")), 
+           byrow = FALSE)
+
+
+
 
 if (print==TRUE) {
   cat("\n Total Inertia",InertiaT)
   cat("\n Intergroup Inertia",InertiaB)
   cat("\n Intergroup Inertia (% of Itot)",iner.inter100)
   cat("\n Within Inertia ",InertiaW)
-  cat("\n Within Inertia (% of Itot)",iner.intra, "\n")
+  cat("\n Within Inertia (% of Itot)",iner.intra100, "\n")
+  cat("\n Inertia per group ",Inertia_group, "\n")
+  cat("\n Inertia per group (% of I_pergroup)",Inertia_group100, "\n")
+  cat("\n Mean Inertia per group ",Inertia_moy_group, "\n")
 }
 
 
 
-# FIXME
 
-#Within Inertia for each group
-# dG=vector("list", nGroup)
-# sumdG=vector("list", nGroup)
-# IG=c()
-# IGprop=c()
-#
-# for (i in 1:length(unique(y))){
-#
-# xmG[[i]]=matrix(data=as.vector(xmG[[i]]),nrow=nG[i],ncol=m,byrow=TRUE)
-#
-# dG[[i]]=(xG[[i]]-xmG[[i]])^2
-#
-# #print(dim(dG1))
-# sumdG[[i]]=apply(dG[[i]],1,sum)
-# IG[i]=(sum(sumdG[[i]]))
-# IGprop[i]=(IG[i]/InertiaT)*100
-# }
-#
-# cat("\n Within Inertia in each group",IG)
-# cat("\n InWithin Inertia in each group (%)",IGprop)
-#
-# TWI=sum(IG)
-# cat("\n Total Within Inertia",TWI)
-
-
-PInertiaT = InertiaT*100/InertiaT
-PInertiaW = InertiaW*100/InertiaT
-PInertiaB = InertiaB*100/InertiaT
-
-
-res=matrix(data = round(c(InertiaB, InertiaW, InertiaT, PInertiaB, PInertiaW, PInertiaT),2), ncol = 3,
-           dimnames = list(c("Value", "Percentage"), c("BI", "WI", "TI")), byrow = TRUE)
-
-return(res)
+return(list(Between_within = res1, Per_group = res2))
 
 
 }
