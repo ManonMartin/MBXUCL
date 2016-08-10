@@ -5,9 +5,13 @@ Version: 0.1
 Date: 2016-03-18
 Author: Manon Martin
 Imports:
- clValid, clusterSim, phyclust
+ clValid, clusterSim, phyclust, proxy, pls, pander, stats, ggplot2, reshape2
 Maintainer: Manon Martin <manon.martin@uclouvain.be>
-Description: Basic R routines implemented for metabolomics data analysis
+Description: Basic R routines implemented for metabolomics data analysis. It mainly involves statistical mutivariate methods and visualisation tools.
 License: GPL-2
 LazyData: TRUE
+Depends: R (>= 3.3.1)
 RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

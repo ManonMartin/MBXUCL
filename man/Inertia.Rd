@@ -16,21 +16,18 @@ Inertia(x, y, print = FALSE)
 \value{
 A list with the following elements:
 \describe{
-  \item{\code{Name.group}}{Group membership}
-  \item{\code{InertiaT}}{Total inertia}
-  \item{\code{InertiaB}}{Between inertia}
-  \item{\code{InertiaW}}{Within inertia}
+  \item{\code{Between_within}}{A matrix with the following elements: Name.group = Group membership,
+  InertiaT = Total inertia, InertiaB = Between inertia, InertiaW = Within inertia.}
+  \item{\code{Per_group}}{A matrix with the following elements: Inertia_group = Inertia per group,
+  Inertia_group100 =  Inertia per group (percentage of ITOT pergroup), Inertia_moy_group = Mean Inertia per group.}
 }
 }
 \description{
 Calculates the within, between and total inertia of a data matrix
 }
 \examples{
-data("iris")
-data = as.matrix((iris[,1:4]))
-class = as.numeric(iris[,5])
-
-Res = Inertia(x = data, y = class, print = TRUE)
+data("HumanSerum")
+Res = Inertia(x = HumanSerumSpectra, y = ClassHS, print = TRUE)
 
 }
 

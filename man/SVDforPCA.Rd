@@ -4,12 +4,14 @@
 \alias{SVDforPCA}
 \title{Singular value decomposition for PCA analysis}
 \usage{
-SVDforPCA(x, ncomp = min(dim(x)))
+SVDforPCA(x, ncomp = min(dim(x)), roundval = TRUE)
 }
 \arguments{
 \item{x}{A data matrix on which will be based the analysis.}
 
 \item{ncomp}{Number of Principal Components.}
+
+\item{roundval}{If \code{TRUE}, numeric variable names will be rounded to the 3rd decimal.}
 }
 \value{
 A list with the following elements:
@@ -17,7 +19,7 @@ A list with the following elements:
   \item{\code{pcs}}{Scores}
   \item{\code{pcu}}{Normalized scores}
   \item{\code{pcv}}{Loadings}
-  \item{\code{pcd}}{Xingular values}
+  \item{\code{pcd}}{Singular values}
   \item{\code{var}}{Explained variance}
   \item{\code{cumvar}}{Cumulated explained variance}
   \item{\code{eigval}}{Eigenvalues}
@@ -27,24 +29,7 @@ A list with the following elements:
 PCA over a X matrix by singular value decomposition, the preprocessing involves the mean-centering of X.
 }
 \examples{
-data("iris")
-data = iris[,1:4]
-class = as.numeric(iris[,5])
-PCA.res = SVDforPCA(data)
-
-RowNames = row.names(data)
-
-Xax=1 # composante x
-Yax=2 # composante y
-Xlim=c(min(PCA.res$pcs[,Xax])*1.4, max(PCA.res$pcs[,Xax])*1.4)
-Ylim=c(min(PCA.res$pcs[,Yax])*1.4, max(PCA.res$pcs[,Yax])*1.4)
-
-plot(PCA.res$pcs[,Xax],PCA.res$pcs[,Yax], col=class,
-    xlab=paste0("PC",Xax," (", PCA.res$var[Xax] ,"\%)"), xlim=Xlim,
-    ylab=paste0("PC",Yax," (", PCA.res$var[Yax] ,"\%)"), ylim=Ylim,
-    main=paste0("PCA score plot"))
-text(PCA.res$pcs[,Xax],PCA.res$pcs[,Yax],labels=RowNames, pos=c(2,3), cex = 0.7, col=class)
-abline(h=0, v=0)
-
+data("HumanSerum")
+PCA.res = SVDforPCA(HumanSerumSpectra)
 }
 

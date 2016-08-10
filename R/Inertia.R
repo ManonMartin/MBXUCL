@@ -10,18 +10,15 @@
 #'
 #' @return A list with the following elements:
 #' \describe{
-#'   \item{\code{Name.group}}{Group membership}
-#'   \item{\code{InertiaT}}{Total inertia}
-#'   \item{\code{InertiaB}}{Between inertia}
-#'   \item{\code{InertiaW}}{Within inertia}
+#'   \item{\code{Between_within}}{A matrix with the following elements: Name.group = Group membership,
+#'   InertiaT = Total inertia, InertiaB = Between inertia, InertiaW = Within inertia.}
+#'   \item{\code{Per_group}}{A matrix with the following elements: Inertia_group = Inertia per group,
+#'   Inertia_group100 =  Inertia per group (percentage of ITOT pergroup), Inertia_moy_group = Mean Inertia per group.}
 #' }
 #'
 #' @examples
-#' data("iris")
-#' data = as.matrix((iris[,1:4]))
-#' class = as.numeric(iris[,5])
-#'
-#' Res = Inertia(x = data, y = class, print = TRUE)
+#' data("HumanSerum")
+#' Res = Inertia(x = HumanSerumSpectra, y = ClassHS, print = TRUE)
 #'
 
 
@@ -123,7 +120,7 @@ for (i in 1:nGroup){
   xjmoyen=matrix(xmG[[i]],nrow=nG[i],ncol=m,byrow=TRUE)
   xij = x[which(y==unique(y)[i]),]
   # inertie par groupe
-  In_g = sum((xij-xjmoyen)^2) # Somme_i(xij –xjmoyen)2  
+  In_g = sum((xij-xjmoyen)^2) # Somme_i(xij –xjmoyen)2
   Inertia_group=c(Inertia_group,In_g)
   # inertie moyenne par groupe
   In_m_g = (1/nG[i])*sum((xij-xjmoyen)^2) # (1/taille du groupe nj)*Somme_i(xij –xjmoyen)2
@@ -133,12 +130,12 @@ for (i in 1:nGroup){
 Inertia_TOT_group = sum(Inertia_group)
 
 ## pourcentage d'inertie
-Inertia_group100 = 100*c(Inertia_group,Inertia_TOT_group)/Inertia_TOT_group # Somme_i(xij –xjmoyen)2  /Somme_ij(xij –xjmoyen)2 
+Inertia_group100 = 100*c(Inertia_group,Inertia_TOT_group)/Inertia_TOT_group # Somme_i(xij –xjmoyen)2  /Somme_ij(xij –xjmoyen)2
 
 
 
 res2=matrix(data = c(Inertia_group, Inertia_TOT_group,Inertia_group100, Inertia_moy_group, NA), ncol = 3,
-           dimnames = list(c(paste0("Group ", unique(y)), "Total"), c("Inertia_group", "Inertia_group100", "Inertia_moy_group")), 
+           dimnames = list(c(paste0("Group ", unique(y)), "Total"), c("Inertia_group", "Inertia_group100", "Inertia_moy_group")),
            byrow = FALSE)
 
 
