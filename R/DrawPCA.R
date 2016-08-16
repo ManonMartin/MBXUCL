@@ -1,4 +1,4 @@
-#' @export DrawPCA
+#' @export Drawpca
 #' @title Scores and Loadings plots
 #'
 #' @description
@@ -24,11 +24,11 @@
 #' PCAobj = SVDforPCA(HumanSerumSpectra)
 #' class = ClassHS
 #'
-#' DrawPCA(PCAobj, drawNames=TRUE,
+#' Drawpca(PCAobj, drawNames=TRUE,
 #' createWindow=FALSE, main = "PCA score plot for HumanSerum dataset",
 #'   class = class, axes =c(1,2), type ="scores")
 #'
-#' DrawPCA(PCAobj, drawNames=TRUE,
+#' Drawpca(PCAobj, drawNames=TRUE,
 #' createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
 #'    axes = 1, type ="loadings", loadingstype="l")
 #'
@@ -37,7 +37,7 @@
 #' @import reshape2
 
 
-DrawPCA <- function (PCAobj, drawNames=TRUE,
+Drawpca <- function (PCAobj, drawNames=TRUE,
                            createWindow=FALSE, main = NULL, class = NULL, axes =c(1,2),
                            type =c("scores", "loadings"), loadingstype=c("l", "p"), num.stacked = 4, xlab = NULL) {
 
@@ -119,7 +119,7 @@ if (type == "scores") {
                                                hjust = 0, nudge_x = (Xlim[2]/25), show.legend = F, size = 2)}
   }
 
-  print(ggplot2::last_plot())
+  plots
 
 
   # if(is.null(class)) {
@@ -190,7 +190,8 @@ if (type == "scores") {
     #
     #         require("gridExtra")
     i = last + 1
-    print(ggplot2::last_plot())
+
+    plots
   }
 
 
