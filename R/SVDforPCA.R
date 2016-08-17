@@ -79,7 +79,7 @@ x.cumvariances = x.cumvariances[1:ncomp]
 
 
 
-res=list(pcs=x.scores, pcu=x.normscores, pcv=x.loadings, eigval=x.eigval, pcd=x.singularval, var=x.variances,
+res=list(scores=x.scores, pcu=x.normscores, loadings=x.loadings, eigval=x.eigval, pcd=x.singularval, var=x.variances,
          cumvar=x.cumvariances, original.dataset =original.dataset)
 
 return(res)

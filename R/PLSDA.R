@@ -67,21 +67,21 @@ levgroup=as.numeric(names(table(y)))
 nlevgroup=table(y)
 k=length(levgroup)
 
-ord=order(y)
-x=x[ord,]
-group=y[ord]
-IdSpectra=IdSpectra[ord]
+# ord=order(y)
+# x=x[ord,]
+# group=y[ord]
+# IdSpectra=IdSpectra[ord]
 
 n=c()
 id=list()
 for (i in 1:k){
   n[i] = nlevgroup[[i]]
-  id[[i]] = which(group==levgroup[i])
+  id[[i]] = which(y==levgroup[i])
 }
 
 
 xtrain=as.matrix(x)
-ytrain=group
+ytrain=y
 
 xax=round(as.numeric(names(x[1,])),2)
 names=dimnames(x)[[2]]

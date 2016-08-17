@@ -1,16 +1,17 @@
-#' @export Drawpca
+#' @export DrawSL
 #' @title Scores and Loadings plots
 #'
 #' @description
 #' Draws scores and Loadings plots for PCA analysis derived from the SVDforPCA function.
 #'
-#' @param PCAobj The objects resulting from a PCA analysis with the SVDforPCA function.
+#' @param obj The objects resulting from a PCA analysis with the SVDforPCA function.
+#' @param type.obj The type of object to be plotted.
 #' @param drawNames If \code{TRUE}, will show the observations names on the Scores plot.
 #' @param createWindow If \code{TRUE}, will create a new window for the plot.
 #' @param main Plot title. If \code{NULL}, default title is provided.
 #' @param class Optional numeric vector giving the class of the observations.
 #' @param axes Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for Scores plot and only the first is considered for Loadings plot.
-#' @param type The type of plot, either \code{"scores"} or \code{"loadings"}
+#' @param type.graph The type of plot, either \code{"scores"} or \code{"loadings"}
 #' @param loadingstype The type of Loadings plot, either a line plot (\code{"l"}) or points with histogram-like vertical lines (\code{"p"}).
 #' @param num.stacked Number of stacked plots if \code{type} is \code{"loadings"}.
 #' @param xlab Label of the x-axis.
@@ -21,33 +22,35 @@
 #' @examples
 #'
 #' data("HumanSerum")
-#' PCAobj = SVDforPCA(HumanSerumSpectra)
+#' res.PCA = SVDforPCA(HumanSerumSpectra)
 #' class = ClassHS
 #'
-#' Drawpca(PCAobj, drawNames=TRUE,
+#' DrawSL(res.PCA, drawNames=TRUE, type.obj = "PCA",
 #' createWindow=FALSE, main = "PCA score plot for HumanSerum dataset",
-#'   class = class, axes =c(1,2), type ="scores")
+#'   class = class, axes =c(1,2), type.graph ="scores")
 #'
-#' Drawpca(PCAobj, drawNames=TRUE,
+#' DrawSL(res.PCA, drawNames=TRUE, type.obj = "PCA",
 #' createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-#'    axes = 1, type ="loadings", loadingstype="l")
+#'    axes = 1, type.graph ="loadings", loadingstype="l")
 #'
 #' @importFrom grDevices dev.new
 #' @import ggplot2
 #' @import reshape2
 
 
-Drawpca <- function (PCAobj, drawNames=TRUE,
+DrawSL <- function (obj, type.obj = c("PCA", "PLSDA"), drawNames=TRUE,
                            createWindow=FALSE, main = NULL, class = NULL, axes =c(1,2),
-                           type =c("scores", "loadings"), loadingstype=c("l", "p"), num.stacked = 4, xlab = NULL) {
+                           type.graph =c("scores", "loadings"), loadingstype=c("l", "p"), num.stacked = 4, xlab = NULL) {
 
   checkArg(main, "str", can.be.null=TRUE)
   class = as.factor(class)
   loadingstype=match.arg(loadingstype)
-  type = match.arg(type)
-
-  m = dim(PCAobj$original.dataset)[1]
-  n = dim(PCAobj$original.dataset)[2]
+  type.graph = match.arg(type.graph)
+  type.obj = match.arg(type.obj)
+  
+  
+  m = dim(obj$original.dataset)[1]
+  n = dim(obj$original.dataset)[2]
 
   # class
 
@@ -65,20 +68,21 @@ Drawpca <- function (PCAobj, drawNames=TRUE,
   Yax = axes[2]
 
 
-
-
   # Eigenvalues
-  eig <- PCAobj$eigval
-
+  if (type.obj == "PCA")
+  {eig <- obj$eigval
   # Variances in percentage
   variance <- eig*100/sum(eig)
+  }
+
 
   # scores
-  scores = as.data.frame(PCAobj$pcs)
+  class(obj$scores) = "numeric"
+  scores = as.data.frame(obj$scores)
 
   # loadings
-  loadings = PCAobj$pcv
-
+  class(obj$loadings) = "numeric"
+  loadings = obj$loadings
   colnames(loadings) = paste0("Loading", c(1:dim(loadings)[2]))
   loadings = as.data.frame(loadings)
 
@@ -87,7 +91,7 @@ Drawpca <- function (PCAobj, drawNames=TRUE,
 
 ##########################################
 
-if (type == "scores") {
+if (type.graph == "scores") {
 
   if (createWindow) {
     grDevices::dev.new(noRStudioGD = TRUE)
@@ -109,43 +113,21 @@ if (type == "scores") {
     ggplot2::theme_bw() +
     ggplot2::theme(panel.grid.major = ggplot2::element_line(color = "gray60", size = 0.2), panel.grid.minor = ggplot2::element_blank(),
                    panel.background = ggplot2::element_rect(fill = "gray98")) +
-    ggplot2::labs(x=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), y=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"))
-
-  if (drawNames) {
+    if (type.obj == "PCA")
+    {ggplot2::labs(x=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), y=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"))
+    } else {ggplot2::labs(x="Tp", y=paste0("To",(Yax-1)))}
+ 
+   if (drawNames) {
     if(is.null(class)) {
-      plots = plots + ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax], label = rownames(PCAobj$original.dataset)),
+      plots = plots + ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax], label = rownames(obj$original.dataset)),
                                          hjust = 0, nudge_x = (Xlim[2]/25),  show.legend = FALSE, size = 2)
-    } else {plots = plots + ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax], label = rownames(PCAobj$original.dataset), colour = class, shape = class),
+    } else {plots = plots + ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax], label = rownames(obj$original.dataset), colour = class, shape = class),
                                                hjust = 0, nudge_x = (Xlim[2]/25), show.legend = F, size = 2)}
   }
 
   plots
 
-
-  # if(is.null(class)) {
-  #   graphics::plot(PCAobj$pcs[,Xax], PCAobj$pcs[,Yax],
-  #        xlab=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), xlim=Xlim,
-  #        ylab=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"), ylim=Ylim,
-  #        main=ifelse(is.null(main), "PCA Scores plot", main))
-  #   graphics::abline(v=0, h=0, lty = 2)
-  #   if (drawNames==TRUE) {
-  #     graphics::text(PCAobj$pcs[,Xax], PCAobj$pcs[,Yax], rownames(PCAobj$original.dataset), pos=c(2,3))
-  #   }
-  # }else{
-  #
-  #   graphics::plot(PCAobj$pcs[,Xax], PCAobj$pcs[,Yax], col=class,
-  #        xlab=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), xlim=Xlim,
-  #        ylab=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"), ylim=Ylim,
-  #        main=ifelse(is.null(main), "PCA Scores plot", main))
-  #   graphics::abline(v=0, h=0, lty = 2)
-  #   if (drawNames==TRUE) {
-  #     graphics::text(PCAobj$pcs[,Xax],PCAobj$pcs[,Yax],labels=rownames(PCAobj$original.dataset), pos=c(2,3), col=class)
-  #   }
-  # }
-
-
-
-} else if (type == "loadings"){
+} else {
 
   loadings = loadings[,axes]
 
@@ -171,18 +153,18 @@ if (type == "scores") {
     plots <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
     if (loadingstype == "l") {
       plots = plots + ggplot2::geom_line()
-
-    } else if (loadingstype == "p") {
-
+    } else {
       plots = plots + ggplot2::geom_point(size = 0.5)
-    } else {warning("loadingstype is misspecified")}
+    } 
 
     plots = plots + ggplot2::ggtitle(main) +
       ggplot2::facet_grid(rowname ~ ., scales = "free_y") +
       ggplot2::theme(legend.position="none") +
       ggplot2::labs(x=xlab, y = "Loadings") +
       ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60") +
-      ggplot2::annotate("text", x = -Inf, y = Inf, label = paste0("(",round(variance[i:last],2), "%)"), vjust=1, hjust=1)
+      if (type.obj == "PCA"){
+        ggplot2::annotate("text", x = -Inf, y = Inf, label = paste0("(",round(variance[i:last],2), "%)"), vjust=1, hjust=1)
+      }
 
     if ((melted[1,"Var"] - melted[(dim(melted)[1]),"Var"])>0) {
       plots =  plots + ggplot2::scale_x_reverse()
@@ -191,26 +173,8 @@ if (type == "scores") {
     #         require("gridExtra")
     i = last + 1
 
-    plots
+    print(plots)
   }
-
-
-  # if (loadingstype == "l") {
-  #   graphics::plot(loadings[,axes[1]], col="blue", xaxt="n", type="l", ylab = "Loading", xlab="Variables",
-  #                  main=paste0(ifelse(is.null(main), "PCA Loading plot", main)),
-  #                  sub =  paste0("\n PC", axes[1], " (", round(variance[axes[1]],2), "%)"))
-  #   xat=round(as.numeric(rownames(loadings)),3)
-  #   at=seq(1,length(xat), length(xat)/20)
-  #   graphics::abline(h=0, lty=2)
-  #   graphics::axis(side=1, at=at, labels=round(xat[at],2))
-  # } else if (loadingstype == "p") {
-  #   graphics::plot(loadings[,axes[1]], col="blue",  type="p", ylab = "Loading", xlab="Variables",
-  #                  main=paste0(ifelse(is.null(main), "PCA Loading plot", main)),
-  #                              sub =  paste0("\n PC", axes[1], " (", round(variance[axes[1]],2), "%)"))
-  #   graphics::lines(loadings[,axes[1]], col="blue",  type="h")
-  #   graphics::abline(h=0, lty=2)
-  #   graphics::axis(side=1, at=1:dim(loadings)[1], labels=rownames(loadings))
-  # } else warning("loadingstype is misspecified")
 
 }
 
