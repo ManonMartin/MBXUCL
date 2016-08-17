@@ -74,7 +74,7 @@ pander(PCA.res[["eigval"]][1:4])
 ### Scores
 
 ```{r Scores}
-pander(PCA.res[["pcs"]][1:10,])
+pander(PCA.res[["scores"]][1:10,])
 ```
 
 Draw scores:
@@ -89,7 +89,7 @@ DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
 ### Loadings
 
 ```{r Loadings}
-pander(PCA.res[["pcv"]][1:10,])
+pander(PCA.res[["loadings"]][1:10,])
 ```
 
 Draw loadings:
