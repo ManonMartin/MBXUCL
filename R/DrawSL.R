@@ -10,7 +10,7 @@
 #' @param createWindow If \code{TRUE}, will create a new window for the plot.
 #' @param main Plot title. If \code{NULL}, default title is provided.
 #' @param class Optional numeric vector giving the class of the observations.
-#' @param axes Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for Scores plot and only the first is considered for Loadings plot.
+#' @param axes Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot.
 #' @param type.graph The type of plot, either \code{"scores"} or \code{"loadings"}
 #' @param loadingstype The type of Loadings plot, either a line plot (\code{"l"}) or points with histogram-like vertical lines (\code{"p"}).
 #' @param num.stacked Number of stacked plots if \code{type} is \code{"loadings"}.
@@ -115,7 +115,7 @@ if (type.graph == "scores") {
                    panel.background = ggplot2::element_rect(fill = "gray98")) +
     if (type.obj == "PCA")
     {ggplot2::labs(x=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), y=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"))
-    } else {ggplot2::labs(x="Tp", y=paste0("To",(Yax-1)))}
+    } else {ggplot2::labs(x=paste0("Tp",Xax), y=paste0("Tp",Yax))}
  
    if (drawNames) {
     if(is.null(class)) {
