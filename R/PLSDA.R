@@ -18,6 +18,7 @@
 #'   \item{\code{RMSEP}}{Root mean squared error of prediction }
 #'   \item{\code{R2}}{Coefficient of multiple determination}
 #'   \item{\code{Q2}}{Cross-validated coefficient of multiple determination}
+#'   \item{\code{Q2cum}}{Cumulative cross-validated coefficient of multiple determination (over all response variables)}
 #'   \item{\code{ExpVarY}}{Proportion of Y variance explained by the model}
 #'   \item{\code{ExpVarX}}{Proportion of X variance explained by the model}
 #'   \item{\code{coefficients}}{PLSDA coefficients}
@@ -177,15 +178,29 @@ RMSEP = pls::RMSEP(pls, intercept = FALSE)$val[1,,nLV]
 ## cross-validated R^2:
 Q2 = pls::R2(pls, estimate = "CV", intercept = FALSE)$val[1,,nLV]
 
+#=====
+# PRESS
+PRESS = apply(pls$validation$PRESS,2, sum)
 
-# ----------------------------------------
+# PRESS = apply(pls::mvrValstats(pls, estimate="CV")$SSE[1,,],2,sum) # same PRESS values
+
+# SSE
+pls::mvrValstats(pls, estimate="train")$SSE[1,,] #same residual sum of squares: residuals = pls$residuals[,,(nLV-1)]^2
+SS = apply(pls::mvrValstats(pls, estimate="train")$SSE[1,,],2,sum) 
+SS = SS[-nLV-1]
+
+
+Q2cum = 1- prod(PRESS/SS)
+
+
+
 #     Preparation des sorties
 # ----------------------------------------
 # ----------------------------------------
 
 #
 rpls<-list(original.dataset = xtrain,  Y= ytrain.mat, nLV=nLV,
-           RMSEP = RMSEP, R2 = R2, Q2 = Q2, ExpVarY = ExpVarY, ExpVarX = ExpVarX,
+           RMSEP = RMSEP, R2 = R2, Q2 = Q2, Q2cum = Q2cum,  ExpVarY = ExpVarY, ExpVarX = ExpVarX,
            coefficients =  pls$coefficients, scores = pls$scores, loadings = pls$loadings)
 
 return(rpls)
