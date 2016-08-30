@@ -43,7 +43,9 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA"), drawNames=TRUE,
                            type.graph =c("scores", "loadings"), loadingstype=c("l", "p"), num.stacked = 4, xlab = NULL) {
 
   checkArg(main, "str", can.be.null=TRUE)
-  class = as.factor(class)
+  if (!is.null(class)){
+    class = as.factor(class)
+  }
   loadingstype=match.arg(loadingstype)
   type.graph = match.arg(type.graph)
   type.obj = match.arg(type.obj)
