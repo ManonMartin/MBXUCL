@@ -49,8 +49,8 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA"), drawNames=TRUE,
   loadingstype=match.arg(loadingstype)
   type.graph = match.arg(type.graph)
   type.obj = match.arg(type.obj)
-  
-  
+
+
   m = dim(obj$original.dataset)[1]
   n = dim(obj$original.dataset)[2]
 
@@ -89,6 +89,7 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA"), drawNames=TRUE,
   loadings = as.data.frame(loadings)
 
   plots <- list()
+  plot = list()
   Var = rowname = value = NULL # only for R CMD check
 
 ##########################################
@@ -118,7 +119,7 @@ if (type.graph == "scores") {
     if (type.obj == "PCA")
     {ggplot2::labs(x=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), y=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"))
     } else {ggplot2::labs(x=paste0("Tp",Xax), y=paste0("Tp",Yax))}
- 
+
    if (drawNames) {
     if(is.null(class)) {
       plots = plots + ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax], label = rownames(obj$original.dataset)),
@@ -137,7 +138,7 @@ if (type.graph == "scores") {
     n = 1
   }else {n = ncol(loadings)}
 
-
+  j=1
   i = 1
   while (i <= n)
   {
@@ -152,14 +153,14 @@ if (type.graph == "scores") {
     }else {melted <- reshape2::melt(t(loadings[, i:last]), varnames=c("rowname", "Var"))}
 
 
-    plots <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
+    plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
     if (loadingstype == "l") {
-      plots = plots + ggplot2::geom_line()
+      plot = plot + ggplot2::geom_line()
     } else {
-      plots = plots + ggplot2::geom_point(size = 0.5)
-    } 
+      plot = plot + ggplot2::geom_point(size = 0.5)
+    }
 
-    plots = plots + ggplot2::ggtitle(main) +
+    plot = plot + ggplot2::ggtitle(main) +
       ggplot2::facet_grid(rowname ~ ., scales = "free_y") +
       ggplot2::theme(legend.position="none") +
       ggplot2::labs(x=xlab, y = "Loadings") +
@@ -169,15 +170,17 @@ if (type.graph == "scores") {
       }
 
     if ((melted[1,"Var"] - melted[(dim(melted)[1]),"Var"])>0) {
-      plots =  plots + ggplot2::scale_x_reverse()
+      plot =  plot + ggplot2::scale_x_reverse()
     }
     #
     #         require("gridExtra")
+    # plots
+    plots[[j]] = plot
     i = last + 1
-
-    print(plots)
+    j=j+1
   }
-
+   
+  plots
 }
 
 } # END
