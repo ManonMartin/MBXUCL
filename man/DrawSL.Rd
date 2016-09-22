@@ -22,7 +22,7 @@ DrawSL(obj, type.obj = c("PCA", "PLSDA"), drawNames = TRUE,
 
 \item{class}{Optional numeric vector giving the class of the observations.}
 
-\item{axes}{Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for Scores plot and only the first is considered for Loadings plot.}
+\item{axes}{Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot.}
 
 \item{type.graph}{The type of plot, either \code{"scores"} or \code{"loadings"}}
 

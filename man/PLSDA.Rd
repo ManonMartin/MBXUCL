@@ -24,6 +24,7 @@ A list with the following elements:
   \item{\code{RMSEP}}{Root mean squared error of prediction }
   \item{\code{R2}}{Coefficient of multiple determination}
   \item{\code{Q2}}{Cross-validated coefficient of multiple determination}
+  \item{\code{Q2cum}}{Cumulative cross-validated coefficient of multiple determination (over all response variables)}
   \item{\code{ExpVarY}}{Proportion of Y variance explained by the model}
   \item{\code{ExpVarX}}{Proportion of X variance explained by the model}
   \item{\code{coefficients}}{PLSDA coefficients}
