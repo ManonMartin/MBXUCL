@@ -32,20 +32,20 @@ PCA.res = MBXUCL::SVDforPCA(HumanSerumSpectra, ncomp=4)
 pander(PCA.res[["eigval"]][1:4])
 
 ## ----Scores--------------------------------------------------------------
-pander(PCA.res[["pcs"]][1:10,])
+pander(PCA.res[["scores"]][1:10,])
 
-## ---- out.width='70%', fig.width=10, fig.height=10-----------------------
-DrawPCA(PCA.res, drawNames=TRUE,
+## ----scoreplot, out.width='70%', fig.width=10, fig.height=10-------------
+DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
  createWindow=FALSE, main = "PCA score plot for HumanSerum dataset",
-   class = ClassHS, axes =c(1,2), type ="scores")
+   class = as.character(ClassHS), axes =c(1,2), type.graph="scores")
 
 ## ----Loadings------------------------------------------------------------
-pander(PCA.res[["pcv"]][1:10,])
+pander(PCA.res[["loadings"]][1:10,])
 
 ## ---- out.width='100%', fig.width=12, fig.height=8-----------------------
-DrawPCA(PCA.res, drawNames=TRUE,
+DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
  createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-    axes = 1, type ="loadings", loadingstype="l")
+    axes = c(1:2), type.graph ="loadings", loadingstype="l")
 
 ## ----ClustMIC, out.width='100%', fig.width=12, fig.height=12-------------
 data("HumanSerum")
@@ -66,4 +66,106 @@ PLSDA.res = PLSDA(x = HumanSerumSpectra, y = ClassHS, nLV = NULL, drawRMSEP = TR
 
 perf.plsda = PLSDA.res[4:6]
 pander(perf.plsda)
+
+## ----OPLSDA--------------------------------------------------------------
+
+data("DataSimul")
+x = DataSimul[["x"]]
+y = DataSimul[["y"]]
+m = dim(x)[2]
+no=3
+nb = 15
+oplsda.res = OPLSDA(x=x, y=y, impT = FALSE,impG = FALSE, no=no, nb = nb, out.path = ".")
+
+
+
+## ---- out.width='70%',fig.width=8, fig.height=8--------------------------
+COL=rep("gray93",no)
+mp=barplot(t(oplsda.res$CV),
+           axes=F, axisnames=F, border=1,col=COL)
+axis(1,at=mp, labels=c(1:no))
+axis(2)
+title(main="OPLS: Choice of the n[orthog. Components]", xlab="Orthogonal OPLS-DA Components",   ylab="||Wortho|| / ||p||", cex.main = 0.8)
+
+
+## ---- out.width='70%', fig.width=10, fig.height=10-----------------------
+cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 7)
+plot(cvOPLSDA.res$RMSECV, main = "RMSECV")
+
+
+## ---- out.width='100%', fig.width=12, fig.height=12----------------------
+Class = y
+DrawSL(obj = oplsda.res, type.obj = "OPLSDA", drawNames = TRUE,
+  createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
+  type.graph = "scores", loadingstype = "l",
+  num.stacked = 4, xlab = NULL)
+
+
+DrawSL(obj = oplsda.res, type.obj = "OPLSDA", drawNames = TRUE,
+  createWindow = FALSE, main = NULL, axes = c(1, 2,3),
+  type.graph = "loadings", loadingstype = "l",
+  num.stacked = 4, xlab = NULL)
+
+
+## ---- out.width='80%', fig.width=12, fig.height=12-----------------------
+
+# S-plot
+###########################
+## correlation and covariance matrices
+# covariance
+s = as.matrix(x, ncol = ncol(x))
+p1 = c()
+for (i in 1:ncol(s)) {
+  scov = cov(s[, i], oplsda.res$Tp)
+  p1 = matrix(c(p1, scov), ncol = 1) # covariance x-T
+}
+
+# correlation
+pcorr1 = c()
+Tno=as.matrix(oplsda.res$Tp, ncol=1)
+for (i in 1:nrow(p1)) {
+  den = apply(Tno, 2, sd, na.rm = TRUE) * sd(s[, i])
+  corr1 = p1[i, ]/den
+  pcorr1 = matrix(c(pcorr1, corr1), ncol = 1) # correlation
+}
+
+  # plot
+
+plot(p1, pcorr1, xlab = "p(cov)[1]", ylab = "p(corr)[1]",
+       main = "S-plot (OPLS-DA)", ylim=c(min(pcorr1, na.rm = T)*1.1,
+        max(pcorr1, na.rm = T)*1.1), xlim=c(min(p1, na.rm = T)*1.1, 
+                                            max(p1, na.rm = T)*1.1))
+
+sel = p1*pcorr1
+sel = order(sel, decreasing = TRUE)[1:nb]
+text(p1[sel], pcorr1[sel], labels = colnames(s)[sel], cex = 0.7, pos = 1)
+abline(v=0,lty = 2)
+abline(h=0,lty = 2)
+
+
+  
+
+## ---- out.width='100%', out.width='70%', fig.width=12, fig.height=5------
+
+delta=mean(sort(abs(oplsda.res$b.coef))[m-nb+c(0,1)])
+xax = as.numeric(names(oplsda.res$b.coef))
+
+par(mar=c(4,2,2,1))
+plot(oplsda.res$b.coef,type="l",xaxt = "n", yaxt = "n", main="OPLS: Vector of descriptors' rank",xlab="ppm" )
+abline(h=0)
+abline(h=delta*c(-1,1),lty=2)
+axis(side=2,cex.axis=0.7)
+axis(side=1,at=c(1,seq(50,m,50)),
+     labels=xax[c(1,seq(50,m,50))],cex.axis=0.7)
+
+
+## ------------------------------------------------------------------------
+xtrain = x[-c(1:5),]
+ytrain = y[-c(1:5)]
+xnew = x[c(1:5),]
+oplsda.res = OPLSDA(x=xtrain, y=ytrain,
+         impT = FALSE,impG = FALSE, no=2, nb = 15, out.path = ".")
+OPLSDA_pred(ropls = oplsda.res, x.new = xnew)
+
+
 

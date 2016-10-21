@@ -32,5 +32,5 @@ PCA.res = MBXUCL::SVDforPCA(HumanSerumSpectra, ncomp=4)
 pander(PCA.res[["eigval"]][1:4])
 
 ## ----Scores--------------------------------------------------------------
-pander(PCA.res[["pcs"]][1:10,])
+pander(PCA.res[["scores"]][1:10,])
 
