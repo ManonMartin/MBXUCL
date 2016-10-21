@@ -38,14 +38,16 @@
 #' @import reshape2
 
 
-DrawSL <- function (obj, type.obj = c("PCA", "PLSDA"), drawNames=TRUE,
+DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
                            createWindow=FALSE, main = NULL, class = NULL, axes =c(1,2),
                            type.graph =c("scores", "loadings"), loadingstype=c("l", "p"), num.stacked = 4, xlab = NULL) {
 
   checkArg(main, "str", can.be.null=TRUE)
-  if (!is.null(class)){
+
+   if (!is.null(class)){
     class = as.factor(class)
   }
+
   loadingstype=match.arg(loadingstype)
   type.graph = match.arg(type.graph)
   type.obj = match.arg(type.obj)
@@ -56,7 +58,7 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA"), drawNames=TRUE,
 
   # class
 
-  if(is.vector(class, mode = "any") & length(class)!=m){
+  if(!is.null(class) && is.vector(class, mode = "any") && length(class)!=m){
     stop("the length of class is not equal to the nrow of data matrix")
   }
 
@@ -79,13 +81,26 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA"), drawNames=TRUE,
 
 
   # scores
+  if (type.obj == "OPLSDA") {
+    obj$scores = cbind(Tp = obj$Tp, obj$Tortho)
+    colnames(obj$scores) = c("Tp", paste0("To", 1:dim(obj$Tortho)[2]))
+  }
+
   class(obj$scores) = "numeric"
   scores = as.data.frame(obj$scores)
 
   # loadings
+  if (type.obj == "OPLSDA") {
+    obj$loadings = cbind(obj$Pp, obj$Portho)
+    colnames(obj$loadings) = c("Pp", paste0("Po", 1:dim(obj$Portho)[2]))
+    }
   class(obj$loadings) = "numeric"
   loadings = obj$loadings
+
+  if (type.obj != "OPLSDA") {
   colnames(loadings) = paste0("Loading", c(1:dim(loadings)[2]))
+  }
+
   loadings = as.data.frame(loadings)
 
   plots <- list()
@@ -121,6 +136,7 @@ if (type.graph == "scores") {
     } else {ggplot2::labs(x=paste0("Tp",Xax), y=paste0("Tp",Yax))}
 
    if (drawNames) {
+
     if(is.null(class)) {
       plots = plots + ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax], label = rownames(obj$original.dataset)),
                                          hjust = 0, nudge_x = (Xlim[2]/25),  show.legend = FALSE, size = 2)
@@ -164,9 +180,9 @@ if (type.graph == "scores") {
       ggplot2::facet_grid(rowname ~ ., scales = "free_y") +
       ggplot2::theme(legend.position="none") +
       ggplot2::labs(x=xlab, y = "Loadings") +
-      ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60") +
+      ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
       if (type.obj == "PCA"){
-        ggplot2::annotate("text", x = -Inf, y = Inf, label = paste0("(",round(variance[i:last],2), "%)"), vjust=1, hjust=1)
+        plot = plot + ggplot2::annotate("text", x = -Inf, y = Inf, label = paste0("(",round(variance[i:last],2), "%)"), vjust=1, hjust=1)
       }
 
     if ((melted[1,"Var"] - melted[(dim(melted)[1]),"Var"])>0) {
@@ -179,7 +195,7 @@ if (type.graph == "scores") {
     i = last + 1
     j=j+1
   }
-   
+
   plots
 }
 

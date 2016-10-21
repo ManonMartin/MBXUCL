@@ -4,7 +4,7 @@
 \alias{DrawSL}
 \title{Scores and Loadings plots}
 \usage{
-DrawSL(obj, type.obj = c("PCA", "PLSDA"), drawNames = TRUE,
+DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, class = NULL, axes = c(1, 2),
   type.graph = c("scores", "loadings"), loadingstype = c("l", "p"),
   num.stacked = 4, xlab = NULL)
