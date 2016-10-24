@@ -180,8 +180,8 @@ Or by cross-validation:
   
   
 ```{r, out.width='70%', fig.width=10, fig.height=10, eval=TRUE}
-cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = no)
-plot(cvOPLSDA.res$RMSECV, main = "RMSECV")
+cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 10)
+plot(1:length(cvOPLSDA.res$RMSECV), cvOPLSDA.res$RMSECV, main = "RMSECV", lty = 19)
 
 ```
 

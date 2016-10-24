@@ -4,6 +4,7 @@ require(pander)
 require(MBXUCL)
 
 
+
 ## ----install1, tidy=TRUE,  eval=FALSE------------------------------------
 #  
 #  install.packages(file.path("path to MBXUCL-package", "MBXUCL-package/MBXUCL"), repos = NULL, type="source")
@@ -14,7 +15,7 @@ require(MBXUCL)
 #  require(devtools)
 #  install_github("ManonMartin/MBXUCL")
 #  require(MBXUCL)
-#  
+#  require(plyr)
 
 ## ----inertia-------------------------------------------------------------
 data("HumanSerum")
@@ -75,7 +76,7 @@ y = DataSimul[["y"]]
 m = dim(x)[2]
 no=3
 nb = 15
-oplsda.res = OPLSDA(x=x, y=y, impT = FALSE,impG = FALSE, no=no, nb = nb, out.path = ".")
+oplsda.res = OPLSDA(x=x, y=y, impT = FALSE,impG = FALSE, no=no, nb = nb)
 
 
 
@@ -88,23 +89,23 @@ axis(2)
 title(main="OPLS: Choice of the n[orthog. Components]", xlab="Orthogonal OPLS-DA Components",   ylab="||Wortho|| / ||p||", cex.main = 0.8)
 
 
-## ---- out.width='70%', fig.width=10, fig.height=10-----------------------
-cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 7)
+## ---- out.width='70%', fig.width=10, fig.height=10, eval=TRUE------------
+cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = no)
 plot(cvOPLSDA.res$RMSECV, main = "RMSECV")
 
 
 ## ---- out.width='100%', fig.width=12, fig.height=12----------------------
 Class = y
 DrawSL(obj = oplsda.res, type.obj = "OPLSDA", drawNames = TRUE,
-  createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
-  type.graph = "scores", loadingstype = "l",
-  num.stacked = 4, xlab = NULL)
+       createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
+       type.graph = "scores", loadingstype = "l",
+       num.stacked = 4, xlab = NULL)
 
 
 DrawSL(obj = oplsda.res, type.obj = "OPLSDA", drawNames = TRUE,
-  createWindow = FALSE, main = NULL, axes = c(1, 2,3),
-  type.graph = "loadings", loadingstype = "l",
-  num.stacked = 4, xlab = NULL)
+       createWindow = FALSE, main = NULL, axes = c(1, 2,3),
+       type.graph = "loadings", loadingstype = "l",
+       num.stacked = 4, xlab = NULL)
 
 
 ## ---- out.width='80%', fig.width=12, fig.height=12-----------------------
@@ -129,12 +130,12 @@ for (i in 1:nrow(p1)) {
   pcorr1 = matrix(c(pcorr1, corr1), ncol = 1) # correlation
 }
 
-  # plot
+# plot
 
 plot(p1, pcorr1, xlab = "p(cov)[1]", ylab = "p(corr)[1]",
-       main = "S-plot (OPLS-DA)", ylim=c(min(pcorr1, na.rm = T)*1.1,
-        max(pcorr1, na.rm = T)*1.1), xlim=c(min(p1, na.rm = T)*1.1, 
-                                            max(p1, na.rm = T)*1.1))
+     main = "S-plot (OPLS-DA)", ylim=c(min(pcorr1, na.rm = T)*1.1,
+                                       max(pcorr1, na.rm = T)*1.1), xlim=c(min(p1, na.rm = T)*1.1, 
+                                                                           max(p1, na.rm = T)*1.1))
 
 sel = p1*pcorr1
 sel = order(sel, decreasing = TRUE)[1:nb]
@@ -143,7 +144,7 @@ abline(v=0,lty = 2)
 abline(h=0,lty = 2)
 
 
-  
+
 
 ## ---- out.width='100%', out.width='70%', fig.width=12, fig.height=5------
 
@@ -164,7 +165,7 @@ xtrain = x[-c(1:5),]
 ytrain = y[-c(1:5)]
 xnew = x[c(1:5),]
 oplsda.res = OPLSDA(x=xtrain, y=ytrain,
-         impT = FALSE,impG = FALSE, no=2, nb = 15, out.path = ".")
+                    impT = FALSE,impG = FALSE, no=2, nb = 15, out.path = ".")
 OPLSDA_pred(ropls = oplsda.res, x.new = xnew)
 
 

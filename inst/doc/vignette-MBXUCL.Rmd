@@ -179,7 +179,7 @@ title(main="OPLS: Choice of the n[orthog. Components]", xlab="Orthogonal OPLS-DA
 Or by cross-validation:
   
   
-```{r, out.width='70%', fig.width=10, fig.height=10, eval=FALSE}
+```{r, out.width='70%', fig.width=10, fig.height=10, eval=TRUE}
 cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = no)
 plot(cvOPLSDA.res$RMSECV, main = "RMSECV")
 

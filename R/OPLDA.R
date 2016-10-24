@@ -452,7 +452,7 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1){
   folds <- plyr::ddply(.data = df, .variables = .(class),.fun = plyr::here(createFolds),k = k_fold)
   folds_i = folds$folds
 
-  Prop1 = plyr::ddply(.data = folds,.variables = .(folds),.fun = plyr::here(summarise),prop = sum(class)/length(class))
+  Prop1 = plyr::ddply(.data = folds,.variables = .(folds),.fun = plyr::here(plyr::summarise),prop = sum(class)/length(class))
 
 
 
