@@ -7,7 +7,7 @@
 DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, class = NULL, axes = c(1, 2),
   type.graph = c("scores", "loadings"), loadingstype = c("l", "p"),
-  num.stacked = 4, xlab = NULL)
+  num.stacked = 4, xlab = NULL, ang = 0)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA analysis with the SVDforPCA function.}
@@ -31,6 +31,8 @@ DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
 \item{num.stacked}{Number of stacked plots if \code{type} is \code{"loadings"}.}
 
 \item{xlab}{Label of the x-axis.}
+
+\item{ang}{Angle to rotate the x axis labels for a better visualisation.}
 }
 \value{
 A score or loading plot in the current device.

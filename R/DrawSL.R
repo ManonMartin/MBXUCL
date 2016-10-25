@@ -170,10 +170,10 @@ if (type.graph == "scores") {
 
 
     plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
-    if (loadingstype == "l") {
-      plot = plot + ggplot2::geom_line()
-    } else {
+    if (!is.numeric(melted[1,"Var"]) | loadingstype == "p"){
       plot = plot + ggplot2::geom_point(size = 0.5)
+    } else {
+      plot = plot + ggplot2::geom_line()
     }
 
     plot = plot + ggplot2::ggtitle(main) +
