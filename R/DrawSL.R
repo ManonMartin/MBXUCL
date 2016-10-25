@@ -15,6 +15,7 @@
 #' @param loadingstype The type of Loadings plot, either a line plot (\code{"l"}) or points with histogram-like vertical lines (\code{"p"}).
 #' @param num.stacked Number of stacked plots if \code{type} is \code{"loadings"}.
 #' @param xlab Label of the x-axis.
+#' @param ang Angle to rotate the x axis labels for a better visualisation.
 #'
 #' @return A score or loading plot in the current device.
 
@@ -40,7 +41,8 @@
 
 DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
                            createWindow=FALSE, main = NULL, class = NULL, axes =c(1,2),
-                           type.graph =c("scores", "loadings"), loadingstype=c("l", "p"), num.stacked = 4, xlab = NULL) {
+                           type.graph =c("scores", "loadings"), loadingstype=c("l", "p"),
+                           num.stacked = 4, xlab = NULL, ang = 0) {
 
   checkArg(main, "str", can.be.null=TRUE)
 
@@ -178,6 +180,7 @@ if (type.graph == "scores") {
 
     plot = plot + ggplot2::ggtitle(main) +
       ggplot2::facet_grid(rowname ~ ., scales = "free_y") +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = ang, vjust = 0.5, hjust=1)) +
       ggplot2::theme(legend.position="none") +
       ggplot2::labs(x=xlab, y = "Loadings") +
       ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
