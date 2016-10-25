@@ -53,10 +53,12 @@ if (missing(nClust)){
 warning("nClust is missing with no default value")
 }
 
-if (missing(Trcl)){
-warning("Trcl is missing with no default value")
-}
 
+if (sum(Trcl<=0) >0) {
+  warning("Automatic rewritting of Trcl since values below 1 are not permitted")
+  Trcl = Trcl+(1-min(Trcl))
+
+}
 
 if (! is.numeric(Intensities)) {
   stop(deparse(substitute(Intensities)), " is not numeric.")
@@ -68,12 +70,12 @@ if (! is.numeric(Intensities)) {
     stop(deparse(substitute(nClust)), " has a length > 1.")
   }
 
-if (! is.numeric(Trcl)) {
-  stop(deparse(substitute(Trcl)), " is not numeric.")
-}
+  if (missing(Trcl) !is.integer(x)){
+    warning("Trcl is missing with no default value or is not an integer")
+  }
+
 
   names(Trcl) = 1:length(Trcl)
-  Trcl = as.numeric(Trcl)
 
 if (! is.logical(Dendr)) {
     stop(deparse(substitute(Dendr)), " is not logical.")
