@@ -67,9 +67,10 @@ ytrain = y
 m=dim(x)[2] # nombre de descripteurs
 n=dim(x)[1]
 
+options(warn=-1)
 xax = as.numeric(colnames(x))
 if (sum(is.na(xax))>0) {xax = c(1:m)}
-
+options(warn=1)
 
 # Initialisation des matrices de sortie de l'algorithme it\'eratif :
 
