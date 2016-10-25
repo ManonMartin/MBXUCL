@@ -84,8 +84,11 @@ for (i in 1:k){
 xtrain=as.matrix(x)
 ytrain=y
 
+options(warn=-1)
 xax=round(as.numeric(names(x[1,])),2)
-names=dimnames(x)[[2]]
+if (sum(is.na(xax))>0) {xax = c(1:m)}
+options(warn=1)
+
 
 # Create a dummy response matrix
 dummy = I(stats::model.matrix(~y-1, data.frame(y = factor(ytrain))))
@@ -186,7 +189,7 @@ PRESS = apply(pls$validation$PRESS,2, sum)
 
 # SSE
 pls::mvrValstats(pls, estimate="train")$SSE[1,,] #same residual sum of squares: residuals = pls$residuals[,,(nLV-1)]^2
-SS = apply(pls::mvrValstats(pls, estimate="train")$SSE[1,,],2,sum) 
+SS = apply(pls::mvrValstats(pls, estimate="train")$SSE[1,,],2,sum)
 SS = SS[-nLV-1]
 
 
