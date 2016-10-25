@@ -62,9 +62,8 @@ x.normscores = as.matrix(x.normscores)
 dimnames(x.normscores) = list(rownames(x), paste0("PC", 1:ncol(x.normscores)))
 
 x.loadings = as.matrix(x.loadings)
-if (roundval == TRUE){
-  dimnames(x.loadings) = list(round(as.numeric(colnames(x)),3), paste0("PC", 1:ncol(x.loadings)))
-} else {dimnames(x.loadings) = list(colnames(x), paste0("PC", 1:ncol(x.loadings)))}
+
+dimnames(x.loadings) = list(colnames(x), paste0("PC", 1:ncol(x.loadings)))
 
 
 # selection of the first n components
