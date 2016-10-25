@@ -70,7 +70,7 @@ if (! is.numeric(Intensities)) {
     stop(deparse(substitute(nClust)), " has a length > 1.")
   }
 
-  if (missing(Trcl) | !is.integer(Trcl)){
+  if (missing(Trcl) | Trcl%%1!=0){
     warning("Trcl is missing with no default value or is not an integer")
   }
 
