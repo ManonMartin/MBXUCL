@@ -72,6 +72,9 @@ if (! is.numeric(Trcl)) {
   stop(deparse(substitute(Trcl)), " is not numeric.")
 }
 
+  names(Trcl) = 1:length(Trcl)
+  Trcl = as.numeric(Trcl)
+
 if (! is.logical(Dendr)) {
     stop(deparse(substitute(Dendr)), " is not logical.")
 }
