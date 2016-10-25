@@ -60,7 +60,7 @@ x=x-matrix(apply(x,2,mean),nrow=dim(x)[1],
 
 xoriginal=x
 varnames=dimnames(x)[[2]]
-obsnames dimnames(x)[[1]]
+obsnames = dimnames(x)[[1]]
 xtrain = x
 ytrain = y
 
