@@ -152,13 +152,13 @@ for (j in 1:no) {
 
 
 
-Tp = matrix(Tp, ncol = no)
-Pp = matrix(Pp, ncol = no)
+Tp = matrix(Tp, ncol = no, dimnames = list(obsnames, NULL))
+Pp = matrix(Pp, ncol = no, dimnames = list(varnames, NULL))
 C = matrix(C, ncol = no)
 W = matrix(W, ncol = no)
 
-Tortho = matrix(Tortho, ncol = no)
-Portho = matrix(Portho, ncol = no)
+Tortho = matrix(Tortho, ncol = no, dimnames = list(obsnames, NULL))
+Portho = matrix(Portho, ncol = no, dimnames = list(varnames, NULL))
 Wortho = matrix(Wortho, ncol = no)
 
 VarXortho = matrix(VarXortho, ncol = no)
