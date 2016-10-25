@@ -185,9 +185,12 @@ if (type.graph == "scores") {
         plot = plot + ggplot2::annotate("text", x = -Inf, y = Inf, label = paste0("(",round(variance[i:last],2), "%)"), vjust=1, hjust=1)
       }
 
-    if (is.numeric(melted[1,"Var"]) & (melted[1,"Var"] - melted[(dim(melted)[1]),"Var"])>0) {
-      plot =  plot + ggplot2::scale_x_reverse()
+    if (is.numeric(melted[1,"Var"])){
+      if ((melted[1,"Var"] - melted[(dim(melted)[1]),"Var"])>0) {
+        plot =  plot + ggplot2::scale_x_reverse()
+      }
     }
+
     #
     #         require("gridExtra")
     # plots
