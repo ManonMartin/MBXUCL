@@ -10,7 +10,7 @@
 #' @param createWindow If \code{TRUE}, will create a new window for the plot.
 #' @param main Plot title. If \code{NULL}, default title is provided.
 #' @param class Optional numeric vector giving the class of the observations.
-#' @param axes Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot.
+#' @param axes Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot. See details
 #' @param type.graph The type of plot, either \code{"scores"} or \code{"loadings"}
 #' @param loadingstype The type of Loadings plot, either a line plot (\code{"l"}) or points with histogram-like vertical lines (\code{"p"}).
 #' @param num.stacked Number of stacked plots if \code{type} is \code{"loadings"}.
@@ -19,6 +19,8 @@
 #'
 #' @return A score or loading plot in the current device.
 
+#' @details
+#' If \code{type.obj} is \code{"OPLSDA"}, axes = 1 represents the predictive score vector, axes = 2 represents the first orthogonal score vector, etc.
 #'
 #' @examples
 #'
@@ -84,6 +86,9 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
 
   # scores
   if (type.obj == "OPLSDA") {
+    XaxName = ifelse(Xax==1, "Tp", paste0("To",Xax))
+    YaxName = ifelse(Yax==1, "Tp", paste0("To",Yax-1))
+
     obj$scores = cbind(Tp = obj$Tp, obj$Tortho)
     colnames(obj$scores) = c("Tp", paste0("To", 1:dim(obj$Tortho)[2]))
   }
@@ -135,7 +140,10 @@ if (type.graph == "scores") {
                    panel.background = ggplot2::element_rect(fill = "gray98")) +
     if (type.obj == "PCA")
     {ggplot2::labs(x=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), y=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"))
+    } else if (type.obj == "OPLSDA"){
+      ggplot2::labs(x=XaxName, y=YaxName)
     } else {ggplot2::labs(x=paste0("Tp",Xax), y=paste0("Tp",Yax))}
+
 
    if (drawNames) {
 
