@@ -133,9 +133,9 @@ Inertia_TOT_group = sum(Inertia_group)
 Inertia_group100 = 100*c(Inertia_group,Inertia_TOT_group)/Inertia_TOT_group # Somme_i(xij –xjmoyen)2  /Somme_ij(xij –xjmoyen)2
 
 
-
-res2=matrix(data = c(Inertia_group, Inertia_TOT_group,Inertia_group100, Inertia_moy_group, NA), ncol = 3,
-           dimnames = list(c(paste0("Group ", unique(y)), "Total"), c("Inertia_group", "Inertia_group100", "Inertia_moy_group")),
+numbers = c(nG,n)
+res2=matrix(data = c(numbers, Inertia_group, Inertia_TOT_group,Inertia_group100, Inertia_moy_group, NA), ncol = 3,
+           dimnames = list(c(paste0("Group ", unique(y)), "Total"), c("N", "Inertia_group", "Inertia_group100", "Inertia_moy_group")),
            byrow = FALSE)
 
 
