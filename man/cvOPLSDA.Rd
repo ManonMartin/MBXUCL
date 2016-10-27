@@ -4,7 +4,7 @@
 \alias{cvOPLSDA}
 \title{K-fold cross-validation for OPLS-DA.}
 \usage{
-cvOPLSDA(x, y, k_fold = 10, NumOrtho = 1)
+cvOPLSDA(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE)
 }
 \arguments{
 \item{x}{A data matrix on which will be based the analysis.}
@@ -14,6 +14,8 @@ cvOPLSDA(x, y, k_fold = 10, NumOrtho = 1)
 \item{k_fold}{The number of sub-datasets to create for cross-validation.}
 
 \item{NumOrtho}{The maximum number of orthogonal components allowed in OPLSDA.}
+
+\item{ImpG}{If \code{TRUE}, prints a validation plot.}
 }
 \value{
 A list with the following elements:

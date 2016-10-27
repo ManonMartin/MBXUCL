@@ -409,6 +409,7 @@ OPLSDA_pred = function(ropls, x.new) {
 #' @param y A numerical vector representing the class of individuals.
 #' @param k_fold The number of sub-datasets to create for cross-validation.
 #' @param NumOrtho The maximum number of orthogonal components allowed in OPLSDA.
+#' @param ImpG If \code{TRUE}, prints a validation plot.
 #'
 #' @return A list with the following elements:
 #' \describe{
@@ -426,7 +427,7 @@ OPLSDA_pred = function(ropls, x.new) {
 #'
 #' @importFrom plyr ddply
 
-cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1){
+cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE){
 
   # checks
   if (sum(!y %in% c(0,1)) >0) {
@@ -439,7 +440,7 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1){
 
 
   library("plyr")
-  df = data.frame(rowname = rownames(x), class = y)
+  df = data.frame(rowname = rownames(x), Class = y)
   n = dim(x)[1]
 
   createFolds <- function(x,k){
@@ -450,14 +451,11 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1){
 
 
 
-  folds <- plyr::ddply(.data = df, .variables = .(class),.fun = plyr::here(createFolds),k = k_fold)
+  folds <- plyr::ddply(.data = df, .variables = .(Class),.fun = plyr::here(createFolds),k = k_fold)
   folds_i = folds$folds
 
-  Prop1 = plyr::ddply(.data = folds,.variables = .(folds),.fun = plyr::here(plyr::summarise),prop = sum(class)/length(class))
-
-
-
-  NumOrtho = 1:NumOrtho
+  Prop1 = plyr::ddply(.data = folds,.variables = .(folds),.fun = plyr::here(plyr::summarise),
+                      prop = sum(Class)/length(Class))
 
   index = vector("list", k_fold)
   Xtrain = vector("list", k_fold)
@@ -471,7 +469,7 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1){
   }
 
   RMSECV = c()
-  for (j in 1:length(NumOrtho)) {
+  for (j in 1:NumOrtho) {
 
     ropls.train = mapply(OPLSDA, x = Xtrain,
            y = Ytrain, MoreArgs = list(impT=FALSE,
@@ -483,13 +481,23 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1){
                  SIMPLIFY = FALSE, USE.NAMES = TRUE)
 
     Ypred = unlist(ypred)
-    sorted = order(as.numeric(names(Ypred)))
-    Ypred = Ypred[sorted]
+    sorted = order(names(Ypred))
+    Ypred = Ypred[order(names(Ypred))]
 
-    RMSECV[j] = sqrt(sum((y-Ypred)^2)/n)
+    ytrue = Class
+    names(ytrue) = df$rowname
+    ytrue = ytrue[order(names(ytrue))]
+
+    RMSECV[(j)] = sqrt(sum((ytrue-Ypred)^2)/n)
 
   }
   rcvOPLSDA = list(RMSECV = RMSECV, folds_i = folds_i, Prop1 = Prop1)
+
+
+if (ImpG==TRUE) {
+  plot(RMSECV, xaxt = "n", ylab = "RMSECV", main = "Validation plot", type="b", xlab = "Number of orthogonal components")
+  axis(side=1, at = c(1:NumOrtho), labels = c(1:NumOrtho))
+}
   return(rcvOPLSDA)
 
 }
