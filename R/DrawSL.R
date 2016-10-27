@@ -184,8 +184,8 @@ if (type.graph == "scores") {
       plot = plot + ggplot2::geom_point()
     } else if (loadingstype == "l"){
       plot = plot + ggplot2::geom_line()
-    } else if (loadingstype == "s") {
-      plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0), size = 2, lineend = "round")
+    } else {
+      plot = plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0), size = 2, lineend = "round")
     }
 
 
