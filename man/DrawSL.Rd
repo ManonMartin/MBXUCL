@@ -6,7 +6,7 @@
 \usage{
 DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, class = NULL, axes = c(1, 2),
-  type.graph = c("scores", "loadings"), loadingstype = c("l", "p"),
+  type.graph = c("scores", "loadings"), loadingstype = c("l", "p", "s"),
   num.stacked = 4, xlab = NULL, ang = 0)
 }
 \arguments{
@@ -22,11 +22,11 @@ DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
 
 \item{class}{Optional numeric vector giving the class of the observations.}
 
-\item{axes}{Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot.}
+\item{axes}{Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot. See details}
 
 \item{type.graph}{The type of plot, either \code{"scores"} or \code{"loadings"}}
 
-\item{loadingstype}{The type of Loadings plot, either a line plot (\code{"l"}) or points with histogram-like vertical lines (\code{"p"}).}
+\item{loadingstype}{The type of Loadings plot, either a line plot (\code{"l"}), points (\code{"p"}) or segments (\code{"s"}).}
 
 \item{num.stacked}{Number of stacked plots if \code{type} is \code{"loadings"}.}
 
@@ -39,6 +39,9 @@ A score or loading plot in the current device.
 }
 \description{
 Draws scores and Loadings plots for PCA analysis derived from the SVDforPCA function.
+}
+\details{
+If \code{type.obj} is \code{"OPLSDA"}, axes = 1 represents the predictive score vector, axes = 2 represents the first orthogonal score vector, etc.
 }
 \examples{
 

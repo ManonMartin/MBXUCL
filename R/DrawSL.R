@@ -12,7 +12,7 @@
 #' @param class Optional numeric vector giving the class of the observations.
 #' @param axes Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot. See details
 #' @param type.graph The type of plot, either \code{"scores"} or \code{"loadings"}
-#' @param loadingstype The type of Loadings plot, either a line plot (\code{"l"}) or points with histogram-like vertical lines (\code{"p"}).
+#' @param loadingstype The type of Loadings plot, either a line plot (\code{"l"}), points (\code{"p"}) or segments (\code{"s"}).
 #' @param num.stacked Number of stacked plots if \code{type} is \code{"loadings"}.
 #' @param xlab Label of the x-axis.
 #' @param ang Angle to rotate the x axis labels for a better visualisation.
@@ -43,7 +43,7 @@
 
 DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
                            createWindow=FALSE, main = NULL, class = NULL, axes =c(1,2),
-                           type.graph =c("scores", "loadings"), loadingstype=c("l", "p"),
+                           type.graph =c("scores", "loadings"), loadingstype=c("l", "p", "s"),
                            num.stacked = 4, xlab = NULL, ang = 0) {
 
   checkArg(main, "str", can.be.null=TRUE)
@@ -180,11 +180,16 @@ if (type.graph == "scores") {
 
 
     plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
-    if (!is.numeric(melted[1,"Var"]) | loadingstype == "p"){
-      plot = plot + ggplot2::geom_point(size = 0.5)
-    } else {
+    if (loadingstype == "p"){
+      plot = plot + ggplot2::geom_point()
+    } else if (loadingstype == "l"){
       plot = plot + ggplot2::geom_line()
+    } else if (loadingstype == "s") {
+      plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0), size = 2, lineend = "round")
     }
+
+
+
 
     plot = plot + ggplot2::ggtitle(main) +
       ggplot2::facet_grid(rowname ~ ., scales = "free_y") +
