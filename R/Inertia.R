@@ -134,7 +134,7 @@ Inertia_group100 = 100*c(Inertia_group,Inertia_TOT_group)/Inertia_TOT_group # So
 
 
 numbers = c(nG,n)
-res2=matrix(data = c(numbers, Inertia_group, Inertia_TOT_group,Inertia_group100, Inertia_moy_group, NA), ncol = 3,
+res2=matrix(data = c(numbers, Inertia_group, Inertia_TOT_group,Inertia_group100, Inertia_moy_group, NA), ncol = 4,
            dimnames = list(c(paste0("Group ", unique(y)), "Total"), c("N", "Inertia_group", "Inertia_group100", "Inertia_moy_group")),
            byrow = FALSE)
 
