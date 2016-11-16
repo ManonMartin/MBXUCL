@@ -445,17 +445,18 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE){
 
   createFolds <- function(x,k){
     n <- nrow(x)
-    x$folds <- rep(1:k,length.out = n)[sample(n,n)]
+    x$FOLDS <- rep(1:k,length.out = n)[sample(n,n)]
     x
   }
 
 
+  folds <- plyr::ddply(.data = df, .variables = .(df$Class),.fun = plyr::here(createFolds),k = k_fold)
+  folds_i = folds$FOLDS
 
-  folds <- plyr::ddply(.data = df, .variables = .(Class),.fun = plyr::here(createFolds),k = k_fold)
-  folds_i = folds$folds
+  # Prop1 = plyr::ddply(.data = folds,.variables = .(FOLDS) ,.fun = plyr::here(plyr::summarise),
+  #                     prop = sum(.(Class))/length(.(Class)))
 
-  Prop1 = plyr::ddply(.data = folds,.variables = .(folds),.fun = plyr::here(plyr::summarise),
-                      prop = sum(Class)/length(Class))
+  Prop1 = aggregate(folds$Class, by=list(Category=folds$FOLDS), FUN=mean)
 
   index = vector("list", k_fold)
   Xtrain = vector("list", k_fold)
@@ -484,7 +485,7 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE){
     sorted = order(names(Ypred))
     Ypred = Ypred[order(names(Ypred))]
 
-    ytrue = Class
+    ytrue = df$Class
     names(ytrue) = df$rowname
     ytrue = ytrue[order(names(ytrue))]
 

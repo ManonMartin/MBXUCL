@@ -10,13 +10,15 @@
 #'
 #' @return A list with the following elements:
 #' \describe{
-#'   \item{\code{pcs}}{Scores}
-#'   \item{\code{pcu}}{Normalized scores}
-#'   \item{\code{pcv}}{Loadings}
+#'   \item{\code{scores}}{Scores}
+#'   \item{\code{loadings}}{Loadings}
+#'   \item{\code{eigval}}{Eigenvalues}
 #'   \item{\code{pcd}}{Singular values}
+#'   \item{\code{pcu}}{Normalized scores}
 #'   \item{\code{var}}{Explained variance}
 #'   \item{\code{cumvar}}{Cumulated explained variance}
-#'   \item{\code{eigval}}{Eigenvalues}
+#'  \item{\code{original.dataset}}{Original dataset}
+#'
 #' }
 #'
 #' @examples
@@ -78,7 +80,7 @@ x.cumvariances = x.cumvariances[1:ncomp]
 
 
 
-res=list(scores=x.scores, pcu=x.normscores, loadings=x.loadings, eigval=x.eigval, pcd=x.singularval, var=x.variances,
+res=list(scores=x.scores, loadings=x.loadings, eigval=x.eigval,pcu=x.normscores, pcd=x.singularval, var=x.variances,
          cumvar=x.cumvariances, original.dataset =original.dataset)
 
 return(res)
