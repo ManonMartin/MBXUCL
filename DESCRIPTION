@@ -4,7 +4,7 @@ Title: R Routines for metabolomic data
 Version: 0.1
 Date: 2016-03-18
 Authors@R: c(person("Manon", "Martin", role = c("aut", "cre"),email = "manon.martin@uclouvain.be"),
-            person("Baptiste", "Féraud", role = c("aut"),email = "baptiste.feraud@uclouvain.be"))
+            person("Baptiste", "Feraud", role = c("aut"),email = "baptiste.feraud@uclouvain.be"))
 Imports:
  clValid, clusterSim, phyclust, proxy, pls, pander, stats, ggplot2, reshape2, spls, plyr
 Description: Basic R routines implemented for metabolomics data analysis. It mainly involves statistical mutivariate methods and visualisation tools.
