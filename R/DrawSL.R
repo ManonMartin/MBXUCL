@@ -130,7 +130,7 @@ if (type.graph == "scores") {
 
   if(is.null(class)) {
     plots <- plots + ggplot2::geom_jitter()
-  } else {plots <- plots +  ggplot2::geom_jitter(ggplot2::aes(colour = class, shape = class))}
+  } else {plots <- plots +  ggplot2::geom_jitter(ggplot2::aes(colour = class, shape = as.character(class)))}
 
   plots <- plots + ggplot2::ggtitle(main) +
     ggplot2::geom_vline(xintercept = 0, size = 0.1) +
@@ -213,9 +213,10 @@ if (type.graph == "scores") {
     plots[[j]] = plot
     i = last + 1
     j=j+1
+    print(plot)
   }
 
-  plots
+
 }
 
 } # END
