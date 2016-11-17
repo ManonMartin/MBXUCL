@@ -7,7 +7,8 @@
 DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, class = NULL, axes = c(1, 2),
   type.graph = c("scores", "loadings"), loadingstype = c("l", "p", "s"),
-  num.stacked = 4, xlab = NULL, ang = 0)
+  num.stacked = 4, xlab = NULL, ang = 0, xaxis = c("numerical",
+  "character"), nxaxis = 10)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA analysis with the SVDforPCA function.}
@@ -33,6 +34,10 @@ DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
 \item{xlab}{Label of the x-axis.}
 
 \item{ang}{Angle to rotate the x axis labels for a better visualisation.}
+
+\item{xaxis}{Specify if the xaxis is numerical or character}
+
+\item{nxaxis}{Number of thick marks on the xaxis for a character x variable}
 }
 \value{
 A score or loading plot in the current device.

@@ -16,6 +16,8 @@
 #' @param num.stacked Number of stacked plots if \code{type} is \code{"loadings"}.
 #' @param xlab Label of the x-axis.
 #' @param ang Angle to rotate the x axis labels for a better visualisation.
+#' @param xaxis Specify if the xaxis is numerical or character
+#' @param nxaxis Number of thick marks on the xaxis for a character x variable
 #'
 #' @return A score or loading plot in the current device.
 
@@ -44,9 +46,11 @@
 DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
                            createWindow=FALSE, main = NULL, class = NULL, axes =c(1,2),
                            type.graph =c("scores", "loadings"), loadingstype=c("l", "p", "s"),
-                           num.stacked = 4, xlab = NULL, ang = 0) {
+                           num.stacked = 4, xlab = NULL, ang = 0,   xaxis = c("numerical", "character"),
+                           nxaxis = 10) {
 
   checkArg(main, "str", can.be.null=TRUE)
+  checkArg(nxaxis, "num", can.be.null=FALSE)
 
    if (!is.null(class)){
     class = as.factor(class)
@@ -55,10 +59,10 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
   loadingstype=match.arg(loadingstype)
   type.graph = match.arg(type.graph)
   type.obj = match.arg(type.obj)
-
+  xaxis = match.arg(xaxis)
 
   m = dim(obj$original.dataset)[1]
-  n = dim(obj$original.dataset)[2]
+  nn = dim(obj$original.dataset)[2]
 
   # class
 
@@ -179,7 +183,14 @@ if (type.graph == "scores") {
     }else {melted <- reshape2::melt(t(loadings[, i:last]), varnames=c("rowname", "Var"))}
 
 
+  if (xaxis=="numerical") {
     plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
+  } else {
+    melted$index = as.numeric(as.factor(melted$Var))
+    plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = index, y = value))
+  }
+
+
     if (loadingstype == "p"){
       plot = plot + ggplot2::geom_point()
     } else if (loadingstype == "l"){
@@ -188,8 +199,10 @@ if (type.graph == "scores") {
       plot = plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0), size = 2, lineend = "round")
     }
 
-
-
+  if (xaxis=="character") {
+  plot = plot + ggplot2::scale_x_continuous( breaks=seq(1,nn,floor(nn/nxaxis)),
+                                            labels=rownames(loadings)[seq(1,nn,floor(nn/nxaxis))])
+  }
 
     plot = plot + ggplot2::ggtitle(main) +
       ggplot2::facet_grid(rowname ~ ., scales = "free_y") +
@@ -213,9 +226,9 @@ if (type.graph == "scores") {
     plots[[j]] = plot
     i = last + 1
     j=j+1
-    print(plot)
-  }
 
+  }
+  plots
 
 }
 
