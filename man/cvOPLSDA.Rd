@@ -20,7 +20,7 @@ cvOPLSDA(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE)
 \value{
 A list with the following elements:
 \describe{
-  \item{\code{RMSECV}}{Result from OPLS-DA analysis with the OPLSDA function.}
+  \item{\code{RMSECV}}{RMSECV from the OPLSDA cross-validation.}
   \item{\code{folds_i}}{A vector indicating the group of observations for cross-validation.}
   \item{\code{Prop1}}{Table of proportions of 1's in y for each subgroup.}
 }

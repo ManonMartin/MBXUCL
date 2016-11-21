@@ -372,7 +372,7 @@ OPLSDA_pred = function(ropls, x.new) {
       x.new = as.vector(t(x.new) - tnew.ortho %*% t(ropls$Portho[,i]))
     }
     #Prediction
-    y.pred[k] = ropls$b.coef%*%x.new
+    y.pred = ropls$b.coef%*%x.new
   } else {
     y.pred =c()
     for(k in 1:l) {
@@ -413,7 +413,7 @@ OPLSDA_pred = function(ropls, x.new) {
 #'
 #' @return A list with the following elements:
 #' \describe{
-#'   \item{\code{RMSECV}}{Result from OPLS-DA analysis with the OPLSDA function.}
+#'   \item{\code{RMSECV}}{RMSECV from the OPLSDA cross-validation.}
 #'   \item{\code{folds_i}}{A vector indicating the group of observations for cross-validation.}
 #'   \item{\code{Prop1}}{Table of proportions of 1's in y for each subgroup.}
 #' }
