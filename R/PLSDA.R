@@ -113,7 +113,7 @@ ytrain.mat = matrix(dummy, nrow = length(y) )
 # -------------------
 # -------------------
 
-pls1 = pls::cppls(ytrain.mat ~ xtrain, scale = FALSE, validation = "CV", model = TRUE)
+pls1 = pls::plsr(ytrain.mat ~ xtrain, scale = FALSE, validation = "CV", model = TRUE)
 
 # ncomp = min(5, pls1$ncomp)
 # pls::mvrValstats(pls1, estimate="train")
@@ -163,7 +163,7 @@ if (drawRMSEP==TRUE){
 
 # Estimation du modele final
 #
-pls = pls::cppls(ytrain.mat ~ xtrain, ncomp = nLV, scale = FALSE, validation = "CV")
+pls = pls::plsr(ytrain.mat ~ xtrain, ncomp = nLV, scale = FALSE, validation = "CV")
 
 
 Xscores=cbind(pls$scores)
