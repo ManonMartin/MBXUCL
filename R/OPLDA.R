@@ -416,6 +416,7 @@ OPLSDA_pred = function(ropls, x.new) {
 #'   \item{\code{RMSECV}}{RMSECV from the OPLSDA cross-validation.}
 #'   \item{\code{folds_i}}{A vector indicating the group of observations for cross-validation.}
 #'   \item{\code{Prop1}}{Table of proportions of 1's in y for each subgroup.}
+#'   \item{\code{yres}}{List with true and predicted classes for each \code{NumOrtho}.}
 #' }
 #'
 #' @examples
@@ -470,6 +471,7 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE){
   }
 
   RMSECV = c()
+  yres = vector("list")
   for (j in 1:NumOrtho) {
 
     ropls.train = mapply(OPLSDA, x = Xtrain,
@@ -489,10 +491,13 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE){
     names(ytrue) = df$rowname
     ytrue = ytrue[order(names(ytrue))]
 
+    yres[[j]] = cbind(ytrue = ytrue, Ypred = Ypred)
+
+
     RMSECV[(j)] = sqrt(sum((ytrue-Ypred)^2)/n)
 
   }
-  rcvOPLSDA = list(RMSECV = RMSECV, folds_i = folds_i, Prop1 = Prop1)
+  rcvOPLSDA = list(RMSECV = RMSECV, folds_i = folds_i, Prop1 = Prop1, yres)
 
 
 if (ImpG==TRUE) {
