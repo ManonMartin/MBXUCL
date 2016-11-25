@@ -26,6 +26,9 @@
 #'   \item{\code{Wortho}}{Orthogonal weights matrix}
 #'   \item{\code{Selected.biomarkers}}{Vector of identified biomarkers}
 #'   \item{\code{colmeans}}{Values of x column means}
+#'   \item{\code{original.dataset}}{Original dataset}
+#'   \item{\code{CV}}{Criterion for the number of orthogonal components to keep}
+#'   \item{\code{C}}{y-weights}
 #' }
 #'
 #' @examples
@@ -185,7 +188,7 @@ indbiom = b.coef[namindbiom]
 #
 ropls<-list(b.coef=b.coef,Tp = Tp[, no], Tortho = Tortho, Pp = Pp[, no],
             Portho = Portho, Wortho = Wortho, Selected.biomarkers =indbiom, colmeans = colmeans,
-            CV = CV, original.dataset = xoriginal)
+            CV = CV, original.dataset = xoriginal, C = C)
 
 
 # Sorties graphiques

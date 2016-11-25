@@ -33,6 +33,9 @@ A list with the following elements:
   \item{\code{Wortho}}{Orthogonal weights matrix}
   \item{\code{Selected.biomarkers}}{Vector of identified biomarkers}
   \item{\code{colmeans}}{Values of x column means}
+  \item{\code{original.dataset}}{Original dataset}
+  \item{\code{CV}}{Criterion for the number of orthogonal components to keep}
+  \item{\code{C}}{y-weights}
 }
 }
 \description{

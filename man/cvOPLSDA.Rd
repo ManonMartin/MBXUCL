@@ -23,6 +23,7 @@ A list with the following elements:
   \item{\code{RMSECV}}{RMSECV from the OPLSDA cross-validation.}
   \item{\code{folds_i}}{A vector indicating the group of observations for cross-validation.}
   \item{\code{Prop1}}{Table of proportions of 1's in y for each subgroup.}
+  \item{\code{yres}}{List with true and predicted classes for each \code{NumOrtho}.}
 }
 }
 \description{
