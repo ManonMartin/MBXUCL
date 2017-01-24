@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ManonMartin/MBXUCL.svg?branch=master)](https://travis-ci.org/ManonMartin/MBXUCL)
+
 # MBXUCL
 Library for the UCL - MBX Team
 
