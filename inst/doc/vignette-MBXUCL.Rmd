@@ -94,15 +94,26 @@ pander(PCA.res[["loadings"]][1:10,])
 ```
 
 Draw loadings:
+* First option
 ```{r, out.width='100%', fig.width=12, fig.height=8}
 DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
  createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
     axes = c(1:2), type.graph ="loadings", loadingstype="l")
 ```
 
+* Second option
+```{r, out.width='100%', fig.width=12, fig.height=8}
+DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
+ createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
+    axes = c(1:2), type.graph ="loadings", loadingstype="s")
+```
 
-
-
+* Third option
+```{r, out.width='100%', fig.width=12, fig.height=8}
+DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
+ createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
+    axes = c(1:2), type.graph ="loadings", loadingstype="p")
+```
 
 ## Unsupervised clustering
 
@@ -133,11 +144,33 @@ pander(binClustMIC.res)
 
 ```{r PLSDA, out.width='100%', fig.width=10, fig.height=10}
 data("HumanSerum")
-PLSDA.res = PLSDA(x = HumanSerumSpectra, y = ClassHS, nLV = NULL, drawRMSEP = TRUE)
+Class = ClassHS
+PLSDA.res = PLSDA(x = HumanSerumSpectra, y = Class, nLV = NULL, drawRMSEP = TRUE)
 
 perf.plsda = PLSDA.res[4:6]
 pander(perf.plsda)
 ```
+
+
+
+Scores and loadings plots:
+  
+```{r, out.width='100%', fig.width=12, fig.height=12}
+
+DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
+       createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
+       type.graph = "scores", loadingstype = "l",
+       num.stacked = 4, xlab = NULL)
+
+
+DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
+       createWindow = FALSE, main = NULL, axes = c(1,2,3),
+       type.graph = "loadings", loadingstype = "l",
+       num.stacked = 4, xlab = NULL)
+
+```
+
+
 
 ## OPLS-DA
 
@@ -180,8 +213,8 @@ Or by cross-validation:
   
   
 ```{r, out.width='70%', fig.width=10, fig.height=10, eval=TRUE}
-cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = no)
-plot(cvOPLSDA.res$RMSECV, main = "RMSECV")
+cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 10)
+plot(1:length(cvOPLSDA.res$RMSECV), cvOPLSDA.res$RMSECV, main = "RMSECV", lty = 19)
 
 ```
 
@@ -252,11 +285,11 @@ abline(h=0,lty = 2)
 
 ```{r, out.width='100%', out.width='70%', fig.width=12, fig.height=5}
 
-delta=mean(sort(abs(oplsda.res$b.coef))[m-nb+c(0,1)])
-xax = as.numeric(names(oplsda.res$b.coef))
+delta=mean(sort(abs(oplsda.res$b))[m-nb+c(0,1)])
+xax = as.numeric(names(oplsda.res$b))
 
 par(mar=c(4,2,2,1))
-plot(oplsda.res$b.coef,type="l",xaxt = "n", yaxt = "n", main="OPLS: Vector of descriptors' rank",xlab="ppm" )
+plot(oplsda.res$b,type="l",xaxt = "n", yaxt = "n", main="OPLS: Vector of descriptors' rank",xlab="ppm" )
 abline(h=0)
 abline(h=delta*c(-1,1),lty=2)
 axis(side=2,cex.axis=0.7)

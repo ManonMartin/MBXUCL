@@ -18,18 +18,22 @@
 #'
 #' @return A list with the following elements:
 #' \describe{
-#'   \item{\code{b.coef}}{Model coefficients}
+#'   \item{\code{b}}{Model coefficients}
 #'   \item{\code{Tp}}{Predictive scores}
-#'   \item{\code{Tortho}}{Orthogonal scores}
 #'   \item{\code{Pp}}{Predictive loadings}
+#'   \item{\code{W}}{X-weights}
+#'   \item{\code{C}}{y-weights}
+#'   \item{\code{Tortho}}{Orthogonal scores}
 #'   \item{\code{Portho}}{Orthogonal loadings}
 #'   \item{\code{Wortho}}{Orthogonal weights matrix}
 #'   \item{\code{Selected.biomarkers}}{Vector of identified biomarkers}
-#'   \item{\code{colmeans}}{Values of x column means}
-#'   \item{\code{original.dataset}}{Original dataset}
 #'   \item{\code{CV}}{Criterion for the number of orthogonal components to keep}
-#'   \item{\code{C}}{y-weights}
+#'   \item{\code{original.dataset}}{Original dataset}
+#'   \item{\code{Xopls}}{OPLS-filtered X matrix}
 #' }
+#'
+#' @details
+#' The function allows only one predictive component since it is design for a single dependent variable.
 #'
 #' @examples
 #' data("DataSimul")
@@ -46,9 +50,19 @@ OPLSDA <-function(x, y, impT=FALSE,impG=FALSE, no=2,
                                     nb=15, out.path = ".") {
 
 # checks
-if (sum(!y %in% c(0,1)) >0) {
-  warning("y is not a vector of 1 and 0s")
-}
+
+# if (sum(!y %in% c(0,1)) >0) {
+#   y = as.factor(y)
+#   if (nlevels(y) >2) {
+#     stop("There is more than 2 levels in y")
+#   } else {
+#     warning("levels of y are automaticaly transformed in 0 and 1s")
+#     y[y==levels(y)[1]] = 0
+#     y[y==levels(y)[2]] = 1
+#     }
+#   }
+
+y = as.numeric(y)
 
 checkArg(impT, "bool", can.be.null=FALSE)
 checkArg(impG, "bool", can.be.null=FALSE)
@@ -75,120 +89,118 @@ xax = as.numeric(colnames(x))
 if (sum(is.na(xax))>0) {xax = c(1:m)}
 options(warn=1)
 
-# Initialisation des matrices de sortie de l'algorithme it\'eratif :
 
-Tp = c()
-Pp = c()
-C = c()
-W = c()
-CV = c()
-Tortho = c()
-Portho = c()
-Wortho = c()
-VarXortho=c()
-VarX=c()
+# pls_nipals function ------------------------------
+
+pls_nipals = function(xtrain, ytrain, np=1){
+
+  xtrain = scale(xtrain, center=T, scale=F)
+
+  n = dim(xtrain)[1]
+  m = dim(xtrain)[2]
+
+  if(np < 1) {
+    stop("np should be at least 1")
+  }
+
+  Tp = matrix(NA, ncol = np, nrow = n, dimnames = list(obsnames, NULL))
+  Pp = matrix(NA, ncol = np, nrow = m, dimnames = list(varnames, NULL))
+  C  = matrix(NA, nrow = 1, ncol = np)
+  W  = matrix(NA, ncol = np, nrow = m)
+
+  for (j in 1:np) {
+    W[,j] = as.vector((t(xtrain) %*% ytrain) %*% solve(t(ytrain) %*% ytrain) )# X-weights w
+    norm.w = sqrt(W[,j]%*%W[,j])                        # norm of w (vector)
+    W[,j] = W[,j] %*% solve(norm.w)                    # normalised w
+    Tp[,j] = (xtrain %*% W[,j]) %*% solve(t(W[,j]) %*% W[,j])                   # X-scores
+    C[,j] = t(ytrain) %*% Tp[,j] %*% solve(t(Tp[,j]) %*% Tp[,j])                 # y-weights
+    Pp[,j] = as.vector((t(xtrain) %*% Tp[,j]) %*% solve(t(Tp[,j]) %*% Tp[,j]))                # 1st PLS loading
+    xtrain = xtrain - Tp[,j]%*%t(Pp[,j])
+  }
+
+  b = W %*% solve(t(Pp) %*% W) %*% as.vector(C)
+
+  return(list(Tp = Tp, Pp = Pp, C = C, W = W, b = b))
+}
+
+
+# Initialisation des matrices de sortie de l'algorithme it\'eratif :
+Tortho = matrix(NA, nrow = n, ncol = no, dimnames = list(obsnames, NULL))
+Portho = matrix(NA, nrow = m, ncol = no, dimnames = list(varnames, NULL))
+Wortho = matrix(NA, nrow = m, ncol = no)
+CV = matrix(NA, nrow = 1, ncol = no)
+VarXortho = matrix(NA, nrow = 1, ncol = no)
+VarX = matrix(NA, nrow = 1, ncol = no)
 
 
 # Debut de l'algorithme de l'OPLS-DA avec le calcul des poids de X :
-#1.
 w = (t(xtrain) %*% ytrain) %*% solve(t(ytrain) %*% ytrain) # X-weights w
 w = as.vector(w)
-#2.
 norm.w = sqrt(w%*%w)                        # norm of w (vector)
 w = w %*% solve(norm.w)                     # normalised w
 
 
 # creation de la boucle pour extraire les composantes orthogonales
-for (j in 1:no) {
-  #3.
-  t = (xtrain %*% w) %*% solve(t(w) %*% w)                   # X-scores
-  #4.
-  c = t(ytrain) %*% t %*% solve(t(t) %*% t)                 # y-weights
-  #5.
-  u = ytrain %*% c %*% solve(t(c) %*% c)                    # y-scores
-  #6.
-  p = (t(xtrain) %*% t) %*% solve(t(t) %*% t)                # 1st PLS loading
-  p= as.vector(p)
-  norm.p = sqrt(p%*%p)
-  #7.
-  wo = p - (w %*% (t(w) %*% p) %*% solve(t(w) %*% w))       # Xortho-weights
-  wo = as.vector( wo)
-  #8.
-  norm.wo = sqrt(wo%*%wo)
-  wo = wo %*% solve(norm.wo)                                # normalised wortho
-  cv = norm.wo %*% solve(norm.p)              # criterion for the number of orthogonal components to keep
-  #9.
-  to = xtrain %*% wo %*% solve(t(wo) %*% wo)                 # Xortho-scores
-  #10.
-  po = t(xtrain) %*% to %*% solve(t(to) %*% to)              # ortho. loading
 
-  varortho = to %*% t(po)
+for (i in 1:no) {
+  t = (xtrain %*% w) %*% solve(t(w) %*% w)                   # X-scores
+  c = t(ytrain) %*% t %*% solve(t(t) %*% t)                 # y-weights
+  u = ytrain %*% c %*% solve(t(c) %*% c)                    # y-scores
+  p = as.vector((t(xtrain) %*% t) %*% solve(t(t) %*% t) )               # 1st PLS loading
+  norm.p = sqrt(p%*%p)
+  Wortho[,i] = as.vector( p - (w %*% (t(w) %*% p) %*% solve(t(w) %*% w)) )      # Xortho-weights
+  norm.wo = sqrt(Wortho[,i]%*%Wortho[,i])
+  Wortho[,i] = Wortho[,i] %*% solve(norm.wo)                                # normalised wortho
+  CV[,i] = norm.wo %*% solve(norm.p)              # criterion for the number of orthogonal components to keep
+  Tortho[,i]  = xtrain %*% Wortho[,i] %*% solve(t(Wortho[,i]) %*% Wortho[,i])                 # Xortho-scores
+  Portho[,i] = t(xtrain) %*% Tortho[,i] %*% solve(t(Tortho[,i]) %*% Tortho[,i])              # ortho. loading
+
+  varortho = Tortho[,i] %*% t(Portho[,i])
   var = t %*% t(p)
 
-  #11.
-  xtrain = xtrain - to %*% t(po)
+  xtrain = xtrain - Tortho[,i] %*% t(Portho[,i])
 
   # matrice var-cov
   covo=cov(varortho) # otho
-
   covp=cov(xtrain) # pred
-  # pls=mvr(ytrain ~ xtrain, ncomp=1)
-  # pls$Xtotvar
   covorig=cov(cbind(xoriginal))
 
   #  total variation X
-  varxortho=100*(sum(diag(covo))/sum(diag(covorig))) # var orthog retirée, en %
-  varx=100*(sum(diag(covp))/sum(diag(covorig))) # var non orthog, en %
+  VarXortho[,i]=100*(sum(diag(covo))/sum(diag(covorig))) # var orthog retirée, en %
+  VarX[,i]=100*(sum(diag(covp))/sum(diag(covorig))) # var non orthog, en %
 
-  #12.
-  Tp = matrix(c(Tp, t))
-  Pp = matrix(c(Pp, p))
-  C = matrix(c(C, c))
-  W = matrix(c(W, w))
-  CV = matrix(c(CV, cv))
-  Tortho = matrix(c(Tortho, to))
-  Portho = matrix(c(Portho, po))
-  Wortho = matrix(c(Wortho, wo))
-  VarXortho = matrix(c(VarXortho,varxortho))
-  VarX = matrix(c(VarX,varx))
 }
 
 
-
-Tp = matrix(Tp, ncol = no, dimnames = list(obsnames, NULL))
-Pp = matrix(Pp, ncol = no, dimnames = list(varnames, NULL))
-C = matrix(C, ncol = no)
-W = matrix(W, ncol = no)
-
-Tortho = matrix(Tortho, ncol = no, dimnames = list(obsnames, NULL))
-Portho = matrix(Portho, ncol = no, dimnames = list(varnames, NULL))
-Wortho = matrix(Wortho, ncol = no)
-
-VarXortho = matrix(VarXortho, ncol = no)
-VarX = matrix(VarX, ncol = no)
-
-#13.
+# X orthogonal
 xortho = Tortho %*% t(Portho)
 
 
-
-# Calcul des coefficients de regression b
-b.coef=t(C[,no]%*%t(W[,no]))
-b.coef = as.vector(b.coef)
-names(b.coef)=varnames
-
-
-# Recherche des nb biomarkeurs ayant les b.coef les plus grands
+# Apply nipals pls on filtered X matrix (Xnew)
 ###############################################################
-namindbiom=order(abs(b.coef))[((m+1)-(1:nb))]
-indbiom = b.coef[namindbiom]
+xnew = xtrain # deflated matrix
+res_nipals = pls_nipals(xnew, ytrain, np = 1)
+
+invisible(list2env(res_nipals, envir = environment()))
+b = as.vector(b)
+
+# In order to apply b directly on a new X, b becomes bcorr
+bcorr = (diag(1, m, m)  - Wortho %*% solve(t(Portho) %*% Wortho) %*% t(Portho)) %*% b
+names(bcorr) = varnames
+bcorr = as.vector(bcorr)
+
+
+# Recherche des nb biomarkeurs ayant les b les plus grands
+###############################################################
+namindbiom=order(abs(b))[((m+1)-(1:nb))]
+indbiom = b[namindbiom]
 
 
 # sortie
 #
-ropls<-list(b.coef=b.coef,Tp = Tp[, no], Tortho = Tortho, Pp = Pp[, no],
-            Portho = Portho, Wortho = Wortho, Selected.biomarkers =indbiom, colmeans = colmeans,
-            CV = CV, original.dataset = xoriginal, C = C)
+ropls<-list(b = bcorr, Tp = Tp, Pp = Pp, W = W, C = C, Tortho = Tortho,
+            Portho = Portho, Wortho = Wortho, Selected.biomarkers = indbiom,
+            CV = CV, original.dataset = xoriginal, Xopls = xnew)
 
 
 # Sorties graphiques
@@ -294,13 +306,13 @@ if(impG == TRUE) {
   ########################################
 
   # OPLS pretreated PLS coefficients
-  delta=mean(sort(abs(b.coef))[m-nb+c(0,1)])
+  delta=mean(sort(abs(b))[m-nb+c(0,1)])
 
   pdf(file.path(out.path,"OPLS_coef.pdf"), width = 10, height = 6)
 
   par(mar=c(4,2,2,1))
 
-  plot(b.coef,type="l",xaxt = "n", yaxt = "n", main="OPLS: Vector of descriptors' rank",xlab="ppm" )
+  plot(b,type="l",xaxt = "n", yaxt = "n", main="OPLS: Vector of descriptors' rank",xlab="ppm" )
   abline(h=0)
   abline(h=delta*c(-1,1),lty=2)
   axis(side=2,cex.axis=0.7)
@@ -361,40 +373,10 @@ return(ropls)
 
 
 OPLSDA_pred = function(ropls, x.new) {
-
-
-  no = dim(ropls$Wortho)[2]
-  # centrage de etnew
-  x.new = x.new-ropls$colmeans
-
-  l = dim(x.new)[1]
-
-  if (is.null(l)) {
-    for (i in 1:no) {
-      tnew.ortho = t(x.new) %*% ropls$Wortho[,i] %*% solve(t(ropls$Wortho[,i]) %*% ropls$Wortho[,i])
-      x.new = as.vector(t(x.new) - tnew.ortho %*% t(ropls$Portho[,i]))
-    }
-    #Prediction
-    y.pred = ropls$b.coef%*%x.new
-  } else {
-    y.pred =c()
-    for(k in 1:l) {
-      # Application du filtre sur la nouvelle observation
-      for (i in 1:no) {
-        tnew.ortho = t(x.new[k,]) %*% ropls$Wortho[,i] %*% solve(t(ropls$Wortho[,i]) %*% ropls$Wortho[,i])
-        x.new[k,] = as.vector(t(x.new[k,]) - tnew.ortho %*% t(ropls$Portho[,i]))
-      }
-      #Prediction
-      y.pred[k] = ropls$b.coef%*%x.new[k,]
-    }
-    names(y.pred) = rownames(x.new)
-  }
-
-  y.pred
-
+  y.pred = x.new%*%ropls$b
+  names(y.pred) = rownames(x.new)
+  return(y.pred)
 }
-
-
 
 
 #===============================================================
@@ -434,9 +416,9 @@ OPLSDA_pred = function(ropls, x.new) {
 cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE){
 
   # checks
-  if (sum(!y %in% c(0,1)) >0) {
-    warning("y is not a vector of 1 and 0s")
-  }
+  # if (sum(!y %in% c(0,1)) >0) {
+  #   warning("y is not a vector of 1 and 0s")
+  # }
 
   checkArg(k_fold, "int", can.be.null=FALSE)
   checkArg(NumOrtho, "int", can.be.null=FALSE)
@@ -460,7 +442,7 @@ cvOPLSDA = function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE){
   # Prop1 = plyr::ddply(.data = folds,.variables = .(FOLDS) ,.fun = plyr::here(plyr::summarise),
   #                     prop = sum(.(Class))/length(.(Class)))
 
-  Prop1 = aggregate(folds$Class, by=list(Category=folds$FOLDS), FUN=mean)
+  Prop1 = stats::aggregate(folds$Class, by=list(Category=folds$FOLDS), FUN=mean)
 
   index = vector("list", k_fold)
   Xtrain = vector("list", k_fold)

@@ -25,21 +25,25 @@ OPLSDA(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15,
 \value{
 A list with the following elements:
 \describe{
-  \item{\code{b.coef}}{Model coefficients}
+  \item{\code{b}}{Model coefficients}
   \item{\code{Tp}}{Predictive scores}
-  \item{\code{Tortho}}{Orthogonal scores}
   \item{\code{Pp}}{Predictive loadings}
+  \item{\code{W}}{X-weights}
+  \item{\code{C}}{y-weights}
+  \item{\code{Tortho}}{Orthogonal scores}
   \item{\code{Portho}}{Orthogonal loadings}
   \item{\code{Wortho}}{Orthogonal weights matrix}
   \item{\code{Selected.biomarkers}}{Vector of identified biomarkers}
-  \item{\code{colmeans}}{Values of x column means}
-  \item{\code{original.dataset}}{Original dataset}
   \item{\code{CV}}{Criterion for the number of orthogonal components to keep}
-  \item{\code{C}}{y-weights}
+  \item{\code{original.dataset}}{Original dataset}
+  \item{\code{Xopls}}{OPLS-filtered X matrix}
 }
 }
 \description{
 OPLS-DA for a two-class problem. Only one response is allowed and the number of predictive components is fixed to 1 accordingly.
+}
+\details{
+The function allows only one predictive component since it is design for a single dependent variable.
 }
 \examples{
 data("DataSimul")

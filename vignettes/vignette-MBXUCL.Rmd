@@ -38,9 +38,8 @@ Notes:
 Or it can be downloaded directly from Github:
 ```{r install2, tidy=TRUE,  eval=FALSE}
 require(devtools)
-install_github("ManonMartin/MBXUCL")
+install_github("ManonMartin/MBXUCL", dependencies = TRUE)
 require(MBXUCL)
-require(plyr)
 ```
 
 
@@ -200,7 +199,7 @@ Few graphical results :
 Eigenvalue criterion in Trygg (2001):
 ```{r , out.width='70%',fig.width=8, fig.height=8}
 COL=rep("gray93",no)
-mp=barplot(t(oplsda.res$CV),
+mp=barplot(oplsda.res$CV,
            axes=F, axisnames=F, border=1,col=COL)
 axis(1,at=mp, labels=c(1:no))
 axis(2)
@@ -213,7 +212,7 @@ Or by cross-validation:
   
   
 ```{r, out.width='70%', fig.width=10, fig.height=10, eval=TRUE}
-cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 10)
+cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 3)
 plot(1:length(cvOPLSDA.res$RMSECV), cvOPLSDA.res$RMSECV, main = "RMSECV", lty = 19)
 
 ```
@@ -285,11 +284,11 @@ abline(h=0,lty = 2)
 
 ```{r, out.width='100%', out.width='70%', fig.width=12, fig.height=5}
 
-delta=mean(sort(abs(oplsda.res$b.coef))[m-nb+c(0,1)])
-xax = as.numeric(names(oplsda.res$b.coef))
+delta=mean(sort(abs(oplsda.res$b))[m-nb+c(0,1)])
+xax = as.numeric(names(oplsda.res$b))
 
 par(mar=c(4,2,2,1))
-plot(oplsda.res$b.coef,type="l",xaxt = "n", yaxt = "n", main="OPLS: Vector of descriptors' rank",xlab="ppm" )
+plot(oplsda.res$b,type="l",xaxt = "n", yaxt = "n", main="OPLS: Vector of descriptors' rank",xlab="ppm" )
 abline(h=0)
 abline(h=delta*c(-1,1),lty=2)
 axis(side=2,cex.axis=0.7)
@@ -302,12 +301,20 @@ axis(side=1,at=c(1,seq(50,m,50)),
 ### Prediction of new observations
 
 ```{r}
-xtrain = x[-c(1:5),]
-ytrain = y[-c(1:5)]
-xnew = x[c(1:5),]
+
+set.seed(100)
+index = sample(1:1400, 5)
+xtrain = x[-index,]
+ytrain = y[-index]
+xnew = x[index,]
+trueval = y[index]
 oplsda.res = OPLSDA(x=xtrain, y=ytrain,
                     impT = FALSE,impG = FALSE, no=2, nb = 15, out.path = ".")
-OPLSDA_pred(ropls = oplsda.res, x.new = xnew)
+predictedval = OPLSDA_pred(ropls = oplsda.res, x.new = xnew)
+pander(data.frame(trueval,predictedval))
+
+
+
 
 
 ```

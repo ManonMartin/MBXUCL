@@ -48,6 +48,16 @@ DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
  createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
     axes = c(1:2), type.graph ="loadings", loadingstype="l")
 
+## ---- out.width='100%', fig.width=12, fig.height=8-----------------------
+DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
+ createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
+    axes = c(1:2), type.graph ="loadings", loadingstype="s")
+
+## ---- out.width='100%', fig.width=12, fig.height=8-----------------------
+DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
+ createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
+    axes = c(1:2), type.graph ="loadings", loadingstype="p")
+
 ## ----ClustMIC, out.width='100%', fig.width=12, fig.height=12-------------
 data("HumanSerum")
 ClustMIC.res = MBXUCL::ClustMIC(Intensities = HumanSerumSpectra, nClust = 4, Trcl = ClassHS, Dendr = TRUE)
@@ -63,10 +73,25 @@ pander(binClustMIC.res)
 
 ## ----PLSDA, out.width='100%', fig.width=10, fig.height=10----------------
 data("HumanSerum")
-PLSDA.res = PLSDA(x = HumanSerumSpectra, y = ClassHS, nLV = NULL, drawRMSEP = TRUE)
+Class = ClassHS
+PLSDA.res = PLSDA(x = HumanSerumSpectra, y = Class, nLV = NULL, drawRMSEP = TRUE)
 
 perf.plsda = PLSDA.res[4:6]
 pander(perf.plsda)
+
+## ---- out.width='100%', fig.width=12, fig.height=12----------------------
+
+DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
+       createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
+       type.graph = "scores", loadingstype = "l",
+       num.stacked = 4, xlab = NULL)
+
+
+DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
+       createWindow = FALSE, main = NULL, axes = c(1,2,3),
+       type.graph = "loadings", loadingstype = "l",
+       num.stacked = 4, xlab = NULL)
+
 
 ## ----OPLSDA--------------------------------------------------------------
 
@@ -90,8 +115,8 @@ title(main="OPLS: Choice of the n[orthog. Components]", xlab="Orthogonal OPLS-DA
 
 
 ## ---- out.width='70%', fig.width=10, fig.height=10, eval=TRUE------------
-cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = no)
-plot(cvOPLSDA.res$RMSECV, main = "RMSECV")
+cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 10)
+plot(1:length(cvOPLSDA.res$RMSECV), cvOPLSDA.res$RMSECV, main = "RMSECV", lty = 19)
 
 
 ## ---- out.width='100%', fig.width=12, fig.height=12----------------------
