@@ -9,7 +9,7 @@
 #' @param drawNames If \code{TRUE}, will show the observations names on the Scores plot.
 #' @param createWindow If \code{TRUE}, will create a new window for the plot.
 #' @param main Plot title. If \code{NULL}, default title is provided.
-#' @param class Optional numeric vector giving the class of the observations.
+#' @param class Optional character or numeric vector giving the class of the observations.
 #' @param axes Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot. See details
 #' @param type.graph The type of plot, either \code{"scores"} or \code{"loadings"}
 #' @param loadingstype The type of Loadings plot, either a line plot (\code{"l"}), points (\code{"p"}) or segments (\code{"s"}).
@@ -41,7 +41,7 @@
 #' @importFrom grDevices dev.new
 #' @import ggplot2
 #' @import reshape2
-
+#' @import gridExtra
 
 DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
                            createWindow=FALSE, main = NULL, class = NULL, axes =c(1,2),
@@ -53,8 +53,12 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
   checkArg(nxaxis, "num", can.be.null=FALSE)
 
    if (!is.null(class)){
-    class = as.factor(class)
+    oldclass = class
+    Class = as.factor(class)
   }
+
+
+  nameClass = deparse(substitute(class))
 
   loadingstype=match.arg(loadingstype)
   type.graph = match.arg(type.graph)
@@ -66,8 +70,8 @@ DrawSL <- function (obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames=TRUE,
 
   # class
 
-  if(!is.null(class) && is.vector(class, mode = "any") && length(class)!=m){
-    stop("the length of class is not equal to the nrow of data matrix")
+  if(!is.null(Class) && is.vector(Class, mode = "any") && length(Class)!=m){
+    stop("the length of Class is not equal to the nrow of data matrix")
   }
 
   # axes
@@ -132,9 +136,21 @@ if (type.graph == "scores") {
     ggplot2::xlim(Xlim) +
     ggplot2::ylim(Ylim)
 
-  if(is.null(class)) {
+  if(is.null(Class)) {
     plots <- plots + ggplot2::geom_jitter()
-  } else {plots <- plots +  ggplot2::geom_jitter(ggplot2::aes(colour = class, shape = as.character(class)))}
+  } else {
+    plots <- plots +  ggplot2::geom_jitter(ggplot2::aes(colour = Class, shape =Class))
+    }
+
+
+
+  plots <- plots + scale_shape_discrete(name  = nameClass,
+                               breaks = unique(Class),
+                               labels = as.character(unique(oldclass))) +
+           scale_colour_discrete(name  = nameClass,
+                               breaks = unique(Class),
+                               labels = as.character(unique(oldclass)))
+  
 
   plots <- plots + ggplot2::ggtitle(main) +
     ggplot2::geom_vline(xintercept = 0, size = 0.1) +
@@ -142,8 +158,8 @@ if (type.graph == "scores") {
     ggplot2::theme_bw() +
     ggplot2::theme(panel.grid.major = ggplot2::element_line(color = "gray60", size = 0.2), panel.grid.minor = ggplot2::element_blank(),
                    panel.background = ggplot2::element_rect(fill = "gray98")) +
-    if (type.obj == "PCA")
-    {ggplot2::labs(x=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), y=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"))
+    if (type.obj == "PCA"){
+      ggplot2::labs(x=paste0("PC",Xax," (", round(variance[Xax],2) ,"%)"), y=paste0("PC",Yax," (", round(variance[Yax],2) ,"%)"))
     } else if (type.obj == "OPLSDA"){
       ggplot2::labs(x=XaxName, y=YaxName)
     } else {ggplot2::labs(x=paste0("Tp",Xax), y=paste0("Tp",Yax))}
@@ -151,12 +167,17 @@ if (type.graph == "scores") {
 
    if (drawNames) {
 
-    if(is.null(class)) {
+    if(is.null(Class)) {
       plots = plots + ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax], label = rownames(obj$original.dataset)),
                                          hjust = 0, nudge_x = (Xlim[2]/25),  show.legend = FALSE, size = 2)
-    } else {plots = plots + ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax], label = rownames(obj$original.dataset), colour = class, shape = class),
-                                               hjust = 0, nudge_x = (Xlim[2]/25), show.legend = F, size = 2)}
+    } else {
+      plots = plots +
+        ggplot2::geom_text(ggplot2::aes(x = scores[,Xax], y = scores[,Yax],label = rownames(obj$original.dataset),
+                           colour = Class), hjust = 0, nudge_x = (Xlim[2]/25), show.legend = F, size = 2)
+      }
   }
+
+
 
   plots
 
@@ -170,11 +191,8 @@ if (type.graph == "scores") {
 
   j=1
   i = 1
-  while (i <= n)
-  {
-    if (createWindow) {
-      grDevices::dev.new(noRStudioGD = TRUE)
-    }
+  while (i <= n) {
+    
 
     last = min(i + num.stacked-1, n)
 
@@ -219,16 +237,20 @@ if (type.graph == "scores") {
         plot =  plot + ggplot2::scale_x_reverse()
       }
     }
-
-    #
-    #         require("gridExtra")
-    # plots
+  
     plots[[j]] = plot
     i = last + 1
+    
+    if (createWindow) {
+      grDevices::dev.new(noRStudioGD = TRUE)
+    }
+ 
+    gridExtra::grid.arrange(plot)
     j=j+1
-
+    
+    
   }
-  plots
+
 
 }
 
