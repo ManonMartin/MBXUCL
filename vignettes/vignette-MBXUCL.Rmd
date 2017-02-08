@@ -40,6 +40,7 @@ Or it can be downloaded directly from Github:
 require(devtools)
 install_github("ManonMartin/MBXUCL", dependencies = TRUE)
 require(MBXUCL)
+
 ```
 
 
@@ -212,7 +213,7 @@ Or by cross-validation:
   
   
 ```{r, out.width='70%', fig.width=10, fig.height=10, eval=TRUE}
-cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 3)
+cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 10)
 plot(1:length(cvOPLSDA.res$RMSECV), cvOPLSDA.res$RMSECV, main = "RMSECV", lty = 19)
 
 ```
@@ -301,20 +302,12 @@ axis(side=1,at=c(1,seq(50,m,50)),
 ### Prediction of new observations
 
 ```{r}
-
-set.seed(100)
-index = sample(1:1400, 5)
-xtrain = x[-index,]
-ytrain = y[-index]
-xnew = x[index,]
-trueval = y[index]
+xtrain = x[-c(1:5),]
+ytrain = y[-c(1:5)]
+xnew = x[c(1:5),]
 oplsda.res = OPLSDA(x=xtrain, y=ytrain,
                     impT = FALSE,impG = FALSE, no=2, nb = 15, out.path = ".")
-predictedval = OPLSDA_pred(ropls = oplsda.res, x.new = xnew)
-pander(data.frame(trueval,predictedval))
-
-
-
+OPLSDA_pred(ropls = oplsda.res, x.new = xnew)
 
 
 ```

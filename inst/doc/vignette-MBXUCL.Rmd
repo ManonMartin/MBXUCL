@@ -38,9 +38,9 @@ Notes:
 Or it can be downloaded directly from Github:
 ```{r install2, tidy=TRUE,  eval=FALSE}
 require(devtools)
-install_github("ManonMartin/MBXUCL")
+install_github("ManonMartin/MBXUCL", dependencies = TRUE)
 require(MBXUCL)
-require(plyr)
+
 ```
 
 
