@@ -30,7 +30,9 @@
 #' }
 #'
 #' @details
-#' The function allows only one predictive component since it is design for a single dependent variable.
+#' The function allows only one predictive component since it is designed for a single dependent variable.
+#' It is based on the NIPALS PLS algorithm: after the removal of orthogonal components from the X matrix, a PLS1
+#' NIPALS is ran on the filtered X matrix.
 #'
 #' @examples
 #' data('DataSimul')
