@@ -200,7 +200,7 @@ Few graphical results :
 Eigenvalue criterion in Trygg (2001):
 ```{r , out.width='70%',fig.width=8, fig.height=8}
 COL=rep("gray93",no)
-mp=barplot(t(oplsda.res$CV),
+mp=barplot(oplsda.res$CV,
            axes=F, axisnames=F, border=1,col=COL)
 axis(1,at=mp, labels=c(1:no))
 axis(2)

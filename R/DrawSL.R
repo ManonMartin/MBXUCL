@@ -54,10 +54,11 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
   if (!is.null(class)) {
     oldclass <- class
     Class <- as.factor(class)
+    nameClass <- deparse(substitute(class))
   }
 
 
-  nameClass <- deparse(substitute(class))
+
 
   loadingstype <- match.arg(loadingstype)
   type.graph <- match.arg(type.graph)
@@ -69,7 +70,7 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
 
   # class
 
-  if (!is.null(Class) && is.vector(Class, mode = "any") && length(Class) != m) {
+  if (!is.null(class) && is.vector(class, mode = "any") && length(Class) != m) {
     stop("the length of Class is not equal to the nrow of data matrix")
   }
 
@@ -134,17 +135,17 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
     plots <- ggplot2::ggplot(scores, ggplot2::aes(get(colnames(scores)[Xax]),
       get(colnames(scores)[Yax]))) + ggplot2::xlim(Xlim) + ggplot2::ylim(Ylim)
 
-    if (is.null(Class)) {
+    if (is.null(class)) {
       plots <- plots + ggplot2::geom_jitter()
     } else {
-      plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = Class, shape = Class))
+      plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = Class, shape = Class)) +
+                       scale_shape_discrete(name = nameClass, breaks = unique(Class),
+                                            labels = as.character(unique(oldclass))) +
+                       scale_colour_discrete(name = nameClass,breaks = unique(Class),
+                                            labels = as.character(unique(oldclass)))
+
     }
 
-
-
-    plots <- plots + scale_shape_discrete(name = nameClass, breaks = unique(Class),
-      labels = as.character(unique(oldclass))) + scale_colour_discrete(name = nameClass,
-      breaks = unique(Class), labels = as.character(unique(oldclass)))
 
 
     plots <- plots + ggplot2::ggtitle(main) + ggplot2::geom_vline(xintercept = 0,
@@ -164,7 +165,7 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
 
     if (drawNames) {
 
-      if (is.null(Class)) {
+      if (is.null(class)) {
         plots <- plots + ggplot2::geom_text(ggplot2::aes(x = scores[, Xax],
           y = scores[, Yax], label = rownames(obj$original.dataset)), hjust = 0,
           nudge_x = (Xlim[2]/25), show.legend = FALSE, size = 2)
