@@ -1,10 +1,7 @@
 ### PRE TRAITEMENTS GPL (GLOBAL PEAK LIST) #####################################
 
-# Suppression of negative intensities
-# Suppression of the water zone (square)
+# Suppression of negative intensities Suppression of the water zone (square)
 # Normalization (sum = 1)
-
-
 
 #' @export pTreatGPL
 #' @title 2D-NMR Global Peak List pre-treatments
@@ -23,9 +20,9 @@
 #' @author Baptiste Feraud
 #'
 #' @examples
-#' path <-  system.file("extdata", package = "MBXUCL")
-#' GPL = read.table(file.path(path, "UrineGPL.csv"), sep=",",
-#'  header=TRUE, row.names = 1, na.strings = "." )
+#' path <-  system.file('extdata', package = 'MBXUCL')
+#' GPL = read.table(file.path(path, 'UrineGPL.csv'), sep=',',
+#'  header=TRUE, row.names = 1, na.strings = '.' )
 #'
 #' Int = GPL[,seq(3,dim(GPL)[2]- 1, 2)]
 #' Coord = GPL[,c(1,2)]
@@ -34,55 +31,56 @@
 #'
 
 
-pTreatGPL = function(Intensities, Coordinates, LowW, UpW){
+pTreatGPL <- function(Intensities, Coordinates, LowW, UpW) {
 
-# checks
+  # checks
 
-if (missing(Intensities)){
-warning("Intensities is missing with no default value")
-}
+  if (missing(Intensities))  {
+    warning("Intensities is missing with no default value")
+  }
 
-if (missing(Coordinates)){
-warning("Coordinates is missing with no default value")
-}
+  if (missing(Coordinates))  {
+    warning("Coordinates is missing with no default value")
+  }
 
-if (missing(LowW)){
-warning("LowW is missing with no default value")
-}
+  if (missing(LowW)) {
+    warning("LowW is missing with no default value")
+  }
 
-if (missing(UpW)){
-warning("UpW is missing with no default value")
-}
-
-
-if (! is.numeric(LowW)) {
-  stop(deparse(substitute(LowW)), " is not numeric.")
-}
-
-if (! is.numeric(UpW)) {
-  stop(deparse(substitute(UpW)), " is not numeric.")
-}
-
-if (LowW > UpW) {
-  stop(deparse(substitute(UpW)), " the lower value of the water zone can't be greater than the upper value.")
-}
+  if (missing(UpW))
+  {
+    warning("UpW is missing with no default value")
+  }
 
 
-#Negative intensities ==> zeros
-Intensities[Intensities < 0] = 0
+  if (!is.numeric(LowW)) {
+    stop(deparse(substitute(LowW)), " is not numeric.")
+  }
 
-Mat_corr <- cbind(Coordinates, Intensities)
+  if (!is.numeric(UpW)) {
+    stop(deparse(substitute(UpW)), " is not numeric.")
+  }
 
-Mat_corr <- subset(Mat_corr, apply(Intensities, 1, sum) != 0)
+  if (LowW > UpW) {
+    stop(deparse(substitute(UpW)), " the lower value of the water zone can't be greater than the upper value.")
+  }
 
-#Suppression de la zone de l'eau
-Mat_corr_w <- subset(Mat_corr, !((Mat_corr[,1] > LowW & Mat_corr[,1] < UpW) &
-                                                      (Mat_corr[,2] > LowW & Mat_corr[,2] < UpW) ))
 
-#Normalization, sum = 1
-Intensities <- t(Mat_corr_w[-c(1,2)])
-IntT <- Intensities / apply(Intensities, 1, sum)
+  # Negative intensities ==> zeros
+  Intensities[Intensities < 0] <- 0
 
-return(IntT)
+  Mat_corr <- cbind(Coordinates, Intensities)
+
+  Mat_corr <- subset(Mat_corr, apply(Intensities, 1, sum) != 0)
+
+  # Suppression de la zone de l'eau
+  Mat_corr_w <- subset(Mat_corr, !((Mat_corr[, 1] > LowW & Mat_corr[, 1] < UpW) &
+                      (Mat_corr[, 2] > LowW & Mat_corr[, 2] < UpW)))
+
+  # Normalization, sum = 1
+  Intensities <- t(Mat_corr_w[-c(1, 2)])
+  IntT <- Intensities/apply(Intensities, 1, sum)
+
+  return(IntT)
 }
 

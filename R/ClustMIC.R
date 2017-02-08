@@ -1,7 +1,7 @@
 ### CLUSTERING ##############################################
 
-## Ward et K-means unsupervised clustering
-## MIC criteria: Dunn, Davies-Bouldin, Rand and Adjusted-Rand
+## Ward et K-means unsupervised clustering MIC criteria: Dunn, Davies-Bouldin,
+## Rand and Adjusted-Rand
 
 
 #' @export ClustMIC
@@ -31,7 +31,7 @@
 #' @author Baptiste Feraud, Manon Martin
 #'
 #' @examples
-#' data("HumanSerum")
+#' data('HumanSerum')
 #' ClustMIC(Intensities = HumanSerumSpectra, nClust = 4, Trcl = ClassHS, Dendr = TRUE)
 #'
 #'@importFrom proxy dist
@@ -41,101 +41,92 @@
 #'
 
 
-ClustMIC = function(Intensities, nClust, Trcl, Dendr=TRUE){
+ClustMIC <- function(Intensities, nClust, Trcl, Dendr = TRUE){
 
-# checks
+  # checks
 
-if (missing(Intensities)){
-warning("Intensities is missing with no default value")
-}
+  if (missing(Intensities)) {
+    warning("Intensities is missing with no default value")
+  }
 
-if (missing(nClust)){
-warning("nClust is missing with no default value")
-}
+  if (missing(nClust)) {
+    warning("nClust is missing with no default value")
+  }
 
 
-if (sum(Trcl<=0) >0) {
-  warning("Automatic rewritting of Trcl since values below 1 are not permitted")
-  Trcl = Trcl+(1-min(Trcl))
+  if (sum(Trcl <= 0) > 0) {
+    warning("Automatic rewritting of Trcl since values below 1 are not permitted")
+    Trcl <- Trcl + (1 - min(Trcl))
+  }
 
-}
+  if (!is.numeric(Intensities)) {
+    stop(deparse(substitute(Intensities)), " is not numeric.")
+  }
 
-if (! is.numeric(Intensities)) {
-  stop(deparse(substitute(Intensities)), " is not numeric.")
-}
-
-  if (! is.numeric(nClust)) {
+  if (!is.numeric(nClust)) {
     stop(deparse(substitute(nClust)), " is not numeric.")
-  }  else if (length(nClust)>1) {
+  } else if (length(nClust) > 1) {
     stop(deparse(substitute(nClust)), " has a length > 1.")
   }
 
-  if (missing(Trcl) | sum(Trcl%%1!=0)>0){
+  if (missing(Trcl) | sum(Trcl%%1 != 0) > 0) {
     warning("Trcl is missing with no default value or is not an integer")
   }
 
 
-  names(Trcl) = 1:length(Trcl)
+  names(Trcl) <- 1:length(Trcl)
 
-if (! is.logical(Dendr)) {
+  if (!is.logical(Dendr)) {
     stop(deparse(substitute(Dendr)), " is not logical.")
-}
+  }
 
 
-#### WARD
-DistI <- proxy::dist(Intensities, method ="euclidean", diag=FALSE, upper=FALSE)
+  #### WARD
+  DistI <- proxy::dist(Intensities, method = "euclidean", diag = FALSE, upper = FALSE)
 
-WardI <- stats::hclust(DistI, "ward.D2")
-clWI <- stats::cutree(WardI, nClust)
-
-
-#### K-MEANS
-clKMI <- stats::kmeans(Intensities, nClust, iter.max = 20, nstart = 1,
-         algorithm = c("Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"))
+  WardI <- stats::hclust(DistI, "ward.D2")
+  clWI <- stats::cutree(WardI, nClust)
 
 
-#### INDICES MIC ##############################
-
-################################
-##  Homogeneite des groupes   ##
-################################
-
-#### DUNN
-DunnW <- clValid::dunn(DistI, clWI)
-DunnKM <- clValid::dunn(DistI, clKMI$cluster)
+  #### K-MEANS
+  clKMI <- stats::kmeans(Intensities, nClust, iter.max = 20, nstart = 1, algorithm = c("Hartigan-Wong",
+    "Lloyd", "Forgy", "MacQueen"))
 
 
-#### DAVIES-BOULDIN
-DBW <- clusterSim::index.DB(Intensities, clWI, DistI, centrotypes="medoids")
-DBKM <- clusterSim::index.DB(Intensities, clKMI$cluster, DistI, centrotypes="medoids")
+  #### INDICES MIC ##############################
+
+  ################################ Homogeneite des groupes ##
+
+  #### DUNN
+  DunnW <- clValid::dunn(DistI, clWI)
+  DunnKM <- clValid::dunn(DistI, clKMI$cluster)
 
 
-################################
-##   Qualite du clustering    ##
-################################
-
-#### RAND
-RandW <- phyclust::RRand(Trcl, clWI, lab = NULL)
-RandKM <- phyclust::RRand(Trcl, clKMI$cluster, lab = NULL)
+  #### DAVIES-BOULDIN
+  DBW <- clusterSim::index.DB(Intensities, clWI, DistI, centrotypes = "medoids")
+  DBKM <- clusterSim::index.DB(Intensities, clKMI$cluster, DistI, centrotypes = "medoids")
 
 
-#### DENDROGRAM ################################
+  ################################ Qualite du clustering ##
 
-if (Dendr == TRUE) {
-
-graphics::plot(WardI,lwd=1,cex=.5)
-stats::rect.hclust(WardI, nClust, border="red")
-
-}
-
-res=list(DunnW = DunnW, DunnKM = DunnKM,
-     DBW = DBW$DB, DBKM = DBKM$DB,
-     RandW = RandW[[1]], RandKM = RandKM[[1]],
-     AdjRandW = RandW[[2]], AdjRandKM = RandKM[[2]])
+  #### RAND
+  RandW <- phyclust::RRand(Trcl, clWI, lab = NULL)
+  RandKM <- phyclust::RRand(Trcl, clKMI$cluster, lab = NULL)
 
 
-table=data.frame(res)
-return(table)
+  #### DENDROGRAM ################################
+
+  if (Dendr == TRUE) {
+    graphics::plot(WardI, lwd = 1, cex = 0.5)
+    stats::rect.hclust(WardI, nClust, border = "red")
+  }
+
+  res <- list(DunnW = DunnW, DunnKM = DunnKM, DBW = DBW$DB, DBKM = DBKM$DB, RandW = RandW[[1]],
+    RandKM = RandKM[[1]], AdjRandW = RandW[[2]], AdjRandKM = RandKM[[2]])
+
+
+  table <- data.frame(res)
+  return(table)
 
 }
 
