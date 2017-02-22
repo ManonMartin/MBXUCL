@@ -6,7 +6,6 @@
 #'
 #' @param x   A data matrix on which will be based the analysis.
 #' @param ncomp  Number of Principal Components.
-#' @param roundval If \code{TRUE}, numeric variable names will be rounded to the 3rd decimal.
 #'
 #' @return A list with the following elements:
 #' \describe{
@@ -26,7 +25,7 @@
 #' PCA.res = SVDforPCA(HumanSerumSpectra)
 
 
-SVDforPCA <- function(x, ncomp = min(dim(x)), roundval = TRUE) {
+SVDforPCA <- function(x, ncomp = min(dim(x))) {
 
 
   original.dataset <- x
@@ -49,7 +48,7 @@ SVDforPCA <- function(x, ncomp = min(dim(x)), roundval = TRUE) {
   x.totalvar <- sum(x.vars)
   x.relvars <- x.vars/x.totalvar
 
-  x.variances <- 100 * round(x.relvars, digits = 3)  # variance
+  x.variances <- 100 * x.relvars  # variance
   names(x.variances) <- paste0("PC", 1:length(x.variances))
 
   x.cumvariances <- cumsum(x.variances)  # cumulative variance
