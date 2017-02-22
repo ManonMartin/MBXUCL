@@ -89,7 +89,7 @@ ClustMIC <- function(Intensities, nClust, Trcl, Dendr = TRUE){
 
 
   #### K-MEANS
-  clKMI <- stats::kmeans(Intensities, nClust, iter.max = 20, nstart = 1, algorithm = c("Hartigan-Wong",
+  clKMI <- stats::kmeans(Intensities, nClust, iter.max = 20, nstart = 10, algorithm = c("Hartigan-Wong",
     "Lloyd", "Forgy", "MacQueen"))
 
 
