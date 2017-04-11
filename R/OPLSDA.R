@@ -200,17 +200,17 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
   if (impG == TRUE) {
 
     # Validation plot
-    pdf(file.path(out.path, "OPLS_Validation.pdf"), width = 10, height = 6)
-
-    COL <- rep("gray93", no)
-    # par(mar=c(4,4,4,4))
-    mp <- barplot(t(CV), axes = F, axisnames = F, border = 1, col = COL)
-    axis(1, at = mp, labels = c(1:no))
-    axis(2)
-    title(main = "OPLS: Choice of the n[orthog. Components]", xlab = "Orthogonal OPLS-DA Components",
-      ylab = "||Wortho|| / ||p||")
-
-    dev.off()
+    # pdf(file.path(out.path, "OPLS_Validation.pdf"), width = 10, height = 6)
+    #
+    # COL <- rep("gray93", no)
+    # # par(mar=c(4,4,4,4))
+    # mp <- barplot(t(CV), axes = F, axisnames = F, border = 1, col = COL)
+    # axis(1, at = mp, labels = c(1:no))
+    # axis(2)
+    # title(main = "OPLS: Choice of the n[orthog. Components]", xlab = "Orthogonal OPLS-DA Components",
+    #   ylab = "||Wortho|| / ||p||")
+    #
+    # dev.off()
 
 
     # Xvar explique
