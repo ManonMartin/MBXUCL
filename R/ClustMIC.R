@@ -38,7 +38,7 @@
 #'@importFrom clValid dunn
 #'@importFrom clusterSim index.DB
 #'@importFrom phyclust RRand
-#'
+#'@importFrom modeest mfv
 
 
 ClustMIC <- function(Intensities, nClust, Trcl, Dendr = TRUE){
