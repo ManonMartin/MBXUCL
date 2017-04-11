@@ -7,8 +7,8 @@
 DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, class = NULL, axes = c(1, 2),
   type.graph = c("scores", "loadings"), loadingstype = c("l", "p", "s"),
-  num.stacked = 4, xlab = NULL, ang = 0, xaxis = c("numerical",
-  "character"), nxaxis = 10)
+  num.stacked = 4, xlab = NULL, ylab = NULL, ang = 0,
+  xaxis = c("numerical", "character"), nxaxis = 10)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA analysis with the SVDforPCA function.}
@@ -21,17 +21,19 @@ DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
 
 \item{main}{Plot title. If \code{NULL}, default title is provided.}
 
-\item{class}{Optional numeric vector giving the class of the observations.}
+\item{class}{Optional character or numeric vector giving the class of the observations.}
 
 \item{axes}{Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot. See details}
 
-\item{type.graph}{The type of plot, either \code{"scores"} or \code{"loadings"}}
+\item{type.graph}{The type of plot, either \code{'scores'} or \code{'loadings'}}
 
-\item{loadingstype}{The type of Loadings plot, either a line plot (\code{"l"}), points (\code{"p"}) or segments (\code{"s"}).}
+\item{loadingstype}{The type of Loadings plot, either a line plot (\code{'l'}), points (\code{'p'}) or segments (\code{'s'}).}
 
-\item{num.stacked}{Number of stacked plots if \code{type} is \code{"loadings"}.}
+\item{num.stacked}{Number of stacked plots if \code{type} is \code{'loadings'}.}
 
-\item{xlab}{Label of the x-axis.}
+\item{xlab}{Label for the x-axis.}
+
+\item{ylab}{Label for the y-axis.}
 
 \item{ang}{Angle to rotate the x axis labels for a better visualisation.}
 
@@ -46,21 +48,20 @@ A score or loading plot in the current device.
 Draws scores and Loadings plots for PCA analysis derived from the SVDforPCA function.
 }
 \details{
-If \code{type.obj} is \code{"OPLSDA"}, axes = 1 represents the predictive score vector, axes = 2 represents the first orthogonal score vector, etc.
+If \code{type.obj} is \code{'OPLSDA'}, axes = 1 represents the predictive score vector, axes = 2 represents the first orthogonal score vector, etc.
 }
 \examples{
 
-data("HumanSerum")
+data('HumanSerum')
 res.PCA = SVDforPCA(HumanSerumSpectra)
 class = ClassHS
 
-DrawSL(res.PCA, drawNames=TRUE, type.obj = "PCA",
-createWindow=FALSE, main = "PCA score plot for HumanSerum dataset",
-  class = class, axes =c(1,2), type.graph ="scores")
+DrawSL(res.PCA, drawNames=TRUE, type.obj = 'PCA',
+createWindow=FALSE, main = 'PCA score plot for HumanSerum dataset',
+  class = class, axes =c(1,2), type.graph ='scores')
 
-DrawSL(res.PCA, drawNames=TRUE, type.obj = "PCA",
-createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-   axes = 1, type.graph ="loadings", loadingstype="l")
+DrawSL(res.PCA, drawNames=TRUE, type.obj = 'PCA',
+createWindow=FALSE, main = 'PCA loadings plot for HumanSerum dataset',
+   axes = 1, type.graph ='loadings', loadingstype='l')
 
 }
-

@@ -34,11 +34,10 @@ Calculation of MIC statistical criteria of clustering quality:
 Dunn, Davies-Bouldin, Rand and adjusted-Rand indexes.
 }
 \examples{
-data("HumanSerum")
+data('HumanSerum')
 ClustMIC(Intensities = HumanSerumSpectra, nClust = 4, Trcl = ClassHS, Dendr = TRUE)
 
 }
 \author{
 Baptiste Feraud, Manon Martin
 }
-

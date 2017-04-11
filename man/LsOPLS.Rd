@@ -15,21 +15,20 @@ LsOPLS(X, Y, No, Eta, Method)
 
 \item{Eta}{Parameter for the level of sparsity into the sPLS method}
 
-\item{Method}{Parameter for the choice of the PLS algorithm ("pls2" or "simpls")}
+\item{Method}{Parameter for the choice of the PLS algorithm ('pls2' or 'simpls')}
 }
 \value{
 A print of the sPLS final step containing the list of final selected biomarkers.
 }
 \description{
-Implementation of the Light-sparse-OPLS algorithm 
-Application of the sPLS method to a deflated matrix obtained by OPLS 
+Implementation of the Light-sparse-OPLS algorithm
+Application of the sPLS method to a deflated matrix obtained by OPLS
 (matrix without the Y-orthogonal components)
 }
 \examples{
-data("iris")
+data('iris')
 X <- as.matrix(iris[,1:4])
 Y <- as.numeric(iris[,5])
-LsOPLS(X, Y, 2, 0.9, "simpls")
+LsOPLS(X, Y, 2, 0.9, 'simpls')
 
 }
-

@@ -26,8 +26,7 @@ A list with the following elements:
 Calculates the within, between and total inertia of a data matrix
 }
 \examples{
-data("HumanSerum")
+data('HumanSerum')
 Res = Inertia(x = HumanSerumSpectra, y = ClassHS, print = TRUE)
 
 }
-

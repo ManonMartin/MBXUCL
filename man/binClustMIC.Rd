@@ -9,7 +9,7 @@ binClustMIC(Positions, Distance, nClust, Trcl, Dendr = TRUE)
 \arguments{
 \item{Positions}{A binary numeric matrix}
 
-\item{Distance}{Choice of the distance measure adapted to binary objects ("Jaccard" or "Ochiai")}
+\item{Distance}{Choice of the distance measure adapted to binary objects ('Jaccard' or 'Ochiai')}
 
 \item{nClust}{The number of groups to retrieve (donors, mixtures, ...).}
 
@@ -34,10 +34,9 @@ Dunn, Davies-Bouldin, Rand and adjusted-Rand indexes.
 \examples{
 Pos = t(GPL[, seq(4,dim(GPL)[2], 2)])
 Trcl = c(rep(1,8), rep(2,8), rep(3,8))
-binClustMIC(Positions = Pos, Distance = "Jaccard", nClust = 3, Trcl, Dendr = TRUE)
+binClustMIC(Positions = Pos, Distance = 'Jaccard', nClust = 3, Trcl, Dendr = TRUE)
 
 }
 \author{
 Baptiste Feraud
 }
-

@@ -23,9 +23,9 @@ Elimination of negative intensities (=0), Elimination of the water zone,
 Normalization of the intensities (sum = 1)
 }
 \examples{
-path <-  system.file("extdata", package = "MBXUCL")
-GPL = read.table(file.path(path, "UrineGPL.csv"), sep=",",
- header=TRUE, row.names = 1, na.strings = "." )
+path <-  system.file('extdata', package = 'MBXUCL')
+GPL = read.table(file.path(path, 'UrineGPL.csv'), sep=',',
+ header=TRUE, row.names = 1, na.strings = '.' )
 
 Int = GPL[,seq(3,dim(GPL)[2]- 1, 2)]
 Coord = GPL[,c(1,2)]
@@ -36,4 +36,3 @@ IntT[,1:2]
 \author{
 Baptiste Feraud
 }
-

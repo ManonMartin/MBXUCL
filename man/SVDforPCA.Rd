@@ -4,14 +4,12 @@
 \alias{SVDforPCA}
 \title{Singular value decomposition for PCA analysis}
 \usage{
-SVDforPCA(x, ncomp = min(dim(x)), roundval = TRUE)
+SVDforPCA(x, ncomp = min(dim(x)))
 }
 \arguments{
 \item{x}{A data matrix on which will be based the analysis.}
 
 \item{ncomp}{Number of Principal Components.}
-
-\item{roundval}{If \code{TRUE}, numeric variable names will be rounded to the 3rd decimal.}
 }
 \value{
 A list with the following elements:
@@ -31,7 +29,6 @@ A list with the following elements:
 PCA over a X matrix by singular value decomposition, the preprocessing involves the mean-centering of X.
 }
 \examples{
-data("HumanSerum")
+data('HumanSerum')
 PCA.res = SVDforPCA(HumanSerumSpectra)
 }
-

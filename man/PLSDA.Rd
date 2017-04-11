@@ -13,7 +13,7 @@ PLSDA(x, y, nLV = NULL, drawRMSEP = TRUE)
 
 \item{nLV}{The number of latent variables for PLS-DA.}
 
-\item{drawRMSEP}{Logical, if \code{"TRUE"}, will draw plot of RMSEP values to decide on the number of latent variables.}
+\item{drawRMSEP}{Logical, if \code{'TRUE'}, will draw plot of RMSEP values to decide on the number of latent variables.}
 }
 \value{
 A list with the following elements:
@@ -36,11 +36,10 @@ A list with the following elements:
 PLS-DA model for multiple classes (2 or more).
 }
 \examples{
-data("HumanSerum")
+data('HumanSerum')
 PLSDA = function(x = HumanSerumSpectra, y = ClassHS, nLV = NULL, drawRMSEP = TRUE)
 
 }
 \author{
 Manon Martin
 }
-
