@@ -14,7 +14,8 @@
 #' @param type.graph The type of plot, either \code{'scores'} or \code{'loadings'}
 #' @param loadingstype The type of Loadings plot, either a line plot (\code{'l'}), points (\code{'p'}) or segments (\code{'s'}).
 #' @param num.stacked Number of stacked plots if \code{type} is \code{'loadings'}.
-#' @param xlab Label of the x-axis.
+#' @param xlab Label for the x-axis.
+#' @param ylab Label for the y-axis.
 #' @param ang Angle to rotate the x axis labels for a better visualisation.
 #' @param xaxis Specify if the xaxis is numerical or character
 #' @param nxaxis Number of thick marks on the xaxis for a character x variable
@@ -45,8 +46,10 @@
 
 DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, class = NULL, axes = c(1, 2), type.graph = c("scores",
-    "loadings"), loadingstype = c("l", "p", "s"), num.stacked = 4, xlab = NULL,
+    "loadings"), loadingstype = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
   ang = 0, xaxis = c("numerical", "character"), nxaxis = 10) {
+
+  warning("the DrawSL() function is deprecated and will not be updated. Use instead DrawLoadings() or DrawScores().")
 
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
@@ -71,7 +74,7 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
   # class
 
   if (!is.null(class) && is.vector(class, mode = "any") && length(Class) != m) {
-    stop("the length of Class is not equal to the nrow of data matrix")
+    stop("the length of class is not equal to the nrow of data matrix")
   }
 
   # axes
@@ -79,9 +82,6 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
     stop("axes is not a numeric vector")
   }
 
-
-  Xax <- axes[1]
-  Yax <- axes[2]
 
 
   # Eigenvalues
@@ -93,6 +93,22 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
 
 
   # scores
+  Xax <- axes[1]
+  Yax <- axes[2]
+
+  if (type.obj == "PCA") {
+    XaxName <- paste0("PC", Xax, " (", round(variance[Xax], 2),"%)")
+    YaxName <- paste0("PC", Yax, " (", round(variance[Yax], 2), "%)")
+  } else if (type.obj == "OPLSDA") {
+    XaxName <- ifelse(Xax == 1, "Tp", paste0("To", Xax))
+    YaxName <- ifelse(Yax == 1, "Tp", paste0("To", Yax - 1))
+  } else { # PLS-DA
+    XaxName <- paste0("Tp", Xax)
+    YaxName <- paste0("Tp", Yax)
+  }
+
+
+
   if (type.obj == "OPLSDA") {
     XaxName <- ifelse(Xax == 1, "Tp", paste0("To", Xax))
     YaxName <- ifelse(Yax == 1, "Tp", paste0("To", Yax - 1))
@@ -126,6 +142,14 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
 
   if (type.graph == "scores") {
 
+    # labs
+    if (is.null(xlab)) {
+      xlab <- XaxName
+    }
+    if (is.null(ylab)) {
+      ylab <- YaxName
+    }
+
     if (createWindow)  {
       grDevices::dev.new(noRStudioGD = TRUE)
     }
@@ -147,20 +171,11 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
     }
 
 
-
-    plots <- plots + ggplot2::ggtitle(main) + ggplot2::geom_vline(xintercept = 0,
+    plots <- plots + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::geom_vline(xintercept = 0,
       size = 0.1) + ggplot2::geom_hline(yintercept = 0, size = 0.1) + ggplot2::theme_bw() +
       ggplot2::theme(panel.grid.major = ggplot2::element_line(color = "gray60",
         size = 0.2), panel.grid.minor = ggplot2::element_blank(),
-        panel.background = ggplot2::element_rect(fill = "gray98")) +
-      if (type.obj == "PCA") {
-        ggplot2::labs(x = paste0("PC", Xax, " (", round(variance[Xax], 2),
-          "%)"), y = paste0("PC", Yax, " (", round(variance[Yax], 2), "%)"))
-      } else if (type.obj == "OPLSDA") {
-        ggplot2::labs(x = XaxName, y = YaxName)
-      } else {
-        ggplot2::labs(x = paste0("Tp", Xax), y = paste0("Tp", Yax))
-      }
+        panel.background = ggplot2::element_rect(fill = "gray98"))
 
 
     if (drawNames) {
@@ -168,11 +183,11 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
       if (is.null(class)) {
         plots <- plots + ggplot2::geom_text(ggplot2::aes(x = scores[, Xax],
           y = scores[, Yax], label = rownames(obj$original.dataset)), hjust = 0,
-          nudge_x = (Xlim[2]/25), show.legend = FALSE, size = 2)
+          nudge_x = (Xlim[2]/25), show.legend = FALSE, size = 3)
       } else {
         plots <- plots + ggplot2::geom_text(ggplot2::aes(x = scores[, Xax],
           y = scores[, Yax], label = rownames(obj$original.dataset), colour = Class),
-          hjust = 0, nudge_x = (Xlim[2]/25), show.legend = F, size = 2)
+          hjust = 0, nudge_x = (Xlim[2]/25), show.legend = F, size = 3)
       }
     }
 
@@ -180,7 +195,19 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
 
   } else {
 
+
+    if (!is.null(ylab) && length(ylab) != length(axes)) {
+      stop("the length of ylab is not equal to the length of axes for loadings")
+    }
+
     loadings <- loadings[, axes]
+
+    # labs
+    if (is.null(xlab)) {
+      xlab <- "Index"
+    }
+
+
 
     if (is.vector(loadings)) {
       n <- 1
@@ -211,12 +238,12 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
 
 
       if (loadingstype == "p") {
-        plot <- plot + ggplot2::geom_point()
+        plot <- plot + ggplot2::geom_point(size=0.4)
       } else if (loadingstype == "l")  {
         plot <- plot + ggplot2::geom_line()
       } else  {
         plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
-          size = 2, lineend = "round")
+          size = 0.5, lineend = "butt")
       }
 
       if (xaxis == "character")  {
@@ -224,16 +251,20 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
                           labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
       }
 
-      plot <- plot + ggplot2::ggtitle(main) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
+      plot <- plot + ggplot2::labs(title = main, x = xlab, y = "Loadings") + ggplot2::facet_grid(rowname ~., scales = "free_y") +
                      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = ang,vjust = 0.5, hjust = 1)) +
                      ggplot2::theme(legend.position = "none") +
-                     ggplot2::labs(x = xlab, y = "Loadings") +
-                     ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
+                     ggplot2::geom_hline(yintercept = 0, size = 0.3, linetype = "dashed", colour = "gray60")
 
-      if (type.obj == "PCA") {
+      if (!is.null(ylab)) {
+        plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
+                                         label = ylab[i:last], vjust = 1, hjust = 1)
+      } else if (type.obj == "PCA") {
         plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
                                          label = paste0("(",round(variance[i:last], 2), "%)"), vjust = 1, hjust = 1)
       }
+
+
 
       if (is.numeric(melted[1, "Var"]))  {
         if ((melted[1, "Var"] - melted[(dim(melted)[1]), "Var"]) > 0) {
@@ -252,7 +283,7 @@ DrawSL <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE
       j <- j + 1
 
     }
-
+    return(plots)
   }
 
 }  # END
