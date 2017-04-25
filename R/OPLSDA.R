@@ -176,6 +176,13 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
   res_nipals <- pls_nipals(xnew, ytrain, np = 1)
 
   invisible(list2env(res_nipals, envir = environment()))
+
+  Tp = res_nipals[["Tp"]]
+  Pp = res_nipals[["Pp"]]
+  C = res_nipals[["C"]]
+  W = res_nipals[["W"]]
+  b = res_nipals[["b"]]
+
   b <- as.vector(b)
 
   # In order to apply b directly on a new X, b becomes bcorr
