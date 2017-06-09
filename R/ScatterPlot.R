@@ -17,7 +17,11 @@
 #' @param ylab If not \code{NULL}, label for the y-axis.
 #' @param legend_pch If not \code{NULL}, the labels for the pch legend.
 #' @param legend_color If not \code{NULL}, the labels for the color legend.
+<<<<<<< HEAD
 #' @param drawEllipses If \code{TRUE}, will draw ellipses with the \code{ggplot2::stat_ellipse} with groups coresponding to the color vector.
+=======
+#' @param drawEllipse If \code{TRUE}, will draw ellipses with the \code{ggplot2::stat_ellipse} with groups coresponding to the color vector.
+>>>>>>> 0bc70e072f9b14034c8086379d596141869c5e0f
 #' @param typeEl The type of ellipse, either "norm" (multivariate normal distribution), "t" (multivariate t-distribution) and "euclid" draws a circle with the radius equal to level, representing the euclidean distance from the center.
 #' @param levelEl The confidence level at which to draw an ellipse.
 #'
@@ -54,7 +58,11 @@
 
 ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = NULL,
                         color = NULL, pch = NULL, size = 1, cex.lab = 3, xlab = NULL, ylab = NULL, legend_pch = NULL,
+<<<<<<< HEAD
                         legend_color = NULL, drawEllipses = FALSE, typeEl = "norm", levelEl = 0.9) {
+=======
+                        legend_color = NULL, drawEllipse = FALSE, typeEl = "norm", levelEl = 0.9) {
+>>>>>>> 0bc70e072f9b14034c8086379d596141869c5e0f
 
  checkArg(main, "str", can.be.null = TRUE)
 
@@ -151,7 +159,11 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
       scale_colour_discrete(name = namecolor, breaks = color_factor,
                             labels = valuescolor,
                             guide=guide_legend(order=1))
+<<<<<<< HEAD
     if (drawEllipses) {
+=======
+    if (drawEllipse) {
+>>>>>>> 0bc70e072f9b14034c8086379d596141869c5e0f
       plots <- plots + ggplot2::stat_ellipse(mapping = aes(x=x,y=y,
                                              colour = color_factor),
                                              data = data, type = typeEl,
@@ -174,7 +186,11 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
       scale_shape_discrete(name = namepch, breaks = pch_factor,
                            labels = valuespch,
                            guide=guide_legend(order=2))
+<<<<<<< HEAD
     if (drawEllipses) {
+=======
+    if (drawEllipse) {
+>>>>>>> 0bc70e072f9b14034c8086379d596141869c5e0f
       plots <- plots + ggplot2::stat_ellipse(mapping = aes(x=x,y=y,
                                              colour = color_factor),
                                              data = data, type = typeEl,
