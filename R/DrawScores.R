@@ -163,7 +163,9 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
         scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
                               labels = as.character(unique(color)),
                               guide=guide_legend(order=1))
+
       if (drawEllipses) {
+
         plots <- plots + ggplot2::stat_ellipse(mapping = aes(get(colnames(scores)[Xax]),
                                                              get(colnames(scores)[Yax]),
                                                colour = color_factor),
@@ -186,7 +188,9 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
       scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
                              labels = as.character(unique(pch)),
                              guide=guide_legend(order=2))
+
       if (drawEllipses) {
+
         plots <- plots + ggplot2::stat_ellipse(mapping = aes(get(colnames(scores)[Xax]),
                                                              get(colnames(scores)[Yax]),
                                                colour = color_factor),
