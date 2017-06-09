@@ -6,7 +6,8 @@
 \usage{
 DrawScores(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, color = NULL, pch = NULL,
-  axes = c(1, 2), xlab = NULL, ylab = NULL)
+  size = 1, cex.lab = 3, axes = c(1, 2), xlab = NULL, ylab = NULL,
+  drawEllipses = FALSE, typeEl = "norm", levelEl = 0.9)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA, PLSDA or OPLSDA analysis.}
@@ -23,11 +24,21 @@ DrawScores(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
 
 \item{pch}{Optional character, factor or numeric vector giving the pch of the observations.}
 
+\item{size}{The points size.}
+
+\item{cex.lab}{The size of points labels.}
+
 \item{axes}{Numerical vector indicating the PC axes that are drawn. Only the two first values are considered for scores plot. See details#' @param num.stacked Number of stacked plots if \code{type} is \code{'loadings'}.}
 
 \item{xlab}{Label for the x-axis.}
 
 \item{ylab}{Label for the y-axis.}
+
+\item{drawEllipses}{If \code{TRUE}, will draw ellipses with the \code{ggplot2::stat_ellipse} with groups coresponding to the color vector.}
+
+\item{typeEl}{The type of ellipse, either "norm" (multivariate normal distribution), "t" (multivariate t-distribution) and "euclid" draws a circle with the radius equal to level, representing the euclidean distance from the center.}
+
+\item{levelEl}{The confidence level at which to draw an ellipse.}
 }
 \value{
 A score or loading plot in the current device.

@@ -5,8 +5,9 @@
 \title{ScatterPlot}
 \usage{
 ScatterPlot(x, y, points_labs = NULL, createWindow = FALSE, main = NULL,
-  color = NULL, pch = NULL, xlab = NULL, ylab = NULL,
-  legend_pch = NULL, legend_color = NULL)
+  color = NULL, pch = NULL, size = 1, cex.lab = 3, xlab = NULL,
+  ylab = NULL, legend_pch = NULL, legend_color = NULL,
+  drawEllipses = FALSE, typeEl = "norm", levelEl = 0.9)
 }
 \arguments{
 \item{x}{x-axis values.}
@@ -23,6 +24,10 @@ ScatterPlot(x, y, points_labs = NULL, createWindow = FALSE, main = NULL,
 
 \item{pch}{Optional character, factor or numeric vector giving the pch of the observations.}
 
+\item{size}{The points size.}
+
+\item{cex.lab}{The size of points labels.}
+
 \item{xlab}{If not \code{NULL}, label for the x-axis.}
 
 \item{ylab}{If not \code{NULL}, label for the y-axis.}
@@ -30,6 +35,12 @@ ScatterPlot(x, y, points_labs = NULL, createWindow = FALSE, main = NULL,
 \item{legend_pch}{If not \code{NULL}, the labels for the pch legend.}
 
 \item{legend_color}{If not \code{NULL}, the labels for the color legend.}
+
+\item{drawEllipses}{If \code{TRUE}, will draw ellipses with the \code{ggplot2::stat_ellipse} with groups coresponding to the color vector.}
+
+\item{typeEl}{The type of ellipse, either "norm" (multivariate normal distribution), "t" (multivariate t-distribution) and "euclid" draws a circle with the radius equal to level, representing the euclidean distance from the center.}
+
+\item{levelEl}{The confidence level at which to draw an ellipse.}
 }
 \value{
 A score or loading plot in the current device.
