@@ -173,7 +173,7 @@ if (xaxis == "numerical") {
       grDevices::dev.new(noRStudioGD = TRUE)
     }
 
-    gridExtra::grid.arrange(plot)
+    # gridExtra::grid.arrange(plot)
     j <- j + 1
 
   }
