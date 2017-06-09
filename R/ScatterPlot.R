@@ -11,11 +11,15 @@
 #' @param main Plot title. If \code{NULL}, default title is provided.
 #' @param color Optional character, factor or numeric vector giving the color of the observations.
 #' @param pch Optional character, factor or numeric vector giving the pch of the observations.
+#' @param size The points size.
+#' @param cex.lab The size of points labels.
 #' @param xlab If not \code{NULL}, label for the x-axis.
 #' @param ylab If not \code{NULL}, label for the y-axis.
 #' @param legend_pch If not \code{NULL}, the labels for the pch legend.
 #' @param legend_color If not \code{NULL}, the labels for the color legend.
-#'
+#' @param drawEllipses If \code{TRUE}, will draw ellipses with the \code{ggplot2::stat_ellipse} with groups coresponding to the color vector.
+#' @param typeEl The type of ellipse, either "norm" (multivariate normal distribution), "t" (multivariate t-distribution) and "euclid" draws a circle with the radius equal to level, representing the euclidean distance from the center.
+#' @param levelEl The confidence level at which to draw an ellipse.
 #'
 #' @return A score or loading plot in the current device.
 
@@ -49,8 +53,8 @@
 #' @import gridExtra
 
 ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = NULL,
-                        color = NULL, pch = NULL, xlab = NULL, ylab = NULL, legend_pch = NULL,
-                        legend_color = NULL) {
+                        color = NULL, pch = NULL, size = 1, cex.lab = 3, xlab = NULL, ylab = NULL, legend_pch = NULL,
+                        legend_color = NULL, drawEllipses = FALSE, typeEl = "norm", levelEl = 0.9) {
 
  checkArg(main, "str", can.be.null = TRUE)
 
@@ -139,30 +143,43 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
 
   if (is.null(color) & is.null(pch)) {
     # no color & no shape
-    plots <- plots + ggplot2::geom_jitter()
+    plots <- plots + ggplot2::geom_jitter(size=size)
 
   } else if (!is.null(color) & is.null(pch)) {
     # color
-    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = color_factor)) +
+    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = color_factor), size=size) +
       scale_colour_discrete(name = namecolor, breaks = color_factor,
                             labels = valuescolor,
                             guide=guide_legend(order=1))
+    if (drawEllipses) {
+      plots <- plots + ggplot2::stat_ellipse(mapping = aes(x=x,y=y,
+                                             colour = color_factor),
+                                             data = data, type = typeEl,
+                                             level = levelEl)
+    }
+
 
   } else if (is.null(color) & !is.null(pch)) {
     # shape
-    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(shape = pch_factor)) +
+    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(shape = pch_factor), size=size) +
       scale_shape_discrete(name = namepch, breaks = pch_factor,
                            labels = valuespch,
                            guide=guide_legend(order=1))
   } else {
     # color + shape
-    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = color_factor, shape = pch_factor)) +
+    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
       scale_colour_discrete(name = namecolor, breaks = color_factor,
                             labels = valuescolor,
                             guide=guide_legend(order=1)) +
       scale_shape_discrete(name = namepch, breaks = pch_factor,
                            labels = valuespch,
                            guide=guide_legend(order=2))
+    if (drawEllipses) {
+      plots <- plots + ggplot2::stat_ellipse(mapping = aes(x=x,y=y,
+                                             colour = color_factor),
+                                             data = data, type = typeEl,
+                                             level = levelEl)
+    }
   }
 
 
@@ -179,11 +196,11 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
     if (is.null(color)) {
       plots <- plots + ggplot2::geom_text(ggplot2::aes(x = x,
                                                        y = y, label = points_labs),
-                                          hjust = 0, nudge_x = (max(x,y)/25), show.legend = F, size = 3)
+                                          hjust = 0, nudge_x = (max(x,y)/25), show.legend = F, size = cex.lab)
     } else {
       plots <- plots + ggplot2::geom_text(ggplot2::aes(x = x,
                                                        y = y, label = points_labs, colour = color_factor),
-                                          hjust = 0, nudge_x = (max(x,y)/25), show.legend = F, size = 3)
+                                          hjust = 0, nudge_x = (max(x,y)/25), show.legend = F, size = cex.lab)
     }
   }
 
