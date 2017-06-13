@@ -144,11 +144,11 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
 
   if (is.null(color) & is.null(pch)) {
     # no color & no shape
-    plots <- plots + ggplot2::geom_jitter(size=size)
+    plots <- plots + ggplot2::geom_point(size=size)
 
   } else if (!is.null(color) & is.null(pch)) {
     # color
-    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = color_factor), size=size) +
+    plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor), size=size) +
       scale_colour_discrete(name = namecolor, breaks = color_factor,
                             labels = valuescolor,
                             guide=guide_legend(order=1))
@@ -163,13 +163,13 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
 
   } else if (is.null(color) & !is.null(pch)) {
     # shape
-    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(shape = pch_factor), size=size) +
+    plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor), size=size) +
       scale_shape_discrete(name = namepch, breaks = pch_factor,
                            labels = valuespch,
                            guide=guide_legend(order=1))
   } else {
     # color + shape
-    plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
+    plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
       scale_colour_discrete(name = namecolor, breaks = color_factor,
                             labels = valuescolor,
                             guide=guide_legend(order=1)) +

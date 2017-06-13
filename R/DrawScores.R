@@ -155,11 +155,11 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
 
     if (is.null(color) & is.null(pch)) {
       # no color & no shape
-      plots <- plots + ggplot2::geom_jitter(size=size)
+      plots <- plots + ggplot2::geom_point(size=size)
 
     } else if (!is.null(color) & is.null(pch)) {
       # color
-      plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = color_factor), size=size) +
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor), size=size) +
         scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
                               labels = as.character(unique(color)),
                               guide=guide_legend(order=1))
@@ -175,13 +175,13 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
 
     } else if (is.null(color) & !is.null(pch)) {
       # shape
-      plots <- plots + ggplot2::geom_jitter(ggplot2::aes(shape = pch_factor), size=size) +
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor), size=size) +
         scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
                            labels = as.character(unique(pch)),
                            guide=guide_legend(order=1))
     } else {
       # color + shape
-      plots <- plots + ggplot2::geom_jitter(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
         scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
                               labels = as.character(unique(color)),
                               guide=guide_legend(order=1)) +
