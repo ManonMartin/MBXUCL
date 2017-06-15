@@ -7,7 +7,7 @@
 DrawLoadings(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
   createWindow = FALSE, main = NULL, axes = c(1, 2),
   loadingstype = c("l", "p", "s"), num.stacked = 4, xlab = NULL,
-  ylab = NULL, ang = 0, xaxis = c("numerical", "character"),
+  ylab = NULL, ang = 0, xaxis_type = c("numerical", "character"),
   nxaxis = 10)
 }
 \arguments{
@@ -31,7 +31,7 @@ DrawLoadings(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
 
 \item{ang}{Angle to rotate the x axis labels for a better visualisation.}
 
-\item{xaxis}{Specify if the xaxis is numerical or character}
+\item{xaxis_type}{Specify if the xaxis is numerical or character}
 
 \item{nxaxis}{Number of thick marks on the xaxis for a character x variable}
 }
