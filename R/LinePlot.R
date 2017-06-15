@@ -92,8 +92,17 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows,
     } else if (type == "l")  {
       plot <- plot + ggplot2::geom_line()
     } else  {
-      plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = index, yend = 0),
-                                           size = 0.5, lineend = "round")
+      if (xaxis_type == "numerical"){
+        plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
+                                             size = 0.5, lineend = "round")
+      } else {
+        plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = index, yend = 0),
+                                             size = 0.5, lineend = "round")
+
+        plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
+                                                   labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
+      }
+
     }
 
     if (xaxis_type == "character")  {

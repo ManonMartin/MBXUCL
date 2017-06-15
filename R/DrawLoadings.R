@@ -137,14 +137,19 @@ if (xaxis == "numerical") {
     } else if (loadingstype == "l")  {
       plot <- plot + ggplot2::geom_line()
     } else  {
-      plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = index, yend = 0),
-                                           size = 0.5, lineend = "round")
+      if (xaxis_type == "numerical"){
+        plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
+                                             size = 0.5, lineend = "round")
+      } else {
+        plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = index, yend = 0),
+                                                   size = 0.5, lineend = "round")
+
+        plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
+                                                 labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
+      }
+
     }
 
-    if (xaxis == "character")  {
-      plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
-                                                 labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
-    }
 
     plot <- plot + ggplot2::labs(title = main, x = xlab) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = ang,vjust = 0.5, hjust = 1)) +
