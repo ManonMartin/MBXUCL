@@ -100,16 +100,12 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows,
                                              size = 0.5, lineend = "round")
 
         plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
-                                                   labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
+                                                   labels = colnames(X)[seq(1, nn, floor(nn/nxaxis))])
+
       }
 
     }
 
-    if (xaxis_type == "character")  {
-      plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
-                                                 labels = colnames(X)[seq(1, nn, floor(nn/nxaxis))])
-
-      }
 
     plot <- plot + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::facet_grid(colname ~., scales = "free_y") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = ang,vjust = 0.5, hjust = 1)) +

@@ -14,7 +14,7 @@
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
 #' @param ang Angle to rotate the x axis labels for a better visualisation.
-#' @param xaxis Specify if the xaxis is numerical or character
+#' @param xaxis_type Specify if the xaxis is numerical or character
 #' @param nxaxis Number of thick marks on the xaxis for a character x variable
 #'
 #' @return A loading plot in the current device.
@@ -41,7 +41,7 @@
 DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
                          createWindow = FALSE, main = NULL,  axes = c(1, 2),
                          loadingstype = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
-                         ang = 0, xaxis = c("numerical", "character"), nxaxis = 10) {
+                         ang = 0, xaxis_type = c("numerical", "character"), nxaxis = 10) {
 
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
@@ -53,7 +53,7 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
   loadingstype <- match.arg(loadingstype)
 
   type.obj <- match.arg(type.obj)
-  xaxis <- match.arg(xaxis)
+  xaxis_type <- match.arg(xaxis_type)
 
   m <- dim(obj$original.dataset)[1]
   nn <- dim(obj$original.dataset)[2]
@@ -123,7 +123,7 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
       }
 
 
-if (xaxis == "numerical") {
+if (xaxis_type == "numerical") {
       plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
     } else  {
       melted$index <- as.numeric(as.factor(melted$Var))
@@ -137,18 +137,22 @@ if (xaxis == "numerical") {
     } else if (loadingstype == "l")  {
       plot <- plot + ggplot2::geom_line()
     } else  {
-      if (xaxis_type == "numerical"){
-        plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
-                                             size = 0.5, lineend = "round")
-      } else {
-        plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = index, yend = 0),
-                                                   size = 0.5, lineend = "round")
+        if (xaxis_type == "numerical"){
+          plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
+                                               size = 0.5, lineend = "round")
+        } else {
+          plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = index, yend = 0),
+                                               size = 0.5, lineend = "round")
 
-        plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
-                                                 labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
+          plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
+                                        labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
+
+        }
+
       }
 
-    }
+
+
 
 
     plot <- plot + ggplot2::labs(title = main, x = xlab) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
@@ -161,13 +165,19 @@ if (xaxis == "numerical") {
       plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
                                        label = ylab[i:last], vjust = 1, hjust = 1)
     } else if (type.obj == "PCA") {
-      plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
-                                       label = paste0("(",round(variance[i:last], 2), "%)"), vjust = 1, hjust = 1)
-    }
+      if (xaxis_type == "numerical")  {
+        plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
+                                         label = paste0("(",round(variance[i:last], 2), "%)"), vjust = 2, hjust = 1.5)
+      } else {
+        plot <- plot + ggplot2::annotate("text", x = 1, y = max(loadings),
+                                         label = paste0("(",round(variance[i:last], 2), "%)"), hjust = 0)
+      }
+
+      }
 
 
 
-    if (is.numeric(melted[1, "Var"]))  {
+    if (xaxis_type == "numerical")  {
       if ((melted[1, "Var"] - melted[(dim(melted)[1]), "Var"]) > 0) {
         plot <- plot + ggplot2::scale_x_reverse()
       }
