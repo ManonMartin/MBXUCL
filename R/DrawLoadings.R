@@ -127,6 +127,7 @@ if (xaxis == "numerical") {
       plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
     } else  {
       melted$index <- as.numeric(as.factor(melted$Var))
+      melted <- as.data.frame(melted)
       plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = index, y = value))
     }
 
@@ -136,7 +137,7 @@ if (xaxis == "numerical") {
     } else if (loadingstype == "l")  {
       plot <- plot + ggplot2::geom_line()
     } else  {
-      plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
+      plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = index, yend = 0),
                                            size = 0.5, lineend = "round")
     }
 
@@ -147,6 +148,7 @@ if (xaxis == "numerical") {
 
     plot <- plot + ggplot2::labs(title = main, x = xlab) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = ang,vjust = 0.5, hjust = 1)) +
+      ggplot2::theme(strip.text.y = ggplot2::element_text(angle = 90)) +
       ggplot2::theme(legend.position = "none") +
       ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
 
