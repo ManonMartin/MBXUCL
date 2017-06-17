@@ -114,24 +114,16 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
 
     plot <- plot + ggplot2::theme_bw()
     if (type == "p") {
-      if (xaxis_type == "numerical"){
-        plot <- plot + ggplot2::geom_point(size=0.5)
-      } else {
-        plot <- plot + ggplot2::geom_point(size=0.5)
-
+      plot <- plot + ggplot2::geom_point(size=0.5)
+      if (xaxis_type == "character"){
         plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
                                                    labels = colnames(X)[seq(1, nn, floor(nn/nxaxis))])
-
       }
     } else if (type == "l")  {
-      if (xaxis_type == "numerical"){
-        plot <- plot + ggplot2::geom_line()
-      } else {
-        plot <- plot + ggplot2::geom_line()
-
+      plot <- plot + ggplot2::geom_line()
+      if (xaxis_type == "character"){
         plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
                                                    labels = colnames(X)[seq(1, nn, floor(nn/nxaxis))])
-
       }
     } else  {
       if (xaxis_type == "numerical"){

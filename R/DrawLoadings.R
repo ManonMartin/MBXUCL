@@ -134,8 +134,16 @@ if (xaxis_type == "numerical") {
       plot <- plot + ggplot2::theme_bw()
     if (loadingstype == "p") {
       plot <- plot + ggplot2::geom_point(size=0.5)
+      if (xaxis_type == "character"){
+        plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
+                                                   labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
+      }
     } else if (loadingstype == "l")  {
       plot <- plot + ggplot2::geom_line()
+      if (xaxis_type == "character"){
+        plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
+                                                   labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
+      }
     } else  {
         if (xaxis_type == "numerical"){
           plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
