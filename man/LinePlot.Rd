@@ -4,9 +4,9 @@
 \alias{LinePlot}
 \title{Line plots}
 \usage{
-LinePlot(X, createWindow = FALSE, main = NULL, rows, type = c("l", "p",
-  "s"), num.stacked = 4, xlab = NULL, ylab = NULL, ang = 0,
-  xaxis_type = c("numerical", "character"), nxaxis = 10)
+LinePlot(X, createWindow = FALSE, main = NULL, rows = NULL,
+  type = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
+  ang = 0, xaxis_type = c("numerical", "character"), nxaxis = 10)
 }
 \arguments{
 \item{X}{A numerical matrix containing the rows to be drawn.}

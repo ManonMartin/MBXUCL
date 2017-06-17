@@ -37,13 +37,20 @@
 
 
 
-LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows,
+LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
                          type = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
                          ang = 0, xaxis_type = c("numerical", "character"), nxaxis = 10) {
 
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
 
+  if (is.vector(X)){
+    if (xaxis_type=="numerical"){
+      X <- matrix(X, nrow = 1, dimnames = list(deparse(substitute(X)), 1:nn))
+    }else{
+      X <- matrix(X, nrow = 1, dimnames = list(deparse(substitute(X)), paste0("V",1:nn)))
+    }
+  }
 
   type <- match.arg(type)
 
@@ -52,7 +59,21 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows,
   m <- dim(X)[1]
   nn <- dim(X)[2]
 
-  X <- as.data.frame(X)
+  if (is.null(rownames(X))){
+    if (m==1){
+      rownames(X) = deparse(substitute(X))
+      }else{rownames(X) <- 1:m}
+  }
+
+  if (is.null(colnames(X))) {
+    if (xaxis_type=="numerical"){
+    colnames(X) <- 1:nn
+    }else{
+      colnames(X) <- paste0("V",1:nn)
+    }
+  }
+
+    X <- as.data.frame(X)
 
   plots <- list()
   plot <- list()
@@ -62,8 +83,10 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows,
 
 
   # labs
+  if (is.null(rows)){
+    n <- m
+  } else {n <- length(rows)} # number of line plots to draw
 
-  n <- length(rows) # number of line plots to draw
 
   j <- 1
   i <- 1
@@ -73,9 +96,12 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows,
     last <- min(i + num.stacked - 1, n)
 
     melted <- reshape2::melt(t(X[i:last, ]), varnames = c("Var", "colname"))
-    if (n==1) {
-      melted[,"colname"] <-  rep(colnames(X)[rows],nn)
+    if (n==1){
+      if (!is.null(rows)) {
+        melted[,"colname"] <-  rep(row.names(X)[rows],nn)
+      } else { melted[,"colname"] <-  rep(row.names(X),nn)}
     }
+
 
 
     if (xaxis_type == "numerical") {
