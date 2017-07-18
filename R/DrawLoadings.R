@@ -13,7 +13,7 @@
 #' @param num.stacked Number of stacked plots.
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
-#' @param ang Angle to rotate the x axis labels for a better visualisation.
+#' @param ang Angle to rotate the x axis labels for a better visualisation, either 0, 45 or 90 degrees.
 #' @param xaxis_type Specify if the xaxis is numerical or character
 #' @param nxaxis Number of thick marks on the xaxis for a character x variable
 #'
@@ -41,7 +41,7 @@
 DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
                          createWindow = FALSE, main = NULL,  axes = c(1, 2),
                          loadingstype = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
-                         ang = 0, xaxis_type = c("numerical", "character"), nxaxis = 10) {
+                         ang = c("0", "45", "90"), xaxis_type = c("numerical", "character"), nxaxis = 10) {
 
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
@@ -54,6 +54,17 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
 
   type.obj <- match.arg(type.obj)
   xaxis_type <- match.arg(xaxis_type)
+
+  ang <- match.arg(ang)
+
+  if (ang %in% c("0", "45")) {
+    vjust <- 1
+    hjust <- 0.5
+  } else {
+    vjust <- 0.5
+    hjust <- 1
+  }
+
 
   m <- dim(obj$original.dataset)[1]
   nn <- dim(obj$original.dataset)[2]
@@ -164,7 +175,7 @@ if (xaxis_type == "numerical") {
 
 
     plot <- plot + ggplot2::labs(title = main, x = xlab) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = ang,vjust = 0.5, hjust = 1)) +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = as.numeric(ang), vjust = vjust, hjust = hjust)) +
       ggplot2::theme(strip.text.y = ggplot2::element_text(angle = 90)) +
       ggplot2::theme(legend.position = "none") +
       ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")

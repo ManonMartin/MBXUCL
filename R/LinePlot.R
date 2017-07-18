@@ -12,7 +12,7 @@
 #' @param num.stacked Number of stacked plots.
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
-#' @param ang Angle to rotate the x axis labels for a better visualisation.
+#' @param ang Angle to rotate the x axis labels for a better visualisation, either 0, 45 or 90 degrees.
 #' @param xaxis_type Specify if the xaxis is numerical or character (corresponds to the colnames of X).
 #' @param nxaxis Number of thick marks on the xaxis for a character x variable.
 #'
@@ -28,7 +28,7 @@
 #'
 #' a <- LinePlot(X = X, createWindow = FALSE, main = "line plot",  rows = c(1, 2),
 #'              type = "l", num.stacked = 4, xlab = "x-axis", ylab = "y-axis",
-#'              ang = 0, xaxis_type = "numerical", nxaxis = 10)
+#'              ang = "0", xaxis_type = "numerical", nxaxis = 10)
 #'
 #' @importFrom grDevices dev.new
 #' @import ggplot2
@@ -39,7 +39,7 @@
 
 LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
                          type = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
-                         ang = 0, xaxis_type = c("numerical", "character"), nxaxis = 10) {
+                         ang = c("0", "45", "90"), xaxis_type = c("numerical", "character"), nxaxis = 10) {
 
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
@@ -55,6 +55,17 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
   type <- match.arg(type)
 
   xaxis_type <- match.arg(xaxis_type)
+
+  ang <- match.arg(ang)
+
+  if (ang %in% c("0", "45")) {
+    vjust <- 1
+    hjust <- 0.5
+  } else {
+    vjust <- 0.5
+    hjust <- 1
+  }
+
 
   m <- dim(X)[1]
   nn <- dim(X)[2]
@@ -142,7 +153,7 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
 
 
     plot <- plot + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::facet_grid(colname ~., scales = "free_y") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = ang,vjust = 0.5, hjust = 1)) +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = as.numeric(ang), vjust = vjust, hjust = hjust)) +
       ggplot2::theme(strip.text.y = ggplot2::element_text(angle = 90)) +
       ggplot2::theme(legend.position = "none") +
       ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
