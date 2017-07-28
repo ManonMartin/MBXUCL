@@ -187,8 +187,7 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
 
 
 # title, theme
-  plots <- plots + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::geom_vline(xintercept = 0,
-                                                                                         size = 0.1) + ggplot2::geom_hline(yintercept = 0, size = 0.1) + ggplot2::theme_bw() +
+  plots <- plots + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::theme_bw() +
     ggplot2::theme(panel.grid.major = ggplot2::element_line(color = "gray60",
                                                             size = 0.2), panel.grid.minor = ggplot2::element_blank(),
                    panel.background = ggplot2::element_rect(fill = "gray98"))
@@ -199,11 +198,11 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
     if (is.null(color)) {
       plots <- plots + ggplot2::geom_text(ggplot2::aes(x = x,
                                                        y = y, label = points_labs),
-                                          hjust = 0, nudge_x = (max(x,y)/25), show.legend = F, size = cex.lab)
+                                          hjust = 0, vjust = 1, show.legend = F, size = cex.lab)
     } else {
       plots <- plots + ggplot2::geom_text(ggplot2::aes(x = x,
                                                        y = y, label = points_labs, colour = color_factor),
-                                          hjust = 0, nudge_x = (max(x,y)/25), show.legend = F, size = cex.lab)
+                                          hjust = 0, vjust = 1,  show.legend = F, size = cex.lab)
     }
   }
 
