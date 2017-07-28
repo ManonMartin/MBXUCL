@@ -80,10 +80,13 @@ pander(PCA.res[["scores"]][1:10,])
 
 Draw scores:
 
-```{r scoreplot, out.width='70%', fig.width=10, fig.height=10}
-DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
- createWindow=FALSE, main = "PCA score plot for HumanSerum dataset",
-   class = as.character(ClassHS), axes =c(1,2), type.graph="scores")
+```{r scoreplot, out.width='100%', fig.width=8, fig.height=8}
+
+DrawScores(PCA.res, type.obj = "PCA", drawNames = TRUE,
+  createWindow = FALSE, main = "PCA score plot for HumanSerum dataset", 
+  color = ClassHS, size = 2, cex.lab = 4, axes = c(1, 2), 
+  drawEllipses = TRUE, typeEl = "norm", levelEl = 0.9)
+
 ```
 
 
@@ -95,24 +98,28 @@ pander(PCA.res[["loadings"]][1:10,])
 
 Draw loadings:
 * First option
-```{r, out.width='100%', fig.width=12, fig.height=8}
-DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
- createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-    axes = c(1:2), type.graph ="loadings", loadingstype="l")
+```{r, out.width='100%', fig.width=8, fig.height=6}
+
+DrawLoadings(obj = PCA.res, type.obj = "PCA",
+  createWindow = FALSE, main = "PCA loadings plot for HumanSerum dataset", 
+  axes = c(1, 2), loadingstype = "l", num.stacked = 4,  ang = "0", xaxis_type = "numerical",
+  nxaxis = 10, xlab = "ppm")
 ```
 
 * Second option
-```{r, out.width='100%', fig.width=12, fig.height=8}
-DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
- createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-    axes = c(1:2), type.graph ="loadings", loadingstype="s")
+```{r, out.width='100%', fig.width=8, fig.height=6}
+DrawLoadings(obj = PCA.res, type.obj = "PCA",
+  createWindow = FALSE, main = "PCA loadings plot for HumanSerum dataset", 
+  axes = c(1, 2), loadingstype = "s", num.stacked = 4,  ang = "0", xaxis_type = "numerical",
+  nxaxis = 10, xlab = "ppm")
 ```
 
 * Third option
-```{r, out.width='100%', fig.width=12, fig.height=8}
-DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
- createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-    axes = c(1:2), type.graph ="loadings", loadingstype="p")
+```{r, out.width='100%', fig.width=8, fig.height=6}
+DrawLoadings(obj = PCA.res, type.obj = "PCA",
+  createWindow = FALSE, main = "PCA loadings plot for HumanSerum dataset", 
+  axes = c(1, 2), loadingstype = "p", num.stacked = 4,  ang = "0", xaxis_type = "numerical",
+  nxaxis = 10, xlab = "ppm")
 ```
 
 ## Unsupervised clustering
@@ -153,20 +160,19 @@ pander(perf.plsda)
 
 
 
-Scores and loadings plots:
+### Scores and loadings plots
   
-```{r, out.width='100%', fig.width=12, fig.height=12}
+```{r, out.width='100%', fig.width=8, fig.height=8}
 
-DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
-       createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
-       type.graph = "scores", loadingstype = "l",
-       num.stacked = 4, xlab = NULL)
+DrawScores(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
+  createWindow = FALSE, main = "PLSDA score plot for HumanSerum dataset", 
+  color = Class, size = 2, cex.lab = 4, axes = c(1, 2), 
+  drawEllipses = TRUE, typeEl = "norm", levelEl = 0.9)
 
-
-DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
-       createWindow = FALSE, main = NULL, axes = c(1,2,3),
-       type.graph = "loadings", loadingstype = "l",
-       num.stacked = 4, xlab = NULL)
+DrawLoadings(obj = PLSDA.res, type.obj = "PLSDA",
+  createWindow = FALSE, main = "PLSDA loadings plot for HumanSerum dataset", 
+  axes = c(1, 2, 3), loadingstype = "l", num.stacked = 4,  ang = "0", xlab = "ppm",
+  xaxis_type = "numerical", nxaxis = 10)
 
 ```
 
@@ -189,13 +195,10 @@ oplsda.res = OPLSDA(x=x, y=y, impT = FALSE,impG = FALSE, no=no, nb = nb)
 ```
 
 
-
-
-Few graphical results :
   
   
   
-* Choice of the number of orthogonal components
+### Choice of the number of orthogonal components
 
 Eigenvalue criterion in Trygg (2001):
 ```{r , out.width='70%',fig.width=8, fig.height=8}
@@ -212,35 +215,36 @@ title(main="OPLS: Choice of the n[orthog. Components]", xlab="Orthogonal OPLS-DA
 Or by cross-validation:
   
   
-```{r, out.width='70%', fig.width=10, fig.height=10, eval=TRUE}
+```{r, out.width='70%', fig.width=8, fig.height=8, eval=FALSE}
 cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 10)
 plot(1:length(cvOPLSDA.res$RMSECV), cvOPLSDA.res$RMSECV, main = "RMSECV", lty = 19)
 
 ```
 
 
-* Scores and loadings plots:
+### Scores and loadings plots
   
-```{r, out.width='100%', fig.width=12, fig.height=12}
+```{r, out.width='100%', fig.width=8, fig.height=8}
 Class = y
-DrawSL(obj = oplsda.res, type.obj = "OPLSDA", drawNames = TRUE,
-       createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
-       type.graph = "scores", loadingstype = "l",
-       num.stacked = 4, xlab = NULL)
 
+DrawScores(obj = oplsda.res, type.obj = "OPLSDA", drawNames = FALSE,
+  createWindow = FALSE, main = "PLSDA score plot for DataSimul dataset", 
+  color = Class, size = 2, cex.lab = 4, axes = c(1, 2), 
+  drawEllipses = TRUE, typeEl = "norm", levelEl = 0.9)
 
-DrawSL(obj = oplsda.res, type.obj = "OPLSDA", drawNames = TRUE,
-       createWindow = FALSE, main = NULL, axes = c(1, 2,3),
-       type.graph = "loadings", loadingstype = "l",
-       num.stacked = 4, xlab = NULL)
+DrawLoadings(obj = oplsda.res, type.obj = "OPLSDA",
+  createWindow = FALSE, main = "PLSDA loadings plot for DataSimul dataset", 
+  axes = c(1, 2, 3), loadingstype = "l", num.stacked = 4,  ang = "0", xlab = "ppm",
+  xaxis_type = "numerical", nxaxis = 10)
+
 
 ```
 
 
-* S-plot
+### S-plot
 
 
-```{r, out.width='80%', fig.width=12, fig.height=12}
+```{r, out.width='100%', fig.width=8, fig.height=7}
 
 # S-plot
 ###########################
@@ -266,12 +270,12 @@ for (i in 1:nrow(p1)) {
 
 plot(p1, pcorr1, xlab = "p(cov)[1]", ylab = "p(corr)[1]",
      main = "S-plot (OPLS-DA)", ylim=c(min(pcorr1, na.rm = T)*1.1,
-                                       max(pcorr1, na.rm = T)*1.1), xlim=c(min(p1, na.rm = T)*1.1, 
-                                                                           max(p1, na.rm = T)*1.1))
+                                       max(pcorr1, na.rm = T)*1.1), 
+     xlim=c(min(p1, na.rm = T)*1.1, max(p1, na.rm = T)*1.1))
 
 sel = p1*pcorr1
 sel = order(sel, decreasing = TRUE)[1:nb]
-text(p1[sel], pcorr1[sel], labels = colnames(s)[sel], cex = 0.7, pos = 1)
+text(p1[sel], pcorr1[sel], labels = colnames(s)[sel], cex = 1, pos = 1)
 abline(v=0,lty = 2)
 abline(h=0,lty = 2)
 
@@ -281,9 +285,9 @@ abline(h=0,lty = 2)
 
 
 
-* Model coefficients
+### Model coefficients
 
-```{r, out.width='100%', out.width='70%', fig.width=12, fig.height=5}
+```{r, out.width='100%', fig.width=12, fig.height=5}
 
 delta=mean(sort(abs(oplsda.res$b))[m-nb+c(0,1)])
 xax = as.numeric(names(oplsda.res$b))
@@ -292,9 +296,8 @@ par(mar=c(4,2,2,1))
 plot(oplsda.res$b,type="l",xaxt = "n", yaxt = "n", main="OPLS: Vector of descriptors' rank",xlab="ppm" )
 abline(h=0)
 abline(h=delta*c(-1,1),lty=2)
-axis(side=2,cex.axis=0.7)
-axis(side=1,at=c(1,seq(50,m,50)),
-     labels=xax[c(1,seq(50,m,50))],cex.axis=0.7)
+axis(side=2,cex.axis=1)
+axis(side=1,at=c(1,seq(50,m,50)), labels=xax[c(1,seq(50,m,50))])
 
 ```
 
@@ -311,3 +314,52 @@ OPLSDA_pred(ropls = oplsda.res, x.new = xnew)
 
 
 ```
+
+
+## Other Drawing functions
+
+
+```{r}
+data(iris)
+rownames(iris) <- paste0("iris", 1:dim(iris)[1])
+dataset <- iris[sample(150, 20),1:4]
+dataset <- t(dataset)
+```
+
+
+### LinePlot
+
+```{r, out.width='100%', fig.width=6, fig.height=6}
+
+LinePlot(X = dataset, createWindow = FALSE, 
+         main = "Iris' sepal and petal profiles",  rows = c(1:4),
+             type = "p", num.stacked = 4, xlab = "Iris", ylab = "Variables",
+             ang = "90", xaxis_type = "character", nxaxis = 20)
+
+
+```
+
+
+
+### ScatterPlot
+
+```{r, out.width='100%', fig.width=7, fig.height=9}
+
+a <- ScatterPlot(x = iris$Sepal.Length, y = iris$Petal.Length, 
+                 points_labs = rownames(iris), createWindow = FALSE, 
+                 main = "Length of iris' petals and sepals", color = iris$Species, 
+                 pch = iris$Species, size = 2, cex.lab = 3, xlab = NULL, ylab = NULL, 
+                 legend_pch = NULL, legend_color = NULL, drawEllipses = TRUE, 
+                 typeEl = "norm", levelEl = 0.9)
+
+b <- ScatterPlot(x = iris$Sepal.Width, y = iris$Petal.Width, points_labs = rownames(iris), 
+            createWindow = FALSE, main = "Width of iris' petals and sepals", 
+            color = iris$Species,  pch = iris$Species, size = 2, cex.lab = 3, 
+            xlab = NULL, ylab = NULL, legend_pch = NULL, legend_color = NULL, 
+            drawEllipses = TRUE, typeEl = "norm", levelEl = 0.9)
+
+
+require(gridExtra)
+do.call(gridExtra::grid.arrange, c(list(a,b), list(nrow = 2, ncol = 1)))
+```
+
