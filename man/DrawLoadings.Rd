@@ -7,8 +7,8 @@
 DrawLoadings(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
   createWindow = FALSE, main = NULL, axes = c(1, 2),
   loadingstype = c("l", "p", "s"), num.stacked = 4, xlab = NULL,
-  ylab = NULL, ang = 0, xaxis_type = c("numerical", "character"),
-  nxaxis = 10)
+  ylab = NULL, ang = c("0", "45", "90"), xaxis_type = c("numerical",
+  "character"), nxaxis = 10, hline = NULL)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA, PLSDA or OPLSDA analysis.}
@@ -29,11 +29,13 @@ DrawLoadings(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
 
 \item{ylab}{Label for the y-axis.}
 
-\item{ang}{Angle to rotate the x axis labels for a better visualisation.}
+\item{ang}{Angle to rotate the x axis labels for a better visualisation, either 0, 45 or 90 degrees.}
 
 \item{xaxis_type}{Specify if the xaxis is numerical or character}
 
 \item{nxaxis}{Number of thick marks on the xaxis for a character x variable}
+
+\item{hline}{Numerical scalar. If not \code{NULL}, an horizontal dashed line is drawn at the \code{hline} value}
 }
 \value{
 A loading plot in the current device.
