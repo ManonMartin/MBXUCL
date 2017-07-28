@@ -6,7 +6,8 @@
 \usage{
 LinePlot(X, createWindow = FALSE, main = NULL, rows = NULL,
   type = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
-  ang = 0, xaxis_type = c("numerical", "character"), nxaxis = 10)
+  ang = c("0", "45", "90"), xaxis_type = c("numerical", "character"),
+  nxaxis = 10)
 }
 \arguments{
 \item{X}{A numerical matrix containing the rows to be drawn.}
@@ -25,7 +26,7 @@ LinePlot(X, createWindow = FALSE, main = NULL, rows = NULL,
 
 \item{ylab}{Label for the y-axis.}
 
-\item{ang}{Angle to rotate the x axis labels for a better visualisation.}
+\item{ang}{Angle to rotate the x axis labels for a better visualisation, either 0, 45 or 90 degrees.}
 
 \item{xaxis_type}{Specify if the xaxis is numerical or character (corresponds to the colnames of X).}
 
@@ -47,6 +48,6 @@ colnames(X) <- as.character(1:20)
 
 a <- LinePlot(X = X, createWindow = FALSE, main = "line plot",  rows = c(1, 2),
              type = "l", num.stacked = 4, xlab = "x-axis", ylab = "y-axis",
-             ang = 0, xaxis_type = "numerical", nxaxis = 10)
+             ang = "0", xaxis_type = "numerical", nxaxis = 10)
 
 }
