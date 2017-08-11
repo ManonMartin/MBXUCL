@@ -74,6 +74,11 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
   m <- dim(x)[2]  # nombre de descripteurs
   n <- dim(x)[1]
 
+  if (nb > m){
+    stop("nb is superior to the total number of descriptors, you need to reduce its value")
+  }
+
+
   options(warn = -1)
   xax <- as.numeric(colnames(x))
   if (sum(is.na(xax)) > 0) {
