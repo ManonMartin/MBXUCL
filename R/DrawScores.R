@@ -76,6 +76,11 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
     stop("axes is not a numeric vector")
   }
 
+  if(drawNames & is.null(rownames(obj$original.dataset))) {
+    warning("rownames of the dataset is NULL, hence you cannot use DrawNames=TRUE ==> reset to FALSE")
+    drawNames = FALSE
+  }
+
 
   # define color and pch
 
