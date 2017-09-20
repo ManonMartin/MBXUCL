@@ -1,4 +1,6 @@
 language: r
+r: bioc-release
 sudo: false
 cache: packages
 warnings_are_errors: false
+bioc_packages: ropls
