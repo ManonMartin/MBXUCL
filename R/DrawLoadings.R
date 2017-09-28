@@ -132,6 +132,7 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
       melted <- reshape2::melt(t(loadings[, i:last]), varnames = c("rowname", "Var"))
       if (n==1) {
         melted[,"rowname"] <-  rep(colnames(loadings)[axes],nn)
+        melted[,"Var"] <-  round(as.numeric(rownames(loadings)),3)
       }
 
 
