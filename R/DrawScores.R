@@ -41,6 +41,8 @@
 #' @import ggplot2
 #' @import reshape2
 #' @import gridExtra
+#' @importFrom scales hue_pal
+#' @importFrom plyr ddply
 
 DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
                    createWindow = FALSE, main = NULL, color = NULL, pch = NULL, size = 1,
@@ -186,12 +188,45 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
          dataf <- cbind(color_factor, scores)
          x <- colnames(scores)[Xax]
          y <- colnames(scores)[Yax]
-         chulls <- ddply(dataf, .(color_factor), function(df) df[chull(df[,x], df[,y]), ])
+         chulls <- plyr::ddply(dataf, .(color_factor), function(df) df[chull(df[,x], df[,y]), ])
 
          plots <- plots  +
            geom_polygon(data = chulls, aes(get(colnames(scores)[Xax]),
                                            get(colnames(scores)[Yax]), fill = color_factor),
                         alpha=0.4,show.legend = FALSE)
+        
+         tab <- table(color_factor)
+         colrange <- scales::hue_pal()(nlevels(color_factor))
+         twoobs <- as.factor(rownames(as.matrix(tab[tab==2])))
+         
+         start <- c()
+         stop <- c()
+         for (i in 1:sum(tab==2)) {
+           ind <- which(as.factor(color_factor) %in% twoobs[i])
+           start[i] <- ind[1]
+           stop[i] <- ind[2]
+         }
+         
+          xstart <- scores[start, Xax]
+          xstop <- scores[stop, Xax]
+          ystart <- scores[start, Yax]
+          ystop <- scores[stop, Yax]
+          segment_data <- data.frame(xstart, xstop, ystart, ystop)
+          colind <- which(levels(color_factor) %in% twoobs)
+          col <- colrange[colind]
+          
+          plots <- plots  + geom_segment(data=segment_data,
+                                          aes(x = xstart, y = ystart, xend = xstop, 
+                                           yend = ystop) , color = col, alpha=0.4)
+           
+           
+         
+        
+
+         
+           
+   
+         
        }
 
       if (drawEllipses) {
