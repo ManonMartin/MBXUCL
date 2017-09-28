@@ -19,6 +19,8 @@
 #' @param drawEllipses If \code{TRUE}, will draw ellipses with the \code{ggplot2::stat_ellipse} with groups coresponding to the color vector.
 #' @param typeEl The type of ellipse, either "norm" (multivariate normal distribution), "t" (multivariate t-distribution) and "euclid" draws a circle with the radius equal to level, representing the euclidean distance from the center.
 #' @param levelEl The confidence level at which to draw an ellipse.
+#' @param drawPolygon If \code{TRUE}, will relate the points linked to the same group (color vector)
+#' @param noLegend If \code{TRUE}, no legend is drawn
 #' @return A score or loading plot in the current device.
 
 #' @details
@@ -43,7 +45,7 @@
 DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
                    createWindow = FALSE, main = NULL, color = NULL, pch = NULL, size = 1,
                    cex.lab = 3, axes = c(1, 2), xlab = NULL, ylab = NULL, drawEllipses = FALSE,
-                   typeEl = "norm", levelEl = 0.9) {
+                   typeEl = "norm", levelEl = 0.9, drawPolygon = FALSE, noLegend = FALSE) {
 
   checkArg(main, "str", can.be.null = TRUE)
 
@@ -69,6 +71,11 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
   if (!is.null(pch) && is.vector(pch, mode = "any") && length(pch) != m) {
     stop("the length of pch is not equal to the nrow of data matrix")
   }
+
+  if(drawPolygon & is.null(color)) {
+    stop("drawPolygon is true but color is null ...")
+  }
+
 
 
   # axes
@@ -155,7 +162,8 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
     Xlim <- c(min(scores[, Xax]) * 1.4, max(scores[, Xax]) * 1.4)
     Ylim <- c(min(scores[, Yax]) * 1.4, max(scores[, Yax]) * 1.4)
 
-    plots <- ggplot2::ggplot(scores, ggplot2::aes(get(colnames(scores)[Xax]),
+    # df <- cbind(color_factor, scores)
+    plots <- ggplot2::ggplot(scores , ggplot2::aes(get(colnames(scores)[Xax]),
                                                   get(colnames(scores)[Yax]))) + ggplot2::xlim(Xlim) + ggplot2::ylim(Ylim)
 
     if (is.null(color) & is.null(pch)) {
@@ -163,11 +171,28 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
       plots <- plots + ggplot2::geom_point(size=size)
 
     } else if (!is.null(color) & is.null(pch)) {
+
+
       # color
-      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor), size=size) +
+       plots <- plots  +
+
+        ggplot2::geom_point(ggplot2::aes(colour = color_factor), size=size) +
+
         scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
                               labels = as.character(unique(color)),
                               guide=guide_legend(order=1))
+
+       if (drawPolygon) {
+         dataf <- cbind(color_factor, scores)
+         x <- colnames(scores)[Xax]
+         y <- colnames(scores)[Yax]
+         chulls <- ddply(dataf, .(color_factor), function(df) df[chull(df[,x], df[,y]), ])
+
+         plots <- plots  +
+           geom_polygon(data = chulls, aes(get(colnames(scores)[Xax]),
+                                           get(colnames(scores)[Yax]), fill = color_factor),
+                        alpha=0.4,show.legend = FALSE)
+       }
 
       if (drawEllipses) {
 
@@ -193,6 +218,16 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
       scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
                              labels = as.character(unique(pch)),
                              guide=guide_legend(order=2))
+
+      if (drawPolygon) {
+        dataf <- cbind(color_factor, scores)
+        chulls <- ddply(dataf, .(color_factor), function(df) df[chull(df$PC1, df$PC2), ])
+
+        plots <- plots  +
+          geom_polygon(data = chulls, aes(x=PC1, y=PC2, fill = color_factor),
+                       alpha=0.4,show.legend = FALSE)
+      }
+
 
       if (drawEllipses) {
 
@@ -225,6 +260,10 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
                                                          y = scores[, Yax], label = rownames(obj$original.dataset), colour = color_factor),
                                             hjust = 0, nudge_x = (Xlim[2]/25), show.legend = F, size = cex.lab)
       }
+    }
+
+    if (noLegend){
+      plots <- plots + theme(legend.position="none")
     }
 
     plots
