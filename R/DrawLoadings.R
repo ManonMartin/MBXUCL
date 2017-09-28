@@ -116,6 +116,11 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
     xlab <- "Index"
   }
 
+  if (is.null(ylab)) {
+    ylab <- "Value"
+  }
+
+
 
 
 
@@ -176,7 +181,7 @@ if (xaxis_type == "numerical") {
 
 
 
-    plot <- plot + ggplot2::labs(title = main, x = xlab) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
+    plot <- plot + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = as.numeric(ang), vjust = vjust, hjust = hjust)) +
       ggplot2::theme(strip.text.y = ggplot2::element_text(angle = 90)) +
       ggplot2::theme(legend.position = "none")
@@ -185,10 +190,8 @@ if (xaxis_type == "numerical") {
       }
 
 
-    if (!is.null(ylab)) {
-      plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
-                                       label = ylab[i:last], vjust = 1, hjust = 1)
-    } else if (type.obj == "PCA") {
+
+    if (type.obj == "PCA") {
       if (xaxis_type == "numerical")  {
         plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
                                          label = paste0("(",round(variance[i:last], 2), "%)"), vjust = 2, hjust = 1.5)
