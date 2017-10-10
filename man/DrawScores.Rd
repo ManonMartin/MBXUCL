@@ -7,7 +7,8 @@
 DrawScores(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, color = NULL, pch = NULL,
   size = 1, cex.lab = 3, axes = c(1, 2), xlab = NULL, ylab = NULL,
-  drawEllipses = FALSE, typeEl = "norm", levelEl = 0.9)
+  drawEllipses = FALSE, typeEl = "norm", levelEl = 0.9,
+  drawPolygon = FALSE, noLegend = FALSE)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA, PLSDA or OPLSDA analysis.}
@@ -39,6 +40,10 @@ DrawScores(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
 \item{typeEl}{The type of ellipse, either "norm" (multivariate normal distribution), "t" (multivariate t-distribution) and "euclid" draws a circle with the radius equal to level, representing the euclidean distance from the center.}
 
 \item{levelEl}{The confidence level at which to draw an ellipse.}
+
+\item{drawPolygon}{If \code{TRUE}, will relate the points linked to the same group (color vector)}
+
+\item{noLegend}{If \code{TRUE}, no legend is drawn}
 }
 \value{
 A score or loading plot in the current device.
