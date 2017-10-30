@@ -20,7 +20,9 @@
 #' @param typeEl The type of ellipse, either "norm" (multivariate normal distribution), "t" (multivariate t-distribution) and "euclid" draws a circle with the radius equal to level, representing the euclidean distance from the center.
 #' @param levelEl The confidence level at which to draw an ellipse.
 #' @param drawPolygon If \code{TRUE}, will relate the points linked to the same group (color vector)
-#' @param noLegend If \code{TRUE}, no legend is drawn
+#' @param noLegend If \code{TRUE}, no legend is drawn.
+#' @param legend_color_manual If not \code{NULL}, a named character vector giving manually the colors to be drawn, named with the levels of the color vector.
+#' @param legend_shape_manual If not \code{NULL}, a named character vector giving manually the shapes to be drawn, named with the levels of the pch vector.
 #' @return A score or loading plot in the current device.
 
 #' @details
@@ -46,7 +48,8 @@
 DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
                    createWindow = FALSE, main = NULL, color = NULL, pch = NULL, size = 1,
                    cex.lab = 3, axes = c(1, 2), xlab = NULL, ylab = NULL, drawEllipses = FALSE,
-                   typeEl = "norm", levelEl = 0.9, drawPolygon = FALSE, noLegend = FALSE) {
+                   typeEl = "norm", levelEl = 0.9, drawPolygon = FALSE, noLegend = FALSE,
+                   legend_color_manual = NULL, legend_shape_manual = NULL) {
 
   checkArg(main, "str", can.be.null = TRUE)
 
@@ -64,14 +67,32 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
 
   # color
 
-  if (!is.null(color) && is.vector(color, mode = "any") && length(color) != m) {
-    stop("the length of color is not equal to the nrow of data matrix")
+  if (!is.null(color) && is.vector(color, mode = "any") ) {
+    if (length(color) != m) {
+      stop("the length of color is not equal to the nrow of data matrix")
+    }else if (!is.null(legend_color_manual) & is.vector(legend_color_manual, mode = "any") &
+              length(legend_color_manual) != nlevels(as.factor(color))) {
+    stop("The length of legend_color_manual is not equal to the nlevels of color")
+    } else if (sum(!names(legend_color_manual) %in% levels(as.factor(color)))!=0) {
+    stop("The names of legend_color_manual are not equal to the levels names of color")
+    }
   }
 
   # pch
-  if (!is.null(pch) && is.vector(pch, mode = "any") && length(pch) != m) {
+  if (!is.null(pch) && is.vector(pch, mode = "any")) {
+    if (length(pch) != m) {
     stop("the length of pch is not equal to the nrow of data matrix")
+    } else if (!is.null(legend_shape_manual) & is.vector(legend_shape_manual, mode = "any") &
+               length(legend_shape_manual) != nlevels(as.factor(pch))) {
+      stop("The length of legend_shape_manual is not equal to the nlevels of pch")
+    } else if (sum(!names(legend_shape_manual) %in% levels(as.factor(pch)))!=0) {
+      stop("The names of legend_shape_manual are not equal to the levels names of pch")
+    }
   }
+
+
+
+
 
   if(drawPolygon & is.null(color)) {
     stop("drawPolygon is true but color is null ...")
@@ -140,7 +161,6 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
   }
 
 
-
   plots <- list()
   plot <- list()
   Var <- rowname <- value <- NULL  # only for R CMD check
@@ -166,7 +186,7 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
 
     if (!drawEllipses & !drawPolygon) {
       plots <- ggplot2::ggplot(scores , ggplot2::aes(get(colnames(scores)[Xax]),
-                 get(colnames(scores)[Yax]))) + ggplot2::xlim(Xlim) + ggplot2::ylim(Ylim)
+                 get(colnames(scores)[Yax])))  + ggplot2::xlim(Xlim) + ggplot2::ylim(Ylim)
 
     }else {
       plots <- ggplot2::ggplot(scores , ggplot2::aes(get(colnames(scores)[Xax]),get(colnames(scores)[Yax])))
@@ -177,16 +197,25 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
       plots <- plots + ggplot2::geom_point(size=size)
 
     } else if (!is.null(color) & is.null(pch)) {
-
-
       # color
        plots <- plots  +
+        ggplot2::geom_point(ggplot2::aes(colour = color_factor, size=size))
+         if (!is.null(legend_color_manual)) {
+           plots <- plots  +
+             ggplot2::scale_colour_manual(name = namecolor, breaks = color_factor,
+                                          values = legend_color_manual,
+                                         guide=guide_legend(order=1))+
+             guides(colour = guide_legend(override.aes = list(shape = 15)))
+         } else {
+           plots <- plots  +
+           scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
+                                 labels = as.character(unique(color)),
+                                 guide=guide_legend(order=1))+
+             guides(colour = guide_legend(override.aes = list(shape = 15)))
+         }
 
-        ggplot2::geom_point(ggplot2::aes(colour = color_factor), size=size) +
 
-        scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
-                              labels = as.character(unique(color)),
-                              guide=guide_legend(order=1))
+
 
        if (drawPolygon) {
          dataf <- cbind(color_factor, scores)
@@ -213,19 +242,58 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
 
     } else if (is.null(color) & !is.null(pch)) {
       # shape
-      plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor), size=size) +
-        scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
-                           labels = as.character(unique(pch)),
-                           guide=guide_legend(order=1))
+
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor), size=size)
+
+      # legend_shape_manual
+      if (!is.null(legend_shape_manual)) {
+        plots <- plots  +
+          ggplot2::scale_shape_manual(name = namepch, breaks = pch_factor,
+                                      values = legend_shape_manual,
+                                       guide=guide_legend(order=1))
+      } else {
+        plots <- plots  +
+          ggplot2::scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
+                                        labels = as.character(unique(pch)),
+                                        guide=guide_legend(order=1))
+      }
+
+
     } else {
       # color + shape
-      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
-        scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
-                              labels = as.character(unique(color)),
-                              guide=guide_legend(order=1)) +
-      scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
-                             labels = as.character(unique(pch)),
-                             guide=guide_legend(order=2))
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size)
+
+      # legend_color_manual
+      if (!is.null(legend_color_manual)) {
+        plots <- plots  +
+          ggplot2::scale_colour_manual(name = namecolor, breaks = color_factor,
+                                       values = legend_color_manual,
+                                       guide=guide_legend(order=1, shape = 1))+
+        guides(colour = guide_legend(override.aes = list(shape = 15)))
+
+      } else {
+        plots <- plots  +
+          scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
+                                labels = as.character(unique(color)),
+                                guide=guide_legend(order=1))+
+          guides(colour = guide_legend(override.aes = list(shape = 15)))
+      }
+
+      # legend_shape_manual
+      if (!is.null(legend_shape_manual)) {
+        plots <- plots  +
+          ggplot2::scale_shape_manual(name = namepch, breaks = pch_factor,
+                                      values = legend_shape_manual,
+                                      guide=guide_legend(order=1))
+      } else {
+        plots <- plots  +
+          ggplot2::scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
+                                        labels = as.character(unique(pch)),
+                                        guide=guide_legend(order=1))
+      }
+
+
+
 
       if (drawPolygon) {
         dataf <- cbind(color_factor, scores)

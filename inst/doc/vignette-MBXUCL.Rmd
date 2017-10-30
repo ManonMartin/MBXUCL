@@ -160,14 +160,17 @@ pander(perf.plsda)
 
 
 
-### Scores and loadings plots
+### Scores and loadings plots (with mannually defined colors and pch)
   
 ```{r, out.width='100%', fig.width=8, fig.height=8}
 
 DrawScores(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
-  createWindow = FALSE, main = "PLSDA score plot for HumanSerum dataset", 
-  color = Class, size = 2, cex.lab = 4, axes = c(1, 2), 
-  drawEllipses = TRUE, typeEl = "norm", levelEl = 0.9)
+  createWindow = FALSE, main = "PLSDA score plot for HumanSerum dataset",
+  color = Class, pch = Class, size = 2, cex.lab = 4, axes = c(1, 2), 
+  drawEllipses = TRUE, typeEl = "norm", levelEl = 0.9,
+  legend_color_manual = c("1"="blue", "2"="green3", "3" = "black", 
+                          "4" = "yellow"),
+  legend_shape_manual = c("1"= 0, "2"= 6, "3" = 3, "4" = 4))
 
 DrawLoadings(obj = PLSDA.res, type.obj = "PLSDA",
   createWindow = FALSE, main = "PLSDA loadings plot for HumanSerum dataset", 

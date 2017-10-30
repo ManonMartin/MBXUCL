@@ -8,7 +8,8 @@ DrawScores(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
   createWindow = FALSE, main = NULL, color = NULL, pch = NULL,
   size = 1, cex.lab = 3, axes = c(1, 2), xlab = NULL, ylab = NULL,
   drawEllipses = FALSE, typeEl = "norm", levelEl = 0.9,
-  drawPolygon = FALSE, noLegend = FALSE)
+  drawPolygon = FALSE, noLegend = FALSE, legend_color_manual = NULL,
+  legend_shape_manual = NULL)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA, PLSDA or OPLSDA analysis.}
@@ -43,7 +44,11 @@ DrawScores(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
 
 \item{drawPolygon}{If \code{TRUE}, will relate the points linked to the same group (color vector)}
 
-\item{noLegend}{If \code{TRUE}, no legend is drawn}
+\item{noLegend}{If \code{TRUE}, no legend is drawn.}
+
+\item{legend_color_manual}{If not \code{NULL}, a named character vector giving manually the colors to be drawn, named with the levels of the color vector.}
+
+\item{legend_shape_manual}{If not \code{NULL}, a named character vector giving manually the shapes to be drawn, named with the levels of the pch vector.}
 }
 \value{
 A score or loading plot in the current device.

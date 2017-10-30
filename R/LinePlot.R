@@ -15,6 +15,7 @@
 #' @param ang Angle to rotate the x axis labels for a better visualisation, either 0, 45 or 90 degrees.
 #' @param xaxis_type Specify if the xaxis is numerical or character (corresponds to the colnames of X).
 #' @param nxaxis Number of thick marks on the xaxis for a character x variable.
+#' @param y_axis_text if \code{TRUE}, will display the y-axis text.
 #'
 #' @return A loading plot in the current device.
 #'
@@ -39,7 +40,8 @@
 
 LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
                          type = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
-                         ang = c("0", "45", "90"), xaxis_type = c("numerical", "character"), nxaxis = 10) {
+                         ang = c("0", "45", "90"), xaxis_type = c("numerical", "character"), nxaxis = 10,
+                         y_axis_text = TRUE) {
 
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
@@ -158,6 +160,10 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
       ggplot2::theme(legend.position = "none") +
       ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
 
+    if (!y_axis_text) {
+      plot <- plot +
+      ggplot2::theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+    }
 
     if (is.numeric(melted[1, "Var"]))  {
       if ((melted[1, "Var"] - melted[(dim(melted)[1]), "Var"]) > 0) {

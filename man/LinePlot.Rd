@@ -7,7 +7,7 @@
 LinePlot(X, createWindow = FALSE, main = NULL, rows = NULL,
   type = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
   ang = c("0", "45", "90"), xaxis_type = c("numerical", "character"),
-  nxaxis = 10)
+  nxaxis = 10, y_axis_text = TRUE)
 }
 \arguments{
 \item{X}{A numerical matrix containing the rows to be drawn.}
@@ -31,6 +31,8 @@ LinePlot(X, createWindow = FALSE, main = NULL, rows = NULL,
 \item{xaxis_type}{Specify if the xaxis is numerical or character (corresponds to the colnames of X).}
 
 \item{nxaxis}{Number of thick marks on the xaxis for a character x variable.}
+
+\item{y_axis_text}{if \code{TRUE}, will display the y-axis text.}
 }
 \value{
 A loading plot in the current device.
