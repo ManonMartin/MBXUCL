@@ -98,7 +98,10 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
   # labs
   if (is.null(rows)){
     n <- m
-  } else {n <- length(rows)} # number of line plots to draw
+  } else {
+    n <- length(rows)
+    X <- X[rows,]
+  } # number of line plots to draw
 
 
   j <- 1
@@ -165,7 +168,7 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
       ggplot2::theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     }
 
-    if (is.numeric(melted[1, "Var"]))  {
+    if (xaxis_type == "numerical")  {
       if ((melted[1, "Var"] - melted[(dim(melted)[1]), "Var"]) > 0) {
         plot <- plot + ggplot2::scale_x_reverse()
       }
