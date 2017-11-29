@@ -4,3 +4,6 @@ sudo: false
 cache: packages
 warnings_are_errors: false
 bioc_packages: ropls
+os:
+  - linux
+  - osx
