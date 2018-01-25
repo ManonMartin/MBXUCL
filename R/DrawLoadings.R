@@ -163,6 +163,9 @@ if (xaxis_type == "numerical") {
                                                    labels = rownames(loadings)[seq(1, nn, floor(nn/nxaxis))])
       }
     } else  {
+
+      plot <- plot + ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
+
         if (xaxis_type == "numerical"){
           plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
                                                size = 0.5, lineend = "round")

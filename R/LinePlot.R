@@ -142,6 +142,8 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
                                                    labels = colnames(X)[seq(1, nn, floor(nn/nxaxis))])
       }
     } else  {
+      plot <- plot + ggplot2::geom_hline(yintercept = 0, color = "grey")
+
       if (xaxis_type == "numerical"){
         plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
                                              size = 0.5, lineend = "round")
