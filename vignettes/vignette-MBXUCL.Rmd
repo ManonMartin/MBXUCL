@@ -2,7 +2,9 @@
 title: "MBXUCL package"
 author: "Manon Martin"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    smart: false
 vignette: >
   %\VignetteIndexEntry{MBXUCL package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,21 +15,18 @@ vignette: >
 require(knitr)
 require(pander)
 require(MBXUCL)
-
-
 ```
 
 # Overview
-This document provides a brief summary on how to use the MBXUCL library in R.
+This document provides a brief summary on how to use the MBXUCL package in R.
 
 # Package installation
 
-The library can be installed from a stand alone version contained in a personnal folder:
+The library can be installed from a stand alone version contained in a local folder:
 ```{r install1, tidy=TRUE,  eval=FALSE}
 
 install.packages(file.path("path to MBXUCL-package", "MBXUCL-package/MBXUCL"), repos = NULL, type="source")
 require(MBXUCL)
-
 ```
 
 Notes:
@@ -43,15 +42,41 @@ require(MBXUCL)
 
 ```
 
+# Available data 
+
+## DataSimul
+
+```{r}
+#---- Simulated spectra
+DataSimul$x[1:10, 1:10]
+dim(DataSimul$x)
+
+LinePlot(DataSimul$x, rows = 1)
+
+#---- Class
+table(DataSimul$y)
+```
 
 
+## HumanSerum
 
-# Available tools
+```{r}
+#---- Serum spectra
+HumanSerumSpectra[1:10, 1:10]
+dim(HumanSerumSpectra)
+
+LinePlot(HumanSerumSpectra, rows = 1)
+
+#---- Class
+table(ClassHS)
+```
+
+
+# Available methods
 
 ## Inertia measures
 
 ```{r inertia}
-data("HumanSerum")
 Inertia.res = MBXUCL::Inertia(x = HumanSerumSpectra, y = ClassHS, print = TRUE)
 
 kable(Inertia.res[["Between_within"]])
@@ -62,7 +87,6 @@ kable(Inertia.res[["Per_group"]])
 
 ## PCA
 ```{r pca}
-data("HumanSerum")
 PCA.res = MBXUCL::SVDforPCA(HumanSerumSpectra, ncomp=4)
 ```
 
@@ -81,9 +105,9 @@ pander(PCA.res[["scores"]][1:10,])
 Draw scores:
 
 ```{r scoreplot, out.width='70%', fig.width=10, fig.height=10}
-DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
- createWindow=FALSE, main = "PCA score plot for HumanSerum dataset",
-   class = as.character(ClassHS), axes =c(1,2), type.graph="scores")
+DrawScores(PCA.res, type.obj = "PCA", drawNames=TRUE,
+ createWindow=FALSE, main = "PCA scores plot for HumanSerum dataset",
+   color = ClassHS, pch = ClassHS,  axes =c(1,2), drawEllipses = TRUE)
 ```
 
 
@@ -94,25 +118,11 @@ pander(PCA.res[["loadings"]][1:10,])
 ```
 
 Draw loadings:
-* First option
-```{r, out.width='100%', fig.width=12, fig.height=8}
-DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
- createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-    axes = c(1:2), type.graph ="loadings", loadingstype="l")
-```
 
-* Second option
 ```{r, out.width='100%', fig.width=12, fig.height=8}
-DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
+DrawLoadings(PCA.res, type.obj = "PCA",
  createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-    axes = c(1:2), type.graph ="loadings", loadingstype="s")
-```
-
-* Third option
-```{r, out.width='100%', fig.width=12, fig.height=8}
-DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
- createWindow=FALSE, main = "PCA loadings plot for HumanSerum dataset",
-    axes = c(1:2), type.graph ="loadings", loadingstype="p")
+    axes = c(1:2),  loadingstype="s")
 ```
 
 ## Unsupervised clustering
@@ -122,7 +132,6 @@ DrawSL(PCA.res, type.obj = "PCA", drawNames=TRUE,
 
 
 ```{r ClustMIC, out.width='100%', fig.width=12, fig.height=12}
-data("HumanSerum")
 ClustMIC.res = MBXUCL::ClustMIC(Intensities = HumanSerumSpectra, nClust = 4, Trcl = ClassHS, Dendr = TRUE)
 
 pander(ClustMIC.res)
@@ -143,7 +152,6 @@ pander(binClustMIC.res)
 ## PLS-DA 
 
 ```{r PLSDA, out.width='100%', fig.width=10, fig.height=10}
-data("HumanSerum")
 Class = ClassHS
 PLSDA.res = PLSDA(x = HumanSerumSpectra, y = Class, nLV = NULL, drawRMSEP = TRUE)
 
@@ -156,17 +164,13 @@ pander(perf.plsda)
 Scores and loadings plots:
   
 ```{r, out.width='100%', fig.width=12, fig.height=12}
+DrawScores(PLSDA.res, type.obj = "PLSDA", drawNames=TRUE,
+ createWindow=FALSE, main = "PLSDA scores plot for HumanSerum dataset",
+   color = ClassHS, pch = ClassHS,  axes =c(1,2), drawEllipses = TRUE)
 
-DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
-       createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
-       type.graph = "scores", loadingstype = "l",
-       num.stacked = 4, xlab = NULL)
-
-
-DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
-       createWindow = FALSE, main = NULL, axes = c(1,2,3),
-       type.graph = "loadings", loadingstype = "l",
-       num.stacked = 4, xlab = NULL)
+DrawLoadings(PLSDA.res, type.obj = "PLSDA",
+ createWindow=FALSE, main = "PLSDA loadings plot for HumanSerum dataset",
+    axes = c(1:2),  loadingstype="s")
 
 ```
 
@@ -176,16 +180,12 @@ DrawSL(obj = PLSDA.res, type.obj = "PLSDA", drawNames = TRUE,
 
 
 ```{r OPLSDA}
-
-data("DataSimul")
 x = DataSimul[["x"]]
 y = DataSimul[["y"]]
 m = dim(x)[2]
 no=3
 nb = 15
 oplsda.res = OPLSDA(x=x, y=y, impT = FALSE,impG = FALSE, no=no, nb = nb)
-
-
 ```
 
 
@@ -212,7 +212,8 @@ title(main="OPLS: Choice of the n[orthog. Components]", xlab="Orthogonal OPLS-DA
 Or by cross-validation:
   
   
-```{r, out.width='70%', fig.width=10, fig.height=10, eval=TRUE}
+```{r, out.width='70%', fig.width=10, fig.height=10, eval=FALSE}
+# not evaluated
 cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 10)
 plot(1:length(cvOPLSDA.res$RMSECV), cvOPLSDA.res$RMSECV, main = "RMSECV", lty = 19)
 
@@ -223,16 +224,13 @@ plot(1:length(cvOPLSDA.res$RMSECV), cvOPLSDA.res$RMSECV, main = "RMSECV", lty = 
   
 ```{r, out.width='100%', fig.width=12, fig.height=12}
 Class = y
-DrawSL(obj = oplsda.res, type.obj = "OPLSDA", drawNames = TRUE,
-       createWindow = FALSE, main = NULL, class = Class, axes = c(1, 2),
-       type.graph = "scores", loadingstype = "l",
-       num.stacked = 4, xlab = NULL)
+DrawScores(oplsda.res, type.obj = "OPLSDA", drawNames=TRUE,
+ createWindow=FALSE, main = "OPLSDA scores plot for HumanSerum dataset",
+   color = Class, pch = Class,  axes =c(1,2), drawEllipses = TRUE)
 
-
-DrawSL(obj = oplsda.res, type.obj = "OPLSDA", drawNames = TRUE,
-       createWindow = FALSE, main = NULL, axes = c(1, 2,3),
-       type.graph = "loadings", loadingstype = "l",
-       num.stacked = 4, xlab = NULL)
+DrawLoadings(oplsda.res, type.obj = "OPLSDA",
+ createWindow=FALSE, main = "OPLSDA loadings plot for HumanSerum dataset",
+    axes = c(1:3),  loadingstype="s")
 
 ```
 
@@ -311,3 +309,35 @@ OPLSDA_pred(ropls = oplsda.res, x.new = xnew)
 
 
 ```
+
+
+# Other draw functions
+
+## ScatterPlot
+
+```{r, fig.width=8, fig.height=8}
+x <- c(1:20)
+y <- sample(20)
+colors <- c(rep(1,10), rep(2,10))
+points_pch <-  c(rep(17,10), rep(18,10))
+labels <- as.character(c(1:20))
+
+# decide on the color or pch values
+# while adding a personalized legend
+legend_color = c(rep("A", 10), rep("B", 10))
+legend_pch = c(rep("C", 10), rep("D", 10))
+ScatterPlot(x = x, y = y, points_labs=labels, createWindow=FALSE,
+            main = 'Scatter plot', color = colors, pch = points_pch,
+            xlab = "x axis", ylab = "y axis",
+            legend_pch = legend_pch,legend_color=legend_color)
+```
+
+
+
+## LinePlot
+```{r, fig.width=8, fig.height=8}
+LinePlot(X = DataSimul$x, createWindow = FALSE, main = "Line plot",  rows = c(1, 2),
+              type = "p", num.stacked = 2, xlab = "x-axis", ylab = "y-axis",
+              ang = "0", xaxis_type = "numerical", nxaxis = 10)
+```
+
