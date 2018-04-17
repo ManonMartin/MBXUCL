@@ -242,8 +242,10 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
 
     } else if (is.null(color) & !is.null(pch)) {
       # shape
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor), size=size)+
+        scale_shape_manual(name = namepch, values=seq(0,26),
+                           guide=guide_legend(order=1, shape = 1))
 
-      plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor), size=size)
 
       # legend_shape_manual
       if (!is.null(legend_shape_manual)) {
@@ -251,20 +253,17 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
           ggplot2::scale_shape_manual(name = namepch, breaks = pch_factor,
                                       values = legend_shape_manual,
                                        guide=guide_legend(order=1))
-      } else {
-        plots <- plots  +
-          ggplot2::scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
-                                        labels = as.character(unique(pch)),
-                                        guide=guide_legend(order=1))
       }
-
 
     } else {
       # color + shape
       if (namecolor!=namepch) {
-        plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size)
+        plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size)+
+          scale_shape_manual(values=seq(0,26))
       } else
-      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = color_factor), size=size)
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = color_factor), size=size)+
+          scale_shape_manual(name = namecolor, values=seq(0,26),
+                             guide=guide_legend(order=1, shape = 1))
 
       # legend_color_manual
       if (!is.null(legend_color_manual)) {
@@ -274,12 +273,10 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
                                        guide=guide_legend(order=1, shape = 1))+
         guides(colour = guide_legend(override.aes = list(shape = 15)))
 
-      } else {
+      }else {
         plots <- plots  +
-          scale_colour_discrete(name = namecolor, breaks = unique(color_factor),
-                                labels = as.character(unique(color)),
-                                guide=guide_legend(order=1))
-
+          scale_colour_discrete(name = namecolor,
+                                guide=guide_legend(order=1, shape = 1))
          if (namecolor!=namepch) {
            plots <- plots  + guides(colour = guide_legend(override.aes = list(shape = 15)))
          }
@@ -292,12 +289,8 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
             ggplot2::scale_shape_manual(name = namepch, breaks = unique(pch_factor),
                                         values = legend_shape_manual,
                                         guide=guide_legend(order=1))
-        } else {
-          plots <- plots  +
-            ggplot2::scale_shape_discrete(name = namepch, breaks = unique(pch_factor),
-                                          labels = as.character(unique(pch)),
-                                          guide=guide_legend(order=1))
         }
+
 
       } else {
 
@@ -306,12 +299,8 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
             ggplot2::scale_shape_manual(name = namecolor, breaks = unique(color_factor),
                                         values = legend_shape_manual,
                                         guide=guide_legend(order=1))
-        } else {
-          plots <- plots  +
-            ggplot2::scale_shape_discrete(name = namecolor, breaks = unique(color_factor),
-                                          labels = as.character(unique(color)),
-                                          guide=guide_legend(order=1))
         }
+
       }
 
 

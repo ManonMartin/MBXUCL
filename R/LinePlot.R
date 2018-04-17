@@ -46,13 +46,6 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
 
-  if (is.vector(X)){
-    if (xaxis_type=="numerical"){
-      X <- matrix(X, nrow = 1, dimnames = list(deparse(substitute(X)), 1:nn))
-    }else{
-      X <- matrix(X, nrow = 1, dimnames = list(deparse(substitute(X)), paste0("V",1:nn)))
-    }
-  }
 
   type <- match.arg(type)
 
@@ -71,6 +64,16 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
 
   m <- dim(X)[1]
   nn <- dim(X)[2]
+
+
+  if (is.vector(X)){
+    if (xaxis_type=="numerical"){
+      X <- matrix(X, nrow = 1, dimnames = list(deparse(substitute(X)), 1:nn))
+    }else{
+      X <- matrix(X, nrow = 1, dimnames = list(deparse(substitute(X)), paste0("V",1:nn)))
+    }
+  }
+
 
   if (is.null(rownames(X))){
     if (m==1){

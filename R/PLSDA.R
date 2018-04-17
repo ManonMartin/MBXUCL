@@ -124,11 +124,11 @@ PLSDA <- function(x, y, nLV = NULL, drawRMSEP = TRUE) {
     # RMSEP
     RMSEP <- drop(pls::RMSEP(pls1, intercept = FALSE)$val)
     if (dim(RMSEP)[2] < 3) {
-      par(mfrow = c(1, dim(RMSEP)[2]), oma = c(0, 0, 4, 0), mar = c(5, 4, 4,
+      par(mfrow = c(1, dim(RMSEP)[2]), oma = c(0, 0, 4, 0), mar = c(3, 4, 2,
         4) + 0.1)
     } else {
-      par(mfrow = c(ceiling(dim(RMSEP)[2]/3), 3), oma = c(0, 0, 4, 0), mar = c(5,
-        4, 4, 4) + 0.1)
+      par(mfrow = c(ceiling(dim(RMSEP)[2]/3), 3), oma = c(0, 0, 4, 0), mar = c(3,
+        4, 2, 4) + 0.1)
     }
 
     for (i in 1:dim(RMSEP)[2]) {
