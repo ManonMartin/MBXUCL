@@ -131,13 +131,20 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
   i <- 1
   while (i <= n) {
 
-
     last <- min(i + num.stacked - 1, n)
 
-      melted <- reshape2::melt(t(loadings[, i:last]), varnames = c("rowname", "Var"))
+    if(i<last){
+      load <- t(loadings[, i:last])
+    }else{
+      load <- as.matrix(t(loadings[, i]))
+      names(load) <- rownames(loadings)
+    }
+      melted <- reshape2::melt(load, varnames = c("rowname", "Var"))
       if (n==1) {
         melted[,"rowname"] <-  rep(colnames(loadings)[axes],nn)
-        melted[,"Var"] <-  round(as.numeric(rownames(loadings)),3)
+        if (xaxis_type == "numerical"){
+          melted[,"Var"] <-  round(as.numeric(rownames(loadings)),3)
+        } else{melted[,"Var"] <-  rownames(loadings)}
       }
 
 
