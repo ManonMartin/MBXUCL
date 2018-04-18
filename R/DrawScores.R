@@ -215,8 +215,6 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
          }
 
 
-
-
        if (drawPolygon) {
          dataf <- cbind(color_factor, scores)
          x <- colnames(scores)[Xax]

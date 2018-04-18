@@ -164,18 +164,15 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
   } else if (is.null(color) & !is.null(pch)) {
     # shape
     plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor), size=size) +
-      scale_shape_discrete(name = namepch, breaks = pch_factor,
-                           labels = valuespch,
-                           guide=guide_legend(order=1))
+      scale_shape_manual(name = namepch, values=seq(0,26),
+                         guide = guide_legend(order=1, shape = 1))
   } else {
     # color + shape
     plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
-      scale_colour_discrete(name = namecolor, breaks = color_factor,
-                            labels = valuescolor,
-                            guide=guide_legend(order=1)) +
-      scale_shape_discrete(name = namepch, breaks = pch_factor,
-                           labels = valuespch,
-                           guide=guide_legend(order=2))
+      scale_colour_discrete(name = namecolor,
+                            guide=guide_legend(order=1, shape = 1))+
+      scale_shape_manual(name = namepch, values=seq(0,26),
+                       guide=guide_legend(order=1, shape = 1))
 
     if (drawEllipses) {
       plots <- plots + ggplot2::stat_ellipse(mapping = aes(x=x,y=y,
