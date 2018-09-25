@@ -257,7 +257,7 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
       # color + shape
       if (namecolor!=namepch) {
         plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size)+
-          scale_shape_manual(values=seq(0,26))
+          scale_shape_manual(values=seq(0,26), name = namepch)
       } else
       plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = color_factor), size=size)+
           scale_shape_manual(name = namecolor, values=seq(0,26),
