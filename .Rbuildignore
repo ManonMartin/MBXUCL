@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.git
+^.*\.git
 .DS_Store
-
+ .\.git\^.*
+^.*\.travis.yml
