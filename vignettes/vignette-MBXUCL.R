@@ -7,7 +7,6 @@ require(MBXUCL)
 #  
 #  install.packages(file.path("path to MBXUCL-package", "MBXUCL-package/MBXUCL"), repos = NULL, type="source")
 #  require(MBXUCL)
-#  
 
 ## ----install2, tidy=TRUE,  eval=FALSE------------------------------------
 #  require(devtools)
