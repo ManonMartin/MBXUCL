@@ -12,5 +12,5 @@ Description: Basic R routines implemented for metabolomics data analysis. It mai
 License: GPL-2
 LazyData: TRUE
 Depends: R (>= 3.3.1)
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr
