@@ -105,8 +105,14 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
 
   ##########################################
 
-  if (!is.null(ylab) && length(ylab) != length(axes)) {
-    stop("the length of ylab is not equal to the length of axes for loadings")
+  if (!is.null(ylab) && length(ylab) != 1) {
+    warning("Since ylab is longer than 1, the first element is selected")
+    ylab <- ylab[1]
+  }
+
+  if (!is.null(xlab) && length(xlab) != 1) {
+    warning("Since xlab is longer than 1, the first element is selected")
+    xlab <- xlab[1]
   }
 
   # loadings <- loadings[, axes]
