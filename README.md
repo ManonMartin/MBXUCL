@@ -3,11 +3,25 @@
 # MBXUCL
 Library for the UCL - MBX Team
 
-## R code to install the package from GitHub
-1. `require(devtools)`
-2. `install_github("ManonMartin/MBXUCL")`
-3. `require(MBXUCL)`
+## Installation 
+### Install the package from GitHub (recommended)
 
-## R code to install the package from a local repository:
-1. `install.packages("path-to-MBX", repos = NULL, type="source")`
-2. `require(MBXUCL)`
+R code: 
+
+```R
+require(devtools)
+install_github("ManonMartin/MBXUCL")
+```
+
+### Install the package from a local repository:
+
+R code: 
+```R
+install.packages("path-to-MBXUCL", repos = NULL, type="source")
+```
+
+/!\\ package dependencies should be already available if installed from a local repository.
+
+## Load the package in R
+
+The package can be loaded as usual in R with `library(MBXUCL)`.
