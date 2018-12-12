@@ -166,8 +166,10 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
     covorig <- cov(cbind(xoriginal))
 
     # total variation X
-    VarXortho[, i] <- 100 * (sum(diag(covo))/sum(diag(covorig)))  # var orthog retirée, en %
-    VarX[, i] <- 100 * (sum(diag(covp))/sum(diag(covorig)))  # var non orthog, en %
+    ## var orthog retiree, en %
+    VarXortho[, i] <- 100 * (sum(diag(covo))/sum(diag(covorig)))
+    ## var non orthog, en %
+    VarX[, i] <- 100 * (sum(diag(covp))/sum(diag(covorig)))
 
   }
 
@@ -413,8 +415,8 @@ cvOPLSDA <- function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE) {
   checkArg(k_fold, "int", can.be.null = FALSE)
   checkArg(NumOrtho, "int", can.be.null = FALSE)
 
-
   library("plyr")
+
   df <- data.frame(rowname = rownames(x), Class = y)
   n <- dim(x)[1]
 
