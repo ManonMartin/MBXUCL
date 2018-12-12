@@ -9,7 +9,7 @@
 #' @param points_labs If not \code{NULL}, will show the labels for each observation on the plot.
 #' @param createWindow If \code{TRUE}, will create a new window for the plot.
 #' @param main Plot title. If \code{NULL}, default title is provided.
-#' @param color Optional character, factor or numeric vector giving the color of the observations.
+#' @param color Optional character, factor or numeric vector giving the color of the observations. If \code{length(color)} = 1, the unique color is kept for all the points.
 #' @param pch Optional character, factor or numeric vector giving the pch of the observations.
 #' @param size The points size.
 #' @param cex.lab The size of points labels.
@@ -77,8 +77,8 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
   }
 
   # checks color
-  if (!is.null(color) && is.vector(color, mode = "any") && length(color) != m) {
-    stop("the length of color is not equal to the nrow of data matrix")
+  if (!is.null(color) && is.vector(color, mode = "any") && !length(color) %in% c(1,m)) {
+    stop("the length of color is not equal to 1 or to the nrow of data matrix")
   }
 
 
@@ -147,11 +147,16 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
     plots <- plots + ggplot2::geom_point(size=size)
 
   } else if (!is.null(color) & is.null(pch)) {
+
     # color
-    plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor), size=size) +
-      scale_colour_discrete(name = namecolor, breaks = color_factor,
-                            labels = valuescolor,
-                            guide=guide_legend(order=1))
+    if (length(color)>1){
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor), size=size) +
+        scale_colour_discrete(name = namecolor, breaks = color_factor,
+                              labels = valuescolor,
+                              guide=guide_legend(order=1))
+    }else {
+      plots <- plots + ggplot2::geom_point(colour=color, size=size)
+    }
 
     if (drawEllipses) {
       plots <- plots + ggplot2::stat_ellipse(mapping = aes(x=x,y=y,
@@ -168,11 +173,20 @@ ScatterPlot <- function(x, y, points_labs = NULL, createWindow = FALSE, main = N
                          guide = guide_legend(order=1, shape = 1))
   } else {
     # color + shape
-    plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
-      scale_colour_discrete(name = namecolor,
-                            guide=guide_legend(order=1, shape = 1))+
-      scale_shape_manual(name = namepch, values=seq(0,26),
-                       guide=guide_legend(order=1, shape = 1))
+    #
+    if (length(color)>1){
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size) +
+        scale_colour_discrete(name = namecolor,
+                              guide=guide_legend(order=1, shape = 1))+
+        scale_shape_manual(name = namepch, values=seq(0,26),
+                           guide=guide_legend(order=1, shape = 1))
+    }else {
+      plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor),
+                                           size=size, color=color) +
+        scale_shape_manual(name = namepch, values=seq(0,26),
+                           guide=guide_legend(order=1, shape = 1))
+    }
+    #
 
     if (drawEllipses) {
       plots <- plots + ggplot2::stat_ellipse(mapping = aes(x=x,y=y,

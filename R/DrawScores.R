@@ -9,7 +9,7 @@
 #' @param drawNames If \code{TRUE}, will show the observations names on the scores plot.
 #' @param createWindow If \code{TRUE}, will create a new window for the plot.
 #' @param main Plot title. If \code{NULL}, default title is provided.
-#' @param color Optional character, factor or numeric vector giving the color of the observations.
+#' @param color Optional character, factor or numeric vector giving the color of the observations. If \code{length(color)} = 1, the unique color is kept for all the points.
 #' @param pch Optional character, factor or numeric vector giving the pch of the observations.
 #' @param size The points size.
 #' @param cex.lab The size of points labels.
@@ -68,8 +68,11 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
   # color
 
   if (!is.null(color) && is.vector(color, mode = "any") ) {
-    if (length(color) != m) {
-      stop("the length of color is not equal to the nrow of data matrix")
+    if (!length(color) %in% c(1,m)) {
+      stop("the length of color is not equal to 1 or the nrow of data matrix")
+    }else if (!is.null(legend_color_manual) & length(color)==1) {
+      legend_color_manual = NULL
+      warning("legend_color_manual is set to NULL since length(color)=1")
     }else if (!is.null(legend_color_manual) & is.vector(legend_color_manual, mode = "any") &
               length(legend_color_manual) != nlevels(as.factor(color))) {
     stop("The length of legend_color_manual is not equal to the nlevels of color")
@@ -198,8 +201,14 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
 
     } else if (!is.null(color) & is.null(pch)) {
       # color
+      if (length(color)>1){
        plots <- plots  +
         ggplot2::geom_point(ggplot2::aes(colour = color_factor),size=size)
+       }else {
+         plots <- plots  +
+           ggplot2::geom_point(color=color,size=size)
+       }
+
          if (!is.null(legend_color_manual)) {
            plots <- plots  +
              ggplot2::scale_colour_manual(name = namecolor, breaks = color_factor,
@@ -256,12 +265,20 @@ DrawScores <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = 
     } else {
       # color + shape
       if (namecolor!=namepch) {
-        plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size)+
-          scale_shape_manual(values=seq(0,26), name = namepch)
+
+        if (length(color)>1){
+          plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = pch_factor), size=size)+
+            scale_shape_manual(values=seq(0,26), name = namepch)
+        }else {
+          plots <- plots + ggplot2::geom_point(ggplot2::aes(shape = pch_factor), color=color, size=size)+
+            scale_shape_manual(values=seq(0,26), name = namepch)
+        }
+
+
       } else
-      plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = color_factor), size=size)+
-          scale_shape_manual(name = namecolor, values=seq(0,26),
-                             guide=guide_legend(order=1, shape = 1))
+          plots <- plots + ggplot2::geom_point(ggplot2::aes(colour = color_factor, shape = color_factor), size=size)+
+            scale_shape_manual(name = namecolor, values=seq(0,26),
+                               guide=guide_legend(order=1, shape = 1))
 
       # legend_color_manual
       if (!is.null(legend_color_manual)) {

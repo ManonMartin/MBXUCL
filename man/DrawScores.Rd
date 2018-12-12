@@ -23,7 +23,7 @@ DrawScores(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
 
 \item{main}{Plot title. If \code{NULL}, default title is provided.}
 
-\item{color}{Optional character, factor or numeric vector giving the color of the observations.}
+\item{color}{Optional character, factor or numeric vector giving the color of the observations. If \code{length(color)} = 1, the unique color is kept for all the points.}
 
 \item{pch}{Optional character, factor or numeric vector giving the pch of the observations.}
 
