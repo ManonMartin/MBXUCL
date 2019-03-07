@@ -17,6 +17,8 @@
 #' @param xaxis_type Specify if the xaxis is numerical or character
 #' @param nxaxis Number of thick marks on the xaxis for a character x variable
 #' @param hline Numerical scalar. If not \code{NULL}, an horizontal dashed line is drawn at the \code{hline} value
+#' @param xaxis_size Size of the x axis.
+#'
 #' @return A loading plot in the current device.
 #'
 #' @details
@@ -42,7 +44,7 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
                          createWindow = FALSE, main = NULL,  axes = c(1, 2),
                          loadingstype = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
                          ang = c("0", "45", "90"), xaxis_type = c("numerical", "character"),
-                         nxaxis = 10, hline = NULL) {
+                         nxaxis = 10, hline = NULL, xaxis_size = 11) {
 
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
@@ -198,7 +200,8 @@ if (xaxis_type == "numerical") {
 
 
     plot <- plot + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = as.numeric(ang), vjust = vjust, hjust = hjust)) +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = as.numeric(ang), vjust = vjust, hjust = hjust,
+                                                         size = xaxis_size)) +
       ggplot2::theme(strip.text.y = ggplot2::element_text(angle = 90)) +
       ggplot2::theme(legend.position = "none")
       if (!is.null(hline)){

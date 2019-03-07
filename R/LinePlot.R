@@ -16,6 +16,7 @@
 #' @param xaxis_type Specify if the xaxis is numerical or character (corresponds to the colnames of X).
 #' @param nxaxis Number of thick marks on the xaxis for a character x variable.
 #' @param y_axis_text if \code{TRUE}, will display the y-axis text.
+#' @param xaxis_size Size of the x axis.
 #'
 #' @return A loading plot in the current device.
 #'
@@ -41,11 +42,11 @@
 LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
                          type = c("l", "p", "s"), num.stacked = 4, xlab = NULL, ylab = NULL,
                          ang = c("0", "45", "90"), xaxis_type = c("numerical", "character"), nxaxis = 10,
-                         y_axis_text = TRUE) {
+                         y_axis_text = TRUE, xaxis_size = 11) {
 
   checkArg(main, "str", can.be.null = TRUE)
   checkArg(nxaxis, "num", can.be.null = FALSE)
-
+  checkArg(xaxis_size, "num", can.be.null = FALSE)
 
   type <- match.arg(type)
 
@@ -163,7 +164,8 @@ LinePlot <- function(X, createWindow = FALSE, main = NULL,  rows=NULL,
 
 
     plot <- plot + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::facet_grid(colname ~., scales = "free_y") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = as.numeric(ang), vjust = vjust, hjust = hjust)) +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = as.numeric(ang), vjust = vjust, hjust = hjust,
+                                                         size = xaxis_size)) +
       ggplot2::theme(strip.text.y = ggplot2::element_text(angle = 90)) +
       ggplot2::theme(legend.position = "none") +
       ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
