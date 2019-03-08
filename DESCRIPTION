@@ -12,7 +12,7 @@ Suggests: modeest, knitr, rmarkdown
 Description: Basic R routines implemented for metabolomics data analysis. It mainly involves statistical mutivariate methods and visualisation tools.
 License: GPL-2
 LazyData: TRUE
-Depends: R (>= 3.5)
+Depends: R (>= 3.3)
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Encoding: UTF-8
