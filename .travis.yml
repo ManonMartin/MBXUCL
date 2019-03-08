@@ -7,3 +7,6 @@ bioc_packages: ropls
 os:
   - linux
   - osx
+
+brew_packages:
+  - gcc
