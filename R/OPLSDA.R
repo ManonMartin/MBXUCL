@@ -180,7 +180,8 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
 
   # Apply nipals pls on filtered X matrix (Xnew)
   xnew <- xtrain  # deflated matrix
-  res_nipals <- pls_nipals(xnew, ytrain, np = 1)
+  np = 1
+  res_nipals <- pls_nipals(xnew, ytrain, np = np)
 
   invisible(list2env(res_nipals, envir = environment()))
 
@@ -206,7 +207,7 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
   # sortie
   ropls <- list(b = bcorr, Tp = Tp, Pp = Pp, W = W, C = C, Tortho = Tortho, Portho = Portho,
     Wortho = Wortho, Selected.biomarkers = indbiom, CV = CV, original.dataset = xoriginal,
-    Xopls = xnew)
+    Xopls = xnew, original.response = y)
 
 
   # Sorties graphiques
@@ -253,7 +254,7 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
 
     par(mfrow = c(ceiling(no/2), 2))
     for (i in 1:no) {
-      max.pc1 <- 1.1 * (max(abs(Tp[, i])))
+      max.pc1 <- 1.1 * (max(abs(Tp[, np])))
       max.pc2 <- 1.1 * (max(abs(Tortho[, i])))
 
       lim <- c()
@@ -263,7 +264,7 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
         lim <- c(-max.pc2, max.pc2)
       }
 
-      plot(Tp[, no], Tortho[, i], col = col, pch = 19, xlim = lim, ylim = lim,
+      plot(Tp[,np], Tortho[, i], col = col, pch = 19, xlim = lim, ylim = lim,
           xlab = paste0("Predictive T score [", 1, "]"),
           ylab = paste0("Orthogonal T score [",i, "]"), main = "OPLS-DA score scatter plot")
       abline(h = 0, v = 0, lty = 2, col = "gray")
@@ -278,12 +279,12 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
     s <- as.matrix(x, ncol = ncol(x))
     p1 <- c()
     for (i in 1:ncol(s))  {
-      scov <- cov(s[, i], Tp[, no])
+      scov <- cov(s[, i], Tp[, np])
       p1 <- matrix(c(p1, scov), ncol = 1)  # covariance x-T
     }
     # correlation
     pcorr1 <- c()
-    Tno <- as.matrix(Tp[, no], ncol = 1)
+    Tno <- as.matrix(Tp[, np], ncol = 1)
     for (i in 1:nrow(p1)) {
       den <- apply(Tno, 2, sd, na.rm = TRUE) * sd(s[, i])
       corr1 <- p1[i, ]/den
@@ -293,6 +294,7 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
     # plot
     pdf(file.path(out.path, "OPLS_Splot.pdf"), width = 10, height = 8)
 
+    par(mfrow=c(1,1))
     plot(p1, pcorr1, xlab = "p(cov)[1]", ylab = "p(corr)[1]", main = "S-plot (OPLS-DA)",
         ylim = c(min(pcorr1, na.rm = T) * 1.1, max(pcorr1, na.rm = T) * 1.1),
         xlim = c(min(p1, na.rm = T) * 1.1, max(p1, na.rm = T) * 1.1))
@@ -328,13 +330,14 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
     # loadings plot
     pdf(file.path(out.path, "OPLS_LoadingPred.pdf"), width = 10, height = 6)
 
-    plot(Pp[, no], xaxt = "n", type = "l", main = "OPLS pretreated PLS coefficients (loadings)")
+    plot(Pp[, np], xaxt = "n", type = "l", main = "OPLS pretreated PLS coefficients (loadings)")
     axis(side = 2, cex.axis = 0.7)
     axis(side = 1, at = c(1, seq(50, m, 50)), labels = xax[c(1, seq(50, m, 50))],
       cex.axis = 0.7)
 
     dev.off()
 
+    graphics.off()
   }
 
   ########################### text impression
@@ -370,7 +373,9 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
 
 
 OPLSDA_pred <- function(ropls, x.new) {
+  x.new <- x.new - colMeans(ropls$original.dataset)
   y.pred <- x.new %*% ropls$b
+  y.pred <- y.pred + mean(ropls$original.response)
   names(y.pred) <- rownames(x.new)
   return(y.pred)
 }
@@ -470,7 +475,7 @@ cvOPLSDA <- function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE) {
 
   }
 
-  rcvOPLSDA <- list(RMSECV = RMSECV, folds_i = folds_i, Prop1 = Prop1, yres)
+  rcvOPLSDA <- list(RMSECV = RMSECV, folds_i = folds_i, Prop1 = Prop1, yres = yres)
 
 
   if (ImpG == TRUE) {
