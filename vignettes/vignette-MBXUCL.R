@@ -4,15 +4,39 @@ require(pander)
 require(MBXUCL)
 
 ## ----install1, tidy=TRUE,  eval=FALSE------------------------------------
+#  if (!requireNamespace("devtools", quietly = TRUE))
+#    install.packages("devtools")
 #  
-#  install.packages(file.path("path to MBXUCL-package", "MBXUCL-package/MBXUCL"), repos = NULL, type="source")
-#  require(MBXUCL)
+#  devtools::install_github("manonmartin/mbxucl")
 
-## ----install2, tidy=TRUE,  eval=FALSE------------------------------------
-#  require(devtools)
-#  install_github("ManonMartin/MBXUCL", dependencies = TRUE)
-#  require(MBXUCL)
+## ----install2------------------------------------------------------------
+if (!requireNamespace("remotes", quietly = TRUE))
+  install.packages("remotes")
+
+remotes::install_github("manonmartin/mbxucl")
+
+## ----install3, tidy=TRUE,  eval=FALSE------------------------------------
 #  
+#  #A. Install necessary dependencies ===========
+#  install.packages(c("clValid", "phyclust", "proxy", "pls",
+#      "pander", "stats","ggplot2", "reshape2", "spls", "plyr",
+#      "gridExtra", "clusterSim", "modeest"))
+#  
+#  if (!requireNamespace("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#  BiocManager::install("ropls")
+#  
+#  
+#  #B. Install MBXUCL ===========
+#  
+#  # Instructions:
+#  # 1. Download the MBXUCL library from https://github.com/ManonMartin/MBXUCL
+#  # 2. Unzip the folder
+#  # 3. Change package_path to the folder location
+#  package_path <- "/Users/manon/Documents/MBXUCL"
+#  # 4. Install MBXUCL
+#  install.packages(pkgs = package_path, repos = NULL,
+#                   type = "source")
 
 ## ------------------------------------------------------------------------
 #---- Simulated spectra
