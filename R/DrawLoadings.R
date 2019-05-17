@@ -37,6 +37,7 @@
 #' @import ggplot2
 #' @import reshape2
 #' @import gridExtra
+#' @importFrom rlang .data
 
 
 
@@ -129,9 +130,6 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
   }
 
 
-
-
-
   n <- length(axes)
 
 
@@ -155,16 +153,52 @@ DrawLoadings <- function(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
         } else{melted[,"Var"] <-  rownames(loadings)}
       }
 
+      # to silence CMD check
+      # in the future you will be able to use ggplot2::vars(.data$facet)
+      # but this is currently not supported (tidyverse/ggplot2#2963)
+      facet <- NULL; rm(facet)
 
-if (xaxis_type == "numerical") {
-      plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
+      #######
+
+  if (xaxis_type == "numerical") {
+    if (type.obj == "PCA") {
+      ylabs <- paste0("L", axes[i:last]," ",
+                      paste0("(", round(variance[i:last],2), "%)"))
+    }else {
+      ylabs <- paste0("L", i:last)
+    }
+
+    plot_data <- data.frame(
+      facet = ylabs,
+      x = melted$Var,
+      y = melted$value
+    )
+    plot <- ggplot2::ggplot(data = plot_data, ggplot2::aes(x = .data$x, y = .data$y))
+
+      # plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value))
     } else  {
       melted$index <- as.numeric(as.factor(melted$Var))
       melted <- as.data.frame(melted)
-      plot <- ggplot2::ggplot(data = melted, ggplot2::aes(x = index, y = value))
+
+      if (type.obj == "PCA") {
+        ylabs <- paste0("L", i:last," ",
+                        paste0("(", round(variance[i:last],2), "%)"))
+      }else {
+        ylabs <- paste0("L", i:last)
+      }
+
+      plot_data <- data.frame(
+        facet = ylabs,
+        x = melted$index,
+        y = melted$value
+      )
+
+      plot <- ggplot2::ggplot(data = plot_data, ggplot2::aes(x = .data$x, y = .data$y))
+
     }
 
       plot <- plot + ggplot2::theme_bw()
+
     if (loadingstype == "p") {
       plot <- plot + ggplot2::geom_point(size=0.5)
       if (xaxis_type == "character"){
@@ -182,10 +216,10 @@ if (xaxis_type == "numerical") {
       plot <- plot + ggplot2::geom_hline(yintercept = 0, size = 0.5, linetype = "dashed", colour = "gray60")
 
         if (xaxis_type == "numerical"){
-          plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = Var, yend = 0),
+          plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = x, yend = 0),
                                                size = 0.5, lineend = "round")
         } else {
-          plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = index, yend = 0),
+          plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = x, yend = 0),
                                                size = 0.5, lineend = "round")
 
           plot <- plot + ggplot2::scale_x_continuous(breaks = seq(1, nn, floor(nn/nxaxis)),
@@ -196,10 +230,8 @@ if (xaxis_type == "numerical") {
       }
 
 
-
-
-
-    plot <- plot + ggplot2::labs(title = main, x = xlab, y = ylab) + ggplot2::facet_grid(rowname ~., scales = "free_y") +
+    plot <- plot + ggplot2::labs(title = main, x = xlab, y = ylab) +
+       ggplot2::facet_grid(facet ~  ., scales = "free_y") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = as.numeric(ang), vjust = vjust, hjust = hjust,
                                                          size = xaxis_size)) +
       ggplot2::theme(strip.text.y = ggplot2::element_text(angle = 90)) +
@@ -208,19 +240,20 @@ if (xaxis_type == "numerical") {
         plot <- plot + ggplot2::geom_hline(yintercept = hline, size = 0.5, linetype = "dashed", colour = "gray60")
       }
 
-
-
-    if (type.obj == "PCA") {
-      if (xaxis_type == "numerical")  {
-        plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
-                                         label = paste0("(",round(variance[i:last], 2), "%)"), vjust = 2, hjust = 1.5)
-      } else {
-        plot <- plot + ggplot2::annotate("text", x = 1, y = max(loadings),
-                                         label = paste0("(",round(variance[i:last], 2), "%)"), hjust = 0)
-      }
-
-      }
-
+#
+# #######
+#     if (type.obj == "PCA") {
+#       if (xaxis_type == "numerical")  {
+#         plot <- plot + ggplot2::annotate("text", x = -Inf, y = Inf,
+#                                          label = paste0("(",round(variance[i:last], 2), "%)"), vjust = 2, hjust = 1.5)
+#       } else {
+#         plot <- plot + ggplot2::annotate("text", x = 1, y = max(loadings),
+#                                          label = paste0("(",round(variance[i:last], 2), "%)"), hjust = 0)
+#       }
+#
+#       }
+#
+# #########
 
 
     if (xaxis_type == "numerical")  {
