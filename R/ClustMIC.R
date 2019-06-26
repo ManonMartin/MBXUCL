@@ -38,6 +38,7 @@
 #'@importFrom clValid dunn
 #'@importFrom clusterSim index.DB
 #'@importFrom phyclust RRand
+#'@import modeest
 
 
 
