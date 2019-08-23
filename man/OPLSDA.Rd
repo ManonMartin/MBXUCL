@@ -35,8 +35,9 @@ A list with the following elements:
   \item{\code{Wortho}}{Orthogonal weights matrix}
   \item{\code{Selected.biomarkers}}{Vector of identified biomarkers}
   \item{\code{CV}}{Criterion for the number of orthogonal components to keep}
-  \item{\code{original.dataset}}{Original dataset}
+  \item{\code{original.dataset}}{Original X matrix}
   \item{\code{Xopls}}{OPLS-filtered X matrix}
+  \item{\code{original.response}}{Original y vector}
 }
 }
 \description{
