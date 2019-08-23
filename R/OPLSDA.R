@@ -25,7 +25,7 @@
 #'   \item{\code{Wortho}}{Orthogonal weights matrix}
 #'   \item{\code{Selected.biomarkers}}{Vector of identified biomarkers}
 #'   \item{\code{CV}}{Criterion for the number of orthogonal components to keep}
-#'   \item{\code{original.dataset}}{Original dataset}
+#'   \item{\code{original.dataset}}{Original centred X matrix}
 #'   \item{\code{Xopls}}{OPLS-filtered X matrix}
 #' }
 #'
@@ -61,15 +61,17 @@ OPLSDA <- function(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path =
   checkArg(nb, "int", can.be.null = FALSE)
   checkArg(out.path, "str", can.be.null = FALSE)
 
-  colmeans <- apply(x, 2, mean)
-  x <- x - matrix(apply(x, 2, mean), nrow = dim(x)[1], ncol = dim(x)[2], byrow = T)  # centrage de x sur les colonnes (par descripteur)
-
 
   xoriginal <- x
   varnames <- dimnames(x)[[2]]
   obsnames <- dimnames(x)[[1]]
-  xtrain <- x
-  ytrain <- y
+
+  # center x and y
+  ytrain <- scale(y,center = TRUE, scale = FALSE)
+
+  colmeans <- apply(x, 2, mean)
+  xtrain <- scale(x,center = TRUE, scale = FALSE)
+
 
   m <- dim(x)[2]  # nombre de descripteurs
   n <- dim(x)[1]
