@@ -36,7 +36,6 @@
 #'@importFrom clValid dunn
 #'@importFrom clusterSim index.DB
 #'@importFrom phyclust RRand
-#'
 
 
 binClustMIC <- function(Positions, Distance, nClust, Trcl, Dendr = TRUE) {
