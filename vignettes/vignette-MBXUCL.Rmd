@@ -36,7 +36,7 @@ devtools::install_github("manonmartin/mbxucl")
 
 ##  Solution 2: using package `remotes`
 
-```{r install2}
+```{r install2, tidy=TRUE,  eval=FALSE}
 if (!requireNamespace("remotes", quietly = TRUE))
   install.packages("remotes")
 
