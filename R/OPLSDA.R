@@ -414,7 +414,7 @@ OPLSDA_pred <- function(ropls, x.new) {
 #' cvOPLSDA.res = cvOPLSDA(x = x, y = y, k_fold = 10, NumOrtho = 5)
 #' plot(cvOPLSDA.res$RMSECV)
 #'
-#' @importFrom plyr ddply
+#' @importFrom caret createFolds
 
 cvOPLSDA <- function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE) {
 
@@ -423,32 +423,44 @@ cvOPLSDA <- function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE) {
   checkArg(k_fold, "int", can.be.null = FALSE)
   checkArg(NumOrtho, "int", can.be.null = FALSE)
 
-  library("plyr")
+  #library("plyr")
+
+  # df <- data.frame(rowname = rownames(x), Class = y)
+  # n <- dim(x)[1]
+
+  # createFolds <- function(x, k) {
+  #   n <- nrow(x)
+  #   x$FOLDS <- rep(1:k, length.out = n)[sample(n, n)]
+  #   x
+  # }
+  #
+  #
+  # folds <- plyr::ddply(.data = df, .variables = .(df$Class), .fun = plyr::here(createFolds), k = k_fold)
+  # folds_i <- folds$FOLDS
+  #
+  # # Prop1 = plyr::ddply(.data = folds,.variables = .(FOLDS) ,.fun =
+  # # plyr::here(plyr::summarise), prop = sum(.(Class))/length(.(Class)))
+  #
+  # Prop1 <- stats::aggregate(folds$Class, by = list(Category = folds$FOLDS), FUN = mean)
 
   df <- data.frame(rowname = rownames(x), Class = y)
   n <- dim(x)[1]
 
-  createFolds <- function(x, k) {
-    n <- nrow(x)
-    x$FOLDS <- rep(1:k, length.out = n)[sample(n, n)]
-    x
-  }
+  # indication of in which fold are the samples
+  folds <- caret::createFolds(df$Class, k = k_fold, list = FALSE)
 
-
-  folds <- plyr::ddply(.data = df, .variables = .(df$Class), .fun = plyr::here(createFolds), k = k_fold)
-  folds_i <- folds$FOLDS
-
-  # Prop1 = plyr::ddply(.data = folds,.variables = .(FOLDS) ,.fun =
-  # plyr::here(plyr::summarise), prop = sum(.(Class))/length(.(Class)))
-
-  Prop1 <- stats::aggregate(folds$Class, by = list(Category = folds$FOLDS), FUN = mean)
+  df$fold <- folds
+  # mean value of the response per fold
+  # Prop1 <- plyr::ddply(.data = df, .variables = "fold", .fun = summarise, prop = mean(Class))
+  Prop1 <- as.matrix(table(df$fold, df$Class)/as.vector(table(df$fold)))[,1, drop=FALSE]
+  #######
 
   index <- vector("list", k_fold)
   Xtrain <- vector("list", k_fold)
   Ytrain <- vector("list", k_fold)
   Xnew <- vector("list", k_fold)
   for (k in 1:k_fold) {
-    index[[k]] <- which(folds_i == k)
+    index[[k]] <- which(folds == k)
     Xtrain[[k]] <- x[-index[[k]], ]
     Ytrain[[k]] <- y[-index[[k]]]
     Xnew[[k]] <- x[index[[k]], ]
@@ -478,7 +490,7 @@ cvOPLSDA <- function(x, y, k_fold = 10, NumOrtho = 1, ImpG = FALSE) {
 
   }
 
-  rcvOPLSDA <- list(RMSECV = RMSECV, folds_i = folds_i, Prop1 = Prop1, yres = yres)
+  rcvOPLSDA <- list(RMSECV = RMSECV, folds_i = folds, Prop1 = Prop1, yres = yres)
 
 
   if (ImpG == TRUE) {
