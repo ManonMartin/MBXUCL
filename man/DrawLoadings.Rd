@@ -4,11 +4,22 @@
 \alias{DrawLoadings}
 \title{Loadings plots}
 \usage{
-DrawLoadings(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
-  createWindow = FALSE, main = NULL, axes = c(1, 2),
-  loadingstype = c("l", "p", "s"), num.stacked = 4, xlab = NULL,
-  ylab = NULL, ang = c("0", "45", "90"), xaxis_type = c("numerical",
-  "character"), nxaxis = 10, hline = NULL, xaxis_size = 11)
+DrawLoadings(
+  obj,
+  type.obj = c("PCA", "PLSDA", "OPLSDA"),
+  createWindow = FALSE,
+  main = NULL,
+  axes = c(1, 2),
+  loadingstype = c("l", "p", "s"),
+  num.stacked = 4,
+  xlab = NULL,
+  ylab = NULL,
+  ang = c("0", "45", "90"),
+  xaxis_type = c("numerical", "character"),
+  nxaxis = 10,
+  hline = NULL,
+  xaxis_size = 11
+)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA, PLSDA or OPLSDA analysis.}

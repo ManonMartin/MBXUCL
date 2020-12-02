@@ -4,10 +4,21 @@
 \alias{LinePlot}
 \title{Line plots}
 \usage{
-LinePlot(X, createWindow = FALSE, main = NULL, rows = NULL,
-  type = c("l", "p", "s"), num.stacked = 4, xlab = NULL,
-  ylab = NULL, ang = c("0", "45", "90"), xaxis_type = c("numerical",
-  "character"), nxaxis = 10, y_axis_text = TRUE, xaxis_size = 11)
+LinePlot(
+  X,
+  createWindow = FALSE,
+  main = NULL,
+  rows = NULL,
+  type = c("l", "p", "s"),
+  num.stacked = 4,
+  xlab = NULL,
+  ylab = NULL,
+  ang = c("0", "45", "90"),
+  xaxis_type = c("numerical", "character"),
+  nxaxis = 10,
+  y_axis_text = TRUE,
+  xaxis_size = 11
+)
 }
 \arguments{
 \item{X}{A numerical matrix containing the rows to be drawn.}

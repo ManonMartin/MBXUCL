@@ -4,11 +4,23 @@
 \alias{DrawSL}
 \title{Scores and Loadings plots}
 \usage{
-DrawSL(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"), drawNames = TRUE,
-  createWindow = FALSE, main = NULL, class = NULL, axes = c(1, 2),
-  type.graph = c("scores", "loadings"), loadingstype = c("l", "p",
-  "s"), num.stacked = 4, xlab = NULL, ylab = NULL, ang = 0,
-  xaxis = c("numerical", "character"), nxaxis = 10)
+DrawSL(
+  obj,
+  type.obj = c("PCA", "PLSDA", "OPLSDA"),
+  drawNames = TRUE,
+  createWindow = FALSE,
+  main = NULL,
+  class = NULL,
+  axes = c(1, 2),
+  type.graph = c("scores", "loadings"),
+  loadingstype = c("l", "p", "s"),
+  num.stacked = 4,
+  xlab = NULL,
+  ylab = NULL,
+  ang = 0,
+  xaxis = c("numerical", "character"),
+  nxaxis = 10
+)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA analysis with the SVDforPCA function.}

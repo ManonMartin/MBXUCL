@@ -50,28 +50,8 @@ PLSDA <- function(x, y, nLV = NULL, drawRMSEP = TRUE) {
     nLV <- 3
   }
 
-
-  # x=x-matrix(apply(x,2,mean),nrow=dim(x)[1],ncol=dim(x)[2],byrow=T) # centrage de
-  # x sur les colonnes (par descripteur)
   m <- dim(x)[2]  # nombre de descripteurs
   n <- dim(x)[1]
-
-  Id <- 1:n
-  IdSpectra <- dimnames(x)[[1]]
-
-  levgroup <- as.numeric(names(table(y)))
-  nlevgroup <- table(y)
-  k <- length(levgroup)
-
-  # ord=order(y) x=x[ord,] group=y[ord] IdSpectra=IdSpectra[ord]
-
-  n <- c()
-  id <- list()
-  for (i in 1:k) {
-    n[i] <- nlevgroup[[i]]
-    id[[i]] <- which(y == levgroup[i])
-  }
-
 
   xtrain <- as.matrix(x)
   ytrain <- y

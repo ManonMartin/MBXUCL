@@ -4,8 +4,7 @@
 \alias{OPLSDA}
 \title{OPLS-DA for a two-class problem}
 \usage{
-OPLSDA(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15,
-  out.path = ".")
+OPLSDA(x, y, impT = FALSE, impG = FALSE, no = 2, nb = 15, out.path = ".")
 }
 \arguments{
 \item{x}{A data matrix on which will be based the analysis.}

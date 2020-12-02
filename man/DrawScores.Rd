@@ -4,13 +4,27 @@
 \alias{DrawScores}
 \title{Scores plots}
 \usage{
-DrawScores(obj, type.obj = c("PCA", "PLSDA", "OPLSDA"),
-  drawNames = TRUE, createWindow = FALSE, main = NULL,
-  color = NULL, pch = NULL, size = 1, cex.lab = 3, axes = c(1,
-  2), xlab = NULL, ylab = NULL, drawEllipses = FALSE,
-  typeEl = "norm", levelEl = 0.9, drawPolygon = FALSE,
-  noLegend = FALSE, legend_color_manual = NULL,
-  legend_shape_manual = NULL)
+DrawScores(
+  obj,
+  type.obj = c("PCA", "PLSDA", "OPLSDA"),
+  drawNames = TRUE,
+  createWindow = FALSE,
+  main = NULL,
+  color = NULL,
+  pch = NULL,
+  size = 1,
+  cex.lab = 3,
+  axes = c(1, 2),
+  xlab = NULL,
+  ylab = NULL,
+  drawEllipses = FALSE,
+  typeEl = "norm",
+  levelEl = 0.9,
+  drawPolygon = FALSE,
+  noLegend = FALSE,
+  legend_color_manual = NULL,
+  legend_shape_manual = NULL
+)
 }
 \arguments{
 \item{obj}{The objects resulting from a PCA, PLSDA or OPLSDA analysis.}

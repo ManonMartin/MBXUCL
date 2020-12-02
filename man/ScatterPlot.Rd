@@ -4,10 +4,24 @@
 \alias{ScatterPlot}
 \title{ScatterPlot}
 \usage{
-ScatterPlot(x, y, points_labs = NULL, createWindow = FALSE,
-  main = NULL, color = NULL, pch = NULL, size = 1, cex.lab = 3,
-  xlab = NULL, ylab = NULL, legend_pch = NULL, legend_color = NULL,
-  drawEllipses = FALSE, typeEl = "norm", levelEl = 0.9)
+ScatterPlot(
+  x,
+  y,
+  points_labs = NULL,
+  createWindow = FALSE,
+  main = NULL,
+  color = NULL,
+  pch = NULL,
+  size = 1,
+  cex.lab = 3,
+  xlab = NULL,
+  ylab = NULL,
+  legend_pch = NULL,
+  legend_color = NULL,
+  drawEllipses = FALSE,
+  typeEl = "norm",
+  levelEl = 0.9
+)
 }
 \arguments{
 \item{x}{x-axis values.}
