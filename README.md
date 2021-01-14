@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ManonMartin/MBXUCL.svg?branch=master)](https://travis-ci.org/ManonMartin/MBXUCL)
+[![R-CMD-check](https://github.com/ManonMartin/MBXUCL/workflows/R-CMD-check/badge.svg)](https://github.com/ManonMartin/MBXUCL/actions)
 
 # MBXUCL
 R package for the AHDIDA Team (ISBA, UCLouvain).
