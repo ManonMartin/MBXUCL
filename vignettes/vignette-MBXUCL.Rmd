@@ -188,7 +188,8 @@ pander(binClustMIC.res)
 
 ```{r PLSDA, out.width='100%', fig.width=10, fig.height=10}
 Class = ClassHS
-PLSDA.res = PLSDA(x = HumanSerumSpectra, y = Class, nLV = NULL, drawRMSEP = TRUE)
+PLSDA.res = PLSDA(x = HumanSerumSpectra, y = Class, 
+                  nLV = NULL, drawRMSEP = TRUE)
 
 perf.plsda = PLSDA.res[4:6]
 pander(perf.plsda)

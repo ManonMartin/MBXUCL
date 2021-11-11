@@ -4,7 +4,14 @@
 \alias{PLSDA}
 \title{PLS-DA}
 \usage{
-PLSDA(x, y, nLV = NULL, drawRMSEP = TRUE)
+PLSDA(
+  x,
+  y,
+  nLV = NULL,
+  drawRMSEP = TRUE,
+  validation = c("CV", "none", "LOO"),
+  ...
+)
 }
 \arguments{
 \item{x}{A numeric matrix of spectral intensities.}
@@ -14,6 +21,10 @@ PLSDA(x, y, nLV = NULL, drawRMSEP = TRUE)
 \item{nLV}{The number of latent variables for PLS-DA.}
 
 \item{drawRMSEP}{Logical, if \code{'TRUE'}, will draw plot of RMSEP values to decide on the number of latent variables.}
+
+\item{validation}{The type of validation (see `pls::plsr()` for more info).}
+
+\item{...}{additional arguments to be passed to `pls::plsr()` (eg: `segments`).}
 }
 \value{
 A list with the following elements:
@@ -30,6 +41,7 @@ A list with the following elements:
   \item{\code{coefficients}}{PLSDA coefficients}
   \item{\code{scores}}{PLSDA scores}
   \item{\code{loadings}}{PLSDA loadings}
+  \item{\code{VIP}}{The variable VIPs}
    }
 }
 \description{
@@ -37,7 +49,10 @@ PLS-DA model for multiple classes (2 or more).
 }
 \examples{
 data('HumanSerum')
-PLSDA = function(x = HumanSerumSpectra, y = ClassHS, nLV = NULL, drawRMSEP = TRUE)
+
+PLSDA = PLSDA(x = HumanSerumSpectra,  y = ClassHS, nLV = NULL, drawRMSEP = TRUE, validation = "LOO")
+
+PLSDA = PLSDA(x = HumanSerumSpectra,  y = ClassHS, nLV = NULL, drawRMSEP = TRUE, validation = "CV", segments = 5)
 
 }
 \author{
