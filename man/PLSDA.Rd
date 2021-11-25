@@ -24,7 +24,7 @@ PLSDA(
 
 \item{validation}{The type of validation (see `pls::plsr()` for more info).}
 
-\item{...}{additional arguments to be passed to `pls::plsr()` (eg: `segments`).}
+\item{...}{Additional arguments to be passed to `pls::plsr()` (eg: `segments`).}
 }
 \value{
 A list with the following elements:
