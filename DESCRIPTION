@@ -7,7 +7,7 @@ Authors@R: c(person("Manon", "Martin", role = c("aut", "cre"),email = "manon.mar
             person("Baptiste", "Feraud", role = c("aut"),email = "baptiste.feraud@uclouvain.be"))
 biocViews:
 Imports:
- clValid, phyclust, proxy, pls, pander, stats, ggplot2, reshape2, spls, caret, gridExtra, plyr,clusterSim, ropls, plsVarSel
+ clValid, phyclust, proxy, pls, pander, stats, ggplot2, reshape2, spls, caret, gridExtra, plyr, ropls, plsVarSel
 Suggests: knitr, rmarkdown
 Description: Basic R routines implemented for metabolomics data analysis. It mainly involves statistical mutivariate methods and visualisation tools.
 License: GPL-2

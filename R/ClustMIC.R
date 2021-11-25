@@ -36,7 +36,6 @@
 #'
 #'@importFrom proxy dist
 #'@importFrom clValid dunn
-#'@importFrom clusterSim index.DB
 #'@importFrom phyclust RRand
 
 
@@ -104,8 +103,8 @@ ClustMIC <- function(Intensities, nClust, Trcl, Dendr = TRUE){
 
 
   #### DAVIES-BOULDIN
-  DBW <- clusterSim::index.DB(Intensities, clWI, DistI, centrotypes = "medoids")
-  DBKM <- clusterSim::index.DB(Intensities, clKMI$cluster, DistI, centrotypes = "medoids")
+  DBW <- index.DB(Intensities, clWI, DistI, centrotypes = "medoids")
+  DBKM <- index.DB(Intensities, clKMI$cluster, DistI, centrotypes = "medoids")
 
 
   ################################ Qualite du clustering ##

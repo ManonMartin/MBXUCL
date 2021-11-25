@@ -34,7 +34,6 @@
 #'
 #'@importFrom proxy dist
 #'@importFrom clValid dunn
-#'@importFrom clusterSim index.DB
 #'@importFrom phyclust RRand
 
 
@@ -103,7 +102,7 @@ binClustMIC <- function(Positions, Distance, nClust, Trcl, Dendr = TRUE) {
 
 
   #### DAVIES-BOULDIN
-  DBW <- clusterSim::index.DB(Positions, clWP, DistP, centrotypes = "medoids")
+  DBW <- index.DB(Positions, clWP, DistP, centrotypes = "medoids")
 
 
   ################################ Qualite du clustering ##
