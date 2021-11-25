@@ -52,7 +52,7 @@ Or it can be installed from a stand alone version contained in a local folder:
 #A. Install necessary dependencies ===========
 install.packages(c("clValid", "phyclust", "proxy", "pls", 
     "pander", "stats","ggplot2", "reshape2", "spls", "plyr", 
-    "gridExtra", "clusterSim", "modeest"))
+    "gridExtra"))
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")

@@ -39,8 +39,6 @@
 #'@importFrom phyclust RRand
 
 
-
-
 ClustMIC <- function(Intensities, nClust, Trcl, Dendr = TRUE){
 
   # checks
